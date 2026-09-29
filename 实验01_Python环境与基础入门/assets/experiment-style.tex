@@ -1,0 +1,132 @@
+% Shared style for integrated experiment handouts.
+\usepackage[left=2.15cm,right=2.15cm,top=2.25cm,bottom=2.15cm,headsep=0.7cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array,tabularx,longtable,multirow}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{chngcntr}
+
+\definecolor{Ink}{HTML}{17233C}
+\definecolor{Navy}{HTML}{173B68}
+\definecolor{Blue}{HTML}{2878B5}
+\definecolor{Cyan}{HTML}{2A9D8F}
+\definecolor{Amber}{HTML}{E9A23B}
+\definecolor{Red}{HTML}{C84B4B}
+\definecolor{Paper}{HTML}{F6F8FB}
+\definecolor{PaleBlue}{HTML}{EAF2FA}
+\definecolor{PaleCyan}{HTML}{EAF7F4}
+\definecolor{PaleAmber}{HTML}{FFF5E4}
+\definecolor{Rule}{HTML}{D6DEE8}
+\definecolor{Muted}{HTML}{5B677A}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=Navy,
+  urlcolor=Blue,
+  citecolor=Cyan,
+  pdfauthor={《人工智能数学原理与算法》课程组},
+  pdftitle={\DocTitle},
+  pdfsubject={\DocSubject}
+}
+
+\ctexset{
+  section={format=\Large\bfseries\color{Navy},beforeskip=1.4ex plus .2ex,afterskip=.8ex},
+  subsection={format=\large\bfseries\color{Ink},beforeskip=1.2ex plus .2ex,afterskip=.55ex},
+  subsubsection={format=\normalsize\bfseries\color{Blue},beforeskip=1ex,afterskip=.35ex}
+}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.22em}
+\setlength{\emergencystretch}{2em}
+\linespread{1.14}
+\setlist[itemize]{leftmargin=2em,itemsep=.25em,topsep=.35em}
+\setlist[enumerate]{leftmargin=2.2em,itemsep=.28em,topsep=.35em}
+\renewcommand{\arraystretch}{1.30}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\MSE}{\operatorname{MSE}}
+\newcommand{\RMSE}{\operatorname{RMSE}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\term}[1]{\textcolor{Blue}{\textbf{#1}}}
+\newcommand{\code}[1]{\texttt{#1}}
+\numberwithin{equation}{subsection}
+
+\tcbset{boxrule=.7pt,arc=1.6mm,left=2.5mm,right=2.5mm,top=1.8mm,bottom=1.8mm,before skip=7pt,after skip=7pt}
+\newtcolorbox{keybox}[1][核心结论]{colback=PaleBlue,colframe=Blue,title={#1},fonttitle=\bfseries,coltitle=Ink}
+\newtcolorbox{examplebox}[1][贯穿例题]{colback=PaleCyan,colframe=Cyan,title={#1},fonttitle=\bfseries,coltitle=Ink}
+\newtcolorbox{questionbox}[1][检查点]{colback=PaleAmber,colframe=Amber,title={#1},fonttitle=\bfseries,coltitle=Ink}
+\newtcolorbox{pitfallbox}[1][易错提醒]{colback=red!3,colframe=Red,title={#1},fonttitle=\bfseries,coltitle=Ink}
+\newtcolorbox{teacherbox}[1][教师提示]{colback=Paper,colframe=Rule,title={#1},fonttitle=\bfseries,coltitle=Muted}
+\newtcolorbox{proofbox}[1][推导与证明]{colback=Blue!3,colframe=Navy,title={#1},fonttitle=\bfseries,coltitle=Ink}
+
+\lstdefinestyle{python}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{Blue}\bfseries,
+  commentstyle=\color{Cyan!70!black},
+  stringstyle=\color{Red!80!black},
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  rulecolor=\color{Rule},
+  backgroundcolor=\color{Paper},
+  breaklines=true,
+  numbers=left,
+  numberstyle=\tiny\color{Muted},
+  xleftmargin=1.5em,
+  framexleftmargin=1.2em,
+  aboveskip=.7em,
+  belowskip=.7em
+}
+\lstset{style=python}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{Muted}人工智能数学原理与算法}
+\fancyhead[R]{\small\color{Muted}\DocShortTitle}
+\fancyfoot[L]{\small\color{Muted}\DocType}
+\fancyfoot[R]{\small\color{Muted}\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\makeexperimenttitle}[4]{
+  \hypersetup{pageanchor=false}
+  \begin{titlepage}\thispagestyle{empty}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[Ink] (current page.north west) rectangle ([yshift=-9.4cm]current page.north east);
+    \fill[Blue] ([yshift=-9.4cm]current page.north west) rectangle ([yshift=-9.68cm]current page.north east);
+    \fill[Cyan] ([xshift=2.15cm,yshift=-1.55cm]current page.north west) rectangle ([xshift=2.27cm,yshift=-8.55cm]current page.north west);
+    \fill[Paper] ([xshift=2.15cm,yshift=2.0cm]current page.south west) rectangle ([xshift=-2.15cm,yshift=6.15cm]current page.south east);
+  \end{tikzpicture}
+  \vspace*{1.45cm}
+  {\color{white}\Large 人工智能数学原理与算法\par}\vspace{.55cm}
+  {\color{white}\fontsize{31}{39}\selectfont\bfseries #1\par}\vspace{.35cm}
+  {\color{white}\fontsize{21}{28}\selectfont #2\par}
+  \vfill
+  \begin{tcolorbox}[colback=white,colframe=white,boxrule=0pt,arc=0mm,left=7mm,right=7mm,top=6mm,bottom=6mm,width=\textwidth]
+    \begin{tabularx}{\linewidth}{L{2.6cm}Y}
+      \textcolor{Muted}{材料类型} & \DocType\\
+      \textcolor{Muted}{实验安排} & #3\\
+      \textcolor{Muted}{贯穿案例} & #4\\
+      \textcolor{Muted}{适用对象} & 已完成机器学习导论、具备高中数学与基础计算机操作能力的本科生\\
+    \end{tabularx}
+  \end{tcolorbox}
+  \vspace{.7cm}{\color{Muted}\small 版本：2026年秋季学期整合稿\hfill 源文件与 PDF 同目录交付\par}
+  \end{titlepage}
+  \hypersetup{pageanchor=true}
+  \pagenumbering{roman}\tableofcontents\clearpage\pagenumbering{arabic}
+}
