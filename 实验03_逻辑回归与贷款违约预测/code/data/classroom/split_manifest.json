@@ -1,0 +1,77 @@
+{
+  "source": "../train.csv",
+  "source_sha256": "54122ab08d4c32f71281e294e9fc41452b3ea47a934247d135a193b4bf5aae74",
+  "source_rows": 800000,
+  "source_columns": 47,
+  "source_positive_fraction": 0.1995125,
+  "seed": 20261008,
+  "numpy": "2.4.6",
+  "pandas": "3.0.5",
+  "method": "rebuild seed-20261008 natural splits; preserve val/test; retain 4000 original train negatives and all 1596 positives; add 2404 unused positives; shuffle balanced train with seed 20261009",
+  "features": [
+    "loanAmnt",
+    "interestRate",
+    "annualIncome",
+    "dti",
+    "grade",
+    "employmentLength",
+    "issueDate",
+    "earliesCreditLine"
+  ],
+  "splits": {
+    "train": {
+      "rows": 8000,
+      "columns": 47,
+      "positive": 4000,
+      "missing_labels": 0,
+      "feature_missing": {
+        "loanAmnt": 0,
+        "interestRate": 0,
+        "annualIncome": 0,
+        "dti": 1,
+        "grade": 0,
+        "employmentLength": 503,
+        "issueDate": 0,
+        "earliesCreditLine": 0
+      },
+      "sha256": "a8854e8e5750656e3a92933fb3f9d880f07331ccb81f506ad1a2c82999a10abe"
+    },
+    "val": {
+      "rows": 1000,
+      "columns": 47,
+      "positive": 200,
+      "missing_labels": 0,
+      "feature_missing": {
+        "loanAmnt": 0,
+        "interestRate": 0,
+        "annualIncome": 0,
+        "dti": 0,
+        "grade": 0,
+        "employmentLength": 48,
+        "issueDate": 0,
+        "earliesCreditLine": 0
+      },
+      "sha256": "adc938bea4cd481ea5027bfe49ce3f9821b877f4038c53096016af1369c5ac68"
+    },
+    "test": {
+      "rows": 1000,
+      "columns": 47,
+      "positive": 200,
+      "missing_labels": 0,
+      "feature_missing": {
+        "loanAmnt": 0,
+        "interestRate": 0,
+        "annualIncome": 0,
+        "dti": 1,
+        "grade": 0,
+        "employmentLength": 70,
+        "issueDate": 0,
+        "earliesCreditLine": 0
+      },
+      "sha256": "cb16cc96fca2fddbfebe902c178b2b23d69ca191064b6b1fcc77342a29223a9a"
+    }
+  },
+  "balance_seed": 20261009,
+  "train_positive_fraction": 0.5,
+  "evaluation_note": "train balance follows textbook; val/test retain natural prevalence; revised results on previously inspected test are a teaching comparison, not a fresh blind evaluation"
+}

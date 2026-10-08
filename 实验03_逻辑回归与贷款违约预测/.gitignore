@@ -1,0 +1,11 @@
+__pycache__/
+.ipynb_checkpoints/
+code/outputs*/
+*.pyc
+# User-downloaded competition files: keep locally; distribute the classroom subset.
+code/data/train.csv
+code/data/testA.csv
+code/data/sample_submit.csv
+
+# Keep teacher answers local, consistent with the active laboratory.
+/teacher/

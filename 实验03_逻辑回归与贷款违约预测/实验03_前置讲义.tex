@@ -1,0 +1,326 @@
+\documentclass[UTF8,a4paper,11pt,fontset=fandol]{ctexart}
+\newcommand{\DocTitle}{第三次实验：逻辑回归与贷款违约预测}
+\newcommand{\DocSubject}{2026年秋季课程B；135分钟；逻辑回归实验}
+\newcommand{\DocShortTitle}{实验03：逻辑回归}
+\newcommand{\DocType}{学生前置讲义}
+\input{assets/experiment-style.tex}
+\usepackage{xurl,bookmark}
+\setmonofont[BoldFont=DejaVuSansMono-Bold.ttf,ItalicFont=DejaVuSansMono-Oblique.ttf]{DejaVuSansMono.ttf}
+\setCJKmonofont[AutoFakeBold=2]{FandolFang-Regular.otf}
+\setlength{\headheight}{15pt}
+\setcounter{tocdepth}{1}
+\hypersetup{pdfauthor={钟志诚（主讲）；曾有成（整理）},pdftitle={第三次实验：课程前置讲义}}
+\lstset{numbers=none,xleftmargin=0pt,framexleftmargin=0pt,basicstyle=\ttfamily\small}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\begin{document}
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{1.4cm}
+{\Large\color{Navy}人工智能数学原理与算法 B\par}
+\vspace{1.0cm}
+{\huge\bfseries\color{Ink}第三次实验\par}
+\vspace{.4cm}
+{\LARGE\bfseries\color{Navy}逻辑回归与贷款违约预测\par}
+\vspace{.8cm}
+{\Large 课程前置讲义\par}
+\vspace{1.1cm}
+\begin{tabular}{@{}ll}
+主讲 & 钟志诚\\[.5em]
+整理 & 曾有成\\[.5em]
+单位 & 中国科学技术大学\\
+ & 人工智能与数据科学学院
+\end{tabular}
+\vspace{1cm}
+\begin{keybox}[从数据到可解释的分类流程]
+数据清洗与划分 $\rightarrow$ 数值表示 $\rightarrow$ 线性得分与概率
+$\rightarrow$ 交叉熵与正则化 $\rightarrow$ 梯度更新 $\rightarrow$ 独立评估。
+\end{keybox}
+\vfill
+2026 年秋季\quad 建议 3 学时（135 分钟）\\
+C0--C7 分阶段完成；日期与提交平台以课程通知为准。\\
+随包数据为天池真实贷款记录的固定课堂子集。
+\end{titlepage}
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}\tableofcontents\clearpage\pagenumbering{arabic}
+\section{本次实验要解决什么问题}
+\subsection{从决策树走向概率模型}
+上次实验用一串属性问题构造决策树。本次仍做二分类，但改用一组可训练的权重：给定贷款申请时已知的信息，估计这笔贷款违约的概率。逻辑回归（《机器学习》称对数几率回归）虽然名字含“回归”，本次输出的任务标签仍是离散类别。
+
+训练数据中的标签 \texttt{isDefault} 取 1 表示违约，取 0 表示未违约。高概率表示模型认为违约更可能；是否采取某种业务行动还取决于误判代价。本实验只学习分类流程，不构造实际授信决策系统。
+\begin{keybox}[学习目标]
+能把混合类型表格转换为不泄漏信息的模型输入；能解释得分、概率、类别的区别；能从伯努利似然得到二元交叉熵；能手算一次更新并补全 PyTorch 模型；能用验证集选方案，用测试集报告最终结果。
+\end{keybox}
+\subsection{先修知识与本次边界}
+已会变量、列表、循环、函数、类、\texttt{import} 和数组切片。数学上用到矩阵乘法、指数、自然对数和简单求导。前两次实验入口保持不变，本次先用 C0 复习张量形状，再逐步增加新概念。
+
+本次依据指定实验指导书第 1 章第 1--13 页，保留 pandas、Dataset、DataLoader、逻辑回归和正则化；补充一次梯度更新以解释训练循环。下一实验可深入比较优化算法，这里不扩展到动量等方法。
+\subsection{教材数据与随包数据必须区分}
+教材描述 10000 条记录、8000/1000/1000 的划分及 50\% 训练正类比例。本次从用户下载的天池 80 万条带标签训练数据中，按标签分层重新抽取 \textbf{8000/1000/1000} 条；这不是教材原有抽样。源表 47 列含编号与标签，不等于 47 个模型输入，本实验只选八个字段。
+
+原划分种子为 20261008，训练平衡种子为 20261009；按指导书令训练正负各 4000 条，验证与测试保持原样，各含 200 条正类。三份均无缺失标签，输入仍有缺失值。默认读 \file{code/data/classroom/}。竞赛 \file{testA.csv} 无标签，\file{sample_submit.csv} 中的 0.5 只是提交示例，均不能用于本地评分。教材示例准确率不作为验收标准。
+\begin{questionbox}[检查点 C0：先说清输出]
+模型输出 0.7，是否意味着“标签是 0.7”？阈值设为 0.5 时输出哪一类？若改为 0.8 呢？先口答，再做第 10 节的自测。
+\end{questionbox}
+\clearpage
+\section{先把表格变成可靠的输入}
+\subsection{字段、标签与可用时刻}
+CSV（Comma-Separated Values，逗号分隔值）文件的每行是一条样本，每列是一种属性。本实验固定使用下表顺序；编号和标签不作为输入。金额与收入保留原数值，未核实币种，不称人民币元。利率用百分数值；债务收入比 \file{dti} 保留原尺度，不假设位于 0 到 1 之间。
+\begin{center}\par\noindent\begin{tabularx}{\linewidth}{L{4cm}Y}
+\toprule 字段 & 处理方式及含义\\\midrule
+\file{loanAmnt}、\file{annualIncome} & 贷款金额、年收入，保留为数值\\
+\file{interestRate}、\file{dti} & 利率、债务收入比，保留源数值\\
+\file{grade} & A 至 G 编码为 1 至 7；引入有序等距假设\\
+\file{employmentLength} & 按教材映射为等级编码，不等于真实年数\\
+\file{issueDate} & 距训练集最早发放日期的天数\\
+\file{earliesCreditLine} & 距训练集最早信用月份的月数；沿用原拼写\\
+\file{id}、\file{subGrade} & 不作为特征；细分等级在本教学版本中省略\\
+\file{isDefault} & 标签，单独保存，绝不填充或标准化\\\bottomrule
+\end{tabularx}\end{center}
+\subsection{先划分，再估计预处理规则}
+训练集用来估计填充值、尺度、日期原点和模型权重；验证集用来选择正则化方案、轮数等设置；测试集只在方案冻结后用于最终评价。已经划分好的三个文件不合并重切。
+
+先删除标签缺失的行，再从\textbf{训练特征}计算统计量。验证集和测试集缺失标签的行同样只能排除出有监督评价，并报告样本数；不能猜测标签。
+\begin{pitfallbox}[看似无监督的统计量也可能泄漏]
+把三份表合起来算均值会让预处理知道测试分布。对三份表各算日期原点，则会让同一日历日期对应不同数字。这里保存训练原点、均值和标准差，随后一律复用。
+\end{pitfallbox}
+\begin{questionbox}[检查点 C1：编码不是测量值]
+\texttt{< 1 year}、\texttt{1 year}、\texttt{3 years}、\texttt{10+ years} 应得到 1、2、4、12。为什么不能把最后的 12 解释为真实工作 12 年？
+\end{questionbox}
+\clearpage
+\section{标准化、增广特征与张量}
+\subsection{为什么先调整尺度}
+金额可能是数万，等级编码只有 1 至 7。不同尺度使同一个学习率很难同时适合每个坐标，也使正则化对权重的比较失去统一尺度。用训练列均值填补缺失值，再对数值列标准化。
+
+令 $r_j^{(n)}$ 为编码后的原始数值，第 $j$ 个特征的训练非缺失均值为 $\mu_j$；$\bar r_j^{(n)}$ 表示用 $\mu_j$ 填补后的值。训练集大小为 $N$，尺度 $s_j$ 为填补后按总体定义计算的标准差：
+\begin{equation}
+s_j=\sqrt{\frac1N\sum_{n=1}^N(\bar r_j^{(n)}-\mu_j)^2},\qquad
+x_j^{(n)}=\frac{\bar r_j^{(n)}-\mu_j}{s_j}.
+\end{equation}
+求和号 $\sum$ 表示把各样本的项相加；平方根把平方单位还原。全空训练列均值约定为 0，零标准差约定改为 1，均写入保存的预处理规则。代码用 \texttt{std(ddof=0)}；\texttt{ddof} 指分母的自由度修正值，本处为 0。
+\begin{examplebox}[用三个数检查 C2]
+训练某列是 $[1,3,\text{缺失}]$，均值为 2；填充后是 $[1,3,2]$，标准差是 $\sqrt{2/3}\approx0.816497$。验证值 100 应转换为 $98/\sqrt{2/3}\approx120.025$，验证缺失值变为 0。验证值不一定落在 $[-1,1]$。
+\end{examplebox}
+\subsection{把截距放进矩阵}
+令 $\mathbf x^{(n)}\in\mathbb R^d$ 为标准化后的第 $n$ 个样本；括号上标是样本编号，下标 $j$ 是特征坐标，$\mathbb R^d$ 表示由 $d$ 个实数组成的向量。本实验 $d=8$。波浪号表示增加了常数特征，转置 $\top$ 把列改为行：
+\begin{equation}
+\tilde{\mathbf x}^{(n)}=(1,(\mathbf x^{(n)})^\top)^\top,\quad
+\mathbf X=\begin{bmatrix}(\tilde{\mathbf x}^{(1)})^\top\\ \vdots\\(\tilde{\mathbf x}^{(N)})^\top\end{bmatrix}\in\mathbb R^{N\times(d+1)}.
+\end{equation}
+标签张量 $\mathbf y\in\mathbb R^{N\times1}$。在代码中，\texttt{X.shape} 为 \texttt{(N,9)}，\texttt{y.shape} 为 \texttt{(N,1)}，均使用 32 位浮点数 \texttt{float32}。先标准化八列，再加常数 1，不能把常数列标准化成 0。
+\begin{questionbox}[检查点 C2]
+若预测张量是 \texttt{(64,1)}，标签是 \texttt{(64,)}，两者相减会发生什么？为什么必须先检查形状？
+\end{questionbox}
+\clearpage
+\section{从一条样本到一批样本}
+\subsection{Dataset 和 DataLoader 各做什么}
+\texttt{Dataset} 负责“总共有几条、给定索引返回哪一条”；\texttt{DataLoader} 负责“按什么顺序、每批拿几条”。它们不自动替我们清洗、划分或防止标签泄漏。
+\begin{lstlisting}[language=Python]
+class LoanDataset(Dataset):
+    def __init__(self, X, y):
+        self.X = X
+        self.y = y
+
+    def __len__(self):
+        return len(self.X)
+
+    def __getitem__(self, index):
+        return self.X[index], self.y[index]
+\end{lstlisting}
+\texttt{class LoanDataset(Dataset)} 表示在 PyTorch 提供的数据集类上实现自己的取样规则；\texttt{self} 是当前对象。\texttt{len(dataset)} 调用 \texttt{\_\_len\_\_}，\texttt{dataset[2]} 调用 \texttt{\_\_getitem\_\_(2)}。这与上次决策树中把相关数据和方法放入同一个对象的思路相同。
+\subsection{一轮与一次更新}
+一轮（epoch）遍历训练集一次；一次更新只使用当前批次。批量大小为 $B$，本实验设为 64。训练集有 8000 条，一轮恰好有 125 批，每批 64 条。若使用其他样本数，仍保留不足 64 条的末批；C3 用五条样本检查这一情况。
+\begin{lstlisting}[language=Python]
+loader = DataLoader(dataset, batch_size=64,
+                    shuffle=True, drop_last=False)
+for X_batch, y_batch in loader:
+    print(X_batch.shape, y_batch.shape)
+\end{lstlisting}
+\texttt{shuffle=True} 只用于训练。验证和测试保持固定顺序；\texttt{drop\_last=False} 不丢弃最后不足一批的样本。打乱的是成对记录，不能独立打乱特征和标签。
+\begin{questionbox}[检查点 C3：先用五条数据]
+五条数据、批量大小为 2，会得到几批？每批标签数是多少？如果最后一批被丢弃，评价指标代表的还是原来的五条样本吗？
+\end{questionbox}
+\begin{teacherbox}[课堂提示]
+学生先观察一条样本的形状，再观察一批样本的形状。不要让“二维张量”和“二维特征空间”混为一谈：二维张量指两个轴，本实验可包含八个特征。
+\end{teacherbox}
+\clearpage
+\section{线性得分、概率和类别}
+\subsection{三个不同的输出}
+参数 $\boldsymbol\theta=(\theta_0,\ldots,\theta_d)^\top\in\mathbb R^{d+1}$，其中 $\theta_0$ 是截距；代码保存为 \texttt{(d+1,1)}。线性得分 $z^{(n)}$ 可以取任意实数。sigmoid 函数 $\sigma:\mathbb R\to(0,1)$ 将得分变成概率：
+\begin{equation}
+z^{(n)}=(\tilde{\mathbf x}^{(n)})^\top\boldsymbol\theta,\quad
+p^{(n)}=P(y^{(n)}=1\mid\mathbf x^{(n)};\boldsymbol\theta)=\sigma(z^{(n)})=\frac1{1+e^{-z^{(n)}}}.
+\end{equation}
+$P$ 表示概率，条件竖线“$\mid$”表示给定特征；分号后的参数确定当前模型。$e$ 是自然指数的底。$p^{(n)}$ 是模型概率，不是已观察到的标签。
+\begin{equation}
+\hat y^{(n)}=\mathbf1[p^{(n)}\ge\tau],\qquad \tau\in(0,1).
+\end{equation}
+帽号在这里表示\textbf{预测类别}。$\tau$ 是决策阈值；指示函数 $\mathbf1[\cdot]$ 在括号内条件成立时为 1，否则为 0。本课预先固定主实验阈值为 0.5，恰好等于阈值也判为违约。
+\subsection{为什么叫对数几率回归}
+几率是违约与不违约概率之比 $p/(1-p)$；对数几率函数 $\operatorname{logit}:(0,1)\to\mathbb R$ 是 sigmoid 的反函数：
+\begin{equation}
+\operatorname{logit}(p)=\log\frac{p}{1-p}=z.
+\end{equation}
+$\log$ 表示自然对数。本模型假设\textbf{对数几率是处理后特征的线性函数}。sigmoid 和 logit 不能互称。阈值为 0.5 时，边界为 $z=0$；提高阈值时，边界得分变为 $\log(\tau/(1-\tau))$。
+\begin{center}\begin{tabular}{rrrr}\toprule
+得分 $z$ & $-2$ & $0$ & $2$\\\midrule
+概率 $p$ & 0.119203 & 0.5 & 0.880797\\
+类别（$\tau=0.5$） & 0 & 1 & 1\\\bottomrule
+\end{tabular}\end{center}
+\begin{questionbox}[检查点 C4：模型接口]
+若参数是 $(1,2,-1)^\top$，增广输入是 $(1,3,2)^\top$，\texttt{forward} 应返回什么？\texttt{sigmoid(forward(X))} 又是什么？
+\end{questionbox}
+\clearpage
+\section{从伯努利似然到交叉熵}
+\subsection{为什么采用这个损失}
+给定特征，一个二分类标签服从伯努利模型：只可能取 0 或 1，取 1 的概率为 $p^{(n)}$。单条观测标签的概率质量为
+\begin{equation}
+P(y^{(n)}\mid\mathbf x^{(n)};\boldsymbol\theta)
+=(p^{(n)})^{y^{(n)}}(1-p^{(n)})^{1-y^{(n)}}.
+\end{equation}
+若 $y^{(n)}=1$，式子只留下 $p^{(n)}$；若标签为 0，只留下 $1-p^{(n)}$。假定样本在给定参数后条件独立，整批数据的似然 $\Lambda$ 是这些概率的连乘；$\prod$ 表示逐项相乘：
+\begin{equation}
+\Lambda(\boldsymbol\theta)=\prod_{n=1}^N P(y^{(n)}\mid\mathbf x^{(n)};\boldsymbol\theta).
+\end{equation}
+最大似然选择让已观察数据更可能出现的参数。取对数将连乘变成求和；加负号将最大化改成最小化；除以 $N$ 得到与样本规模无关的平均损失。
+\begin{equation}
+\begin{aligned}
+\mathcal L^{(n)}&=-y^{(n)}\log p^{(n)}-(1-y^{(n)})\log(1-p^{(n)}),\\
+R(\boldsymbol\theta)&=\frac1N\sum_{n=1}^N\mathcal L^{(n)}=-\frac1N\log\Lambda(\boldsymbol\theta).
+\end{aligned}
+\end{equation}
+$\mathcal L^{(n)}$ 是单样本损失，$R$ 是经验风险（样本平均）。该损失称二元交叉熵，简称 BCE（Binary Cross-Entropy）。当真实标签为 1 时，预测 0.9 的损失约为 0.10536，预测 0.1 的损失约为 2.30259，错误且自信会受到更大惩罚。
+\subsection{让计算接口与公式一致}
+实际训练用 \texttt{BCEWithLogitsLoss}：它接收原始得分并在内部稳定计算 sigmoid 与交叉熵的组合。单样本等价式为
+\begin{equation}
+\mathcal L(z,y)=\max(z,0)-yz+\log(1+e^{-|z|}).
+\end{equation}
+$\max(z,0)$ 取较大值，$|z|$ 是绝对值；此式避免直接计算过大的指数。\texttt{BCELoss} 接收概率，\texttt{BCEWith\allowbreak{}LogitsLoss} 接收得分，不能把两种接口混用。
+\begin{questionbox}[检查点 C5]
+所有得分为 0 时，平均数据损失是多少？为什么不能先 sigmoid 再传给 \texttt{BCEWithLogitsLoss}？
+\end{questionbox}
+\clearpage
+\section{从损失到一次参数更新}
+\subsection{梯度给出每个参数的变化方向}
+梯度 $\nabla_{\boldsymbol\theta}R$ 是 $R$ 对每个参数的偏导数组成的列向量；在当前位置，小幅沿负梯度移动会使损失一阶近似下降。先对单样本逐步求导：
+\begin{equation}
+\begin{aligned}
+\frac{\partial\mathcal L}{\partial p}&=-\frac yp+\frac{1-y}{1-p},\qquad
+\frac{\partial p}{\partial z}=p(1-p),\\
+\frac{\partial\mathcal L}{\partial z}&=\frac{\partial\mathcal L}{\partial p}\frac{\partial p}{\partial z}=p-y.
+\end{aligned}
+\end{equation}
+$\partial$ 表示把其他变量暂时固定的偏导；链式法则把前两项相乘，约去分母，得到 $p-y$。又因 $z=\tilde{\mathbf x}^{\top}\boldsymbol\theta$，有
+\begin{equation}
+\nabla_{\boldsymbol\theta}R=\frac1N\mathbf X^\top(\mathbf p-\mathbf y),\qquad
+\boldsymbol\theta^{[t+1]}=\boldsymbol\theta^{[t]}-\eta\nabla_{\boldsymbol\theta}R.
+\end{equation}
+$\mathbf p,\mathbf y\in\mathbb R^{N\times1}$；$\mathbf X^\top\in\mathbb R^{(d+1)\times N}$，梯度形状为 $(d+1)\times1$。$\eta>0$ 是学习率；方括号上标 $[t]$ 表示迭代次数，与样本编号 $(n)$ 区分。
+\subsection{贯穿手算：两条模拟贷款的更新}
+为便于手算，仅保留“标准化贷款金额、标准化收入”两个坐标。下表\textbf{专为课堂构造}，不是教材记录，也不是随包数据的抽样；标准化坐标 0 表示处于训练均值。
+\begin{center}\begin{tabular}{crrr}\toprule
+当前样本 $n$ & 贷款坐标 & 收入坐标 & 标签 $y^{(n)}$\\\midrule
+1 & 1 & 0 & 1\\2 & 0 & 1 & 0\\\bottomrule\end{tabular}\end{center}
+\begin{equation}
+\mathbf X=\begin{bmatrix}1&1&0\\1&0&1\end{bmatrix},\quad
+\boldsymbol\theta^{[0]}=\begin{bmatrix}0\\0\\0\end{bmatrix},\quad
+\mathbf p=\begin{bmatrix}0.5\\0.5\end{bmatrix},\quad
+\nabla R=\frac12\begin{bmatrix}1&1\\1&0\\0&1\end{bmatrix}\begin{bmatrix}-0.5\\0.5\end{bmatrix}
+=\begin{bmatrix}0\\-0.25\\0.25\end{bmatrix}.
+\end{equation}
+取 $\eta=0.4$，更新后参数为 $(0,0.1,-0.1)^\top$，两条概率分别为 0.524979 和 0.475021。平均损失从 0.693147 降至 0.644397。
+\begin{questionbox}[检查点 C6：核对方向]
+贷款权重变大、收入权重变小，为何能让这两条已知标签更可能？请用代码输出 \texttt{theta.grad} 与更新后的 \texttt{theta} 核对，不能只看损失是否下降。
+\end{questionbox}
+\clearpage
+\section{正则化与训练循环}
+\subsection{区分拟合损失和训练总目标}
+训练集拟合得好不保证新样本表现好。参数过大可能把样本噪声也拟合进去。用 $\Omega$ 表示权重惩罚，$\lambda\ge0$ 控制其强度，训练总目标 $J$ 为
+\begin{equation}
+\begin{aligned}
+J(\boldsymbol\theta)&=R(\boldsymbol\theta)+\lambda\Omega(\boldsymbol\theta),\\
+\Omega_{\mathrm{L1}}(\boldsymbol\theta)&=\sum_{j=1}^d|\theta_j|,\qquad
+\Omega_{\mathrm{L2}}(\boldsymbol\theta)=\frac12\sum_{j=1}^d\theta_j^2.
+\end{aligned}
+\end{equation}
+L1（L1 Norm，一范数）是绝对值之和；本实验的 L2（L2 Norm，二范数）\textbf{惩罚采用二范数平方的一半}，并非二范数本身。这里不惩罚截距 $\theta_0$。若参数为 $(10,3,-4)^\top$，两种惩罚分别为 7 和 12.5。
+
+L2 惩罚的梯度是 $(0,\theta_1,\ldots,\theta_d)^\top$。L1 在非零坐标用符号函数求导，零点不唯一；PyTorch 在该处取 0。普通梯度更新下不保证权重恰好为零，不能把 L1 等同于本程序一定自动删除特征。
+\subsection{一批数据如何执行更新}
+本实验用小批量随机梯度下降 SGD（Stochastic Gradient Descent）更新参数。对当前批次，把上一节梯度式中的 $N$ 换成当前批次大小 $B$。\texttt{torch.optim.SGD} 已提供参数更新规则，学生连接五个步骤：
+\begin{lstlisting}[language=Python]
+optimizer.zero_grad()
+logits = model(X_batch)
+loss = data_loss(logits, y_batch)
+objective = loss + strength * model.penalty(kind)
+objective.backward()
+optimizer.step()
+\end{lstlisting}
+\texttt{backward()} 用自动微分得到每个参数的梯度；\texttt{step()} 更新参数。梯度默认会累加，所以每批先清零。损失在反向传播前不能用 \texttt{item()} 转成普通数，也不能 \texttt{detach()} 切断计算图。
+\begin{pitfallbox}[曲线必须比较同一种量]
+不同 $\lambda$ 的训练总目标不能直接拿来选模型。本实验每轮结束，用当前同一组参数分别计算全训练集与验证集的\textbf{无正则数据损失}，画出两条曲线；模型选择也看验证数据损失。
+\end{pitfallbox}
+\begin{questionbox}[检查点 C5/C6]
+把 \texttt{zero\_grad()} 删除，第二次更新仍与手算一致吗？若 $\lambda$ 极大，可能发生什么？
+\end{questionbox}
+\clearpage
+\section{评价与真实工作流}
+\subsection{先数清四种结果}
+在固定阈值下，TP（True Positive，真正例）表示真实违约且预测违约；FP（False Positive，假正例）表示真实未违约却预测违约；FN（False Negative，假负例）表示真实违约却预测未违约；TN（True Negative，真负例）表示两者都为未违约。
+\begin{equation}
+\mathrm{Accuracy}=\frac{\mathrm{TP}+\mathrm{TN}}N,\quad
+\mathrm{Precision}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\quad
+\mathrm{Recall}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}.
+\end{equation}
+准确率统计整体正确比例；精确率回答“预测违约中有多少真违约”；召回率回答“真实违约中找到了多少”。F1 分数（F1 Score）是精确率与召回率的调和平均：
+\begin{equation}
+\mathrm{F1}=\frac{2\,\mathrm{Precision}\,\mathrm{Recall}}{\mathrm{Precision}+\mathrm{Recall}}.
+\end{equation}
+本代码约定分母为 0 的比率返回 0。训练两类相同时，常数基线预先约定总预测未违约；在当前测试集上准确率为 80\%。同时报告混淆矩阵与召回率，不能只看准确率。
+\subsection{阈值连接误判代价}
+在教学假设下，漏判一次的代价为 2、误报一次为 1，则总代价为 $2\mathrm{FN}+\mathrm{FP}$。它只是课堂设定，不能当作实际贷款损失。比较验证集上阈值 0.3、0.5、0.7 的结果；降低阈值通常增加召回率，也可能增加误报。
+
+本实验主结果\textbf{预先固定阈值为 0.5}，按验证数据损失选择正则化方案和轮数。测试集只在冻结后读取一次；报告测试结果后不得据此回调参数。若要扩展阈值选择，也必须在测试前用验证集确定规则。
+\begin{questionbox}[检查点 C7]
+真实标签为 $[1,0,1,0]$，概率为 $[0.9,0.8,0.4,0.1]$。在阈值 0.5 下手算四种计数，再把阈值改为 0.3；哪类错误减少了？
+\end{questionbox}
+\subsection{本算法在项目中的位置与局限}
+先明确任务与误判代价，再收集预测时可获得的数据，划分训练/验证/测试，拟合表示规则，选择概率模型和目标，优化权重，用验证集做选择，最后测试与上线监测。数据是否覆盖新时期、概率是否校准、不同群体误差是否不同，都需要额外证据。
+
+训练集有 50\% 违约样本，验证与测试为 20\%；平衡抽样后，输出不能直接视为自然人群中已校准的违约概率。两组类别比例不同，损失曲线的高低差不单由过拟合决定。原始字段含极端值，随机划分不能代表未来时期。有序编码引入等距假设；线性对数几率不能自动表达复杂交互。实际贷款等级、利率是否可在预测时取得，也要按业务时点核对。单次小测试集的结果有随机波动，不能证明泛化能力。
+
+\clearpage
+\section{自测答案、符号索引与资料}
+\subsection{课前自测与退出卡}
+\begin{enumerate}
+\item C0：0.7 是概率；阈值 0.5 判 1，阈值 0.8 判 0。
+\item C1：12 是为最高就业年限档指定的编码，原始信息只有“10 年以上”。
+\item C2：\texttt{(64,1)-(64,)} 可能广播成 \texttt{(64,64)}；损失函数也可能直接拒绝不匹配形状，必须保持标签为 \texttt{(64,1)}。
+\item C3：共三批，大小为 2、2、1；丢弃末批会改变评价样本集合。
+\item C4：得分 $1+2\times3-2=5$，概率约为 0.993307。
+\item C5：数据损失为 $\log2\approx0.693147$；提前 sigmoid 会把概率当得分再次转换，改变模型和梯度。
+\item C6：误差向量为 $(-0.5,0.5)^\top$，更新后概率向各自标签移动。漏清梯度会累加前一批的梯度；过大正则化可能欠拟合。
+\item C7：阈值 0.5 时四种计数均为 1，各比率为 0.5；阈值 0.3 时真正例 2、假正例 1、假负例 0、真负例 1，召回率为 1。
+\end{enumerate}
+退出卡：用一句话说出得分、概率、类别的区别；写出一次梯度更新；解释为什么训练集和验证集必须使用同一组预处理统计量。后续优化实验将沿用损失、梯度和学习率记号，比较不同更新规则。
+\subsection{符号索引}
+\par\noindent\begin{tabularx}{\linewidth}{L{2.6cm}Y L{1.6cm}}
+\toprule 类别 & 记号与含义 & 首次解释\\\midrule
+数据与模型 & $r_j^{(n)},\mu_j,s_j$：编码值、训练均值、尺度 & 3.1\\
+数据与模型 & $\mathbf x^{(n)},\tilde{\mathbf x}^{(n)},\mathbf X,\mathbf y$：样本、增广样本、设计矩阵、标签 & 3.2\\
+数据与模型 & $\boldsymbol\theta,z,p,\hat y,\tau$：参数、得分、概率、类别、阈值 & 5.1\\
+函数与算子 & $\sigma,\operatorname{logit},\log,\mathbf1[\cdot]$：概率映射、反函数、对数、指示函数 & 5.1--5.2\\
+函数与算子 & $\nabla,\partial,\eta,[t]$：梯度、偏导、学习率、迭代 & 7.1\\
+概率与估计 & $P,\Lambda,\mathcal L,R,J,\Omega,\lambda$：概率、似然、单样本损失、风险、目标、惩罚及强度 & 5--8 节\\\bottomrule
+\end{tabularx}
+\clearpage
+\subsection{实际使用资料与改编说明}
+\begin{itemize}
+\item 项目上级目录的《人工智能数学原理与算法：实验指导书（最终）.pdf》第 1 章，第 1--13 页（文件第 15--27 页）：任务、数据清洗、PyTorch 接口、正则化及评分结构。
+\item 仓库 \texttt{source/\allowbreak{}slides/\allowbreak{}2.5 逻辑回归\_\allowbreak{}v2.pdf}：贷款任务、得分与概率、最大似然与梯度的叙述顺序。原课件的正负一标签在本文统一为 0/1。
+\item 仓库 \file{source/experiment/Logic.ipynb} 与 \file{source/experiment/utils.py}：原实验入口和字段编码。本文明确修订 sigmoid/logit 名称、训练统计量复用和损失接口。
+\item 仓库 \texttt{教案/\allowbreak{}人工智能数学原理与算法\_\allowbreak{}12次课程与助教分工\_\allowbreak{}最终版.xlsx}：“课程执行总表”第 3 次及实验安排说明；理论课为 3 学时，实验具体日期未固定，本文建议 135 分钟。
+\item 天池下载的 \file{code/data/train.csv} 与随包 \file{code/data/classroom/}：真实贷款源表与固定抽样；来源、字段、摘要及重建方法见 \file{code/data/README.md}。
+\item 同级实验 01 的 \file{assets/experiment-style.tex} 与实验 02 的 \file{README.md}、\file{code/decision_tree.py}：版式、渐进任务和代码提示风格。
+\end{itemize}
+\end{document}
