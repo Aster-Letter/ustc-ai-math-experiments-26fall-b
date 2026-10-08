@@ -1,0 +1,5 @@
+# Tested with Python 3.11.16; existing compatible course environments can be reused.
+numpy==2.4.6
+pandas==3.0.5
+torch==2.14.0
+matplotlib==3.11.1

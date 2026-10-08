@@ -1,0 +1,80 @@
+{
+  "source_url": "https://raw.githubusercontent.com/Olcmyk/university-rankings-tracker/main/2026_QS_World%20University_Rankings.csv",
+  "source_sha256": "3e6266bb55c5636ae1c09bba32e7afb39bc20b6d5def73197de2f0f2e547e300",
+  "source_shape": [
+    1504,
+    30
+  ],
+  "seed": 20261008,
+  "method": "stratified 60/20/20 per class; no oversampling; no artificial missingness",
+  "target": "top500 = 1 if supplied Rank <= 500 else 0; same-year classification",
+  "columns": {
+    "Name": "name",
+    "Region": "region",
+    "Status": "status",
+    "Size": "size",
+    "Focus": "focus",
+    "Research": "research",
+    "Faculty Student Ratio SCORE": "faculty_student_score",
+    "International Faculty  SCORE": "international_faculty_score",
+    "International Student SCORE": "international_student_score"
+  },
+  "numpy": "2.4.6",
+  "pandas": "3.0.5",
+  "splits": {
+    "train": {
+      "n": 902,
+      "positive": 301,
+      "missing": {
+        "row_id": 0,
+        "name": 0,
+        "region": 0,
+        "status": 31,
+        "size": 0,
+        "focus": 0,
+        "research": 0,
+        "faculty_student_score": 0,
+        "international_faculty_score": 49,
+        "international_student_score": 18,
+        "top500": 0
+      },
+      "sha256": "2be0d5dda54801986d94b3d77278b434e0f3d2d5545f6fa8980fa0be19e29ea7"
+    },
+    "val": {
+      "n": 300,
+      "positive": 100,
+      "missing": {
+        "row_id": 0,
+        "name": 0,
+        "region": 0,
+        "status": 13,
+        "size": 0,
+        "focus": 0,
+        "research": 0,
+        "faculty_student_score": 0,
+        "international_faculty_score": 20,
+        "international_student_score": 12,
+        "top500": 0
+      },
+      "sha256": "703ffae4af043bcc820dffbc57163193091cffaf522cd36c7cbe9a8d4343dac6"
+    },
+    "test": {
+      "n": 302,
+      "positive": 101,
+      "missing": {
+        "row_id": 0,
+        "name": 0,
+        "region": 0,
+        "status": 4,
+        "size": 1,
+        "focus": 0,
+        "research": 1,
+        "faculty_student_score": 0,
+        "international_faculty_score": 18,
+        "international_student_score": 7,
+        "top500": 0
+      },
+      "sha256": "7ae5070036fc5fcde301264918900803b6f2dea80831c1fba5ab1246cf08b7f6"
+    }
+  }
+}

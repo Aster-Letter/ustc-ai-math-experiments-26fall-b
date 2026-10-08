@@ -1,0 +1,903 @@
+row_id,name,region,status,size,focus,research,faculty_student_score,international_faculty_score,international_student_score,top500
+836,Universita' Politecnica delle Marche - UNIVPM,Europe,Public,M,FO,VH,17.1,8.6,11.6,0
+1410,Akdeniz Üniversitesi,Asia,Public,XL,FC,HI,5.6,2.2,6.0,0
+798,Wayne State University,Americas,Public,L,FC,VH,70.3,17.9,10.5,0
+564,Ajou University,Asia,Private not for Profit,M,FC,VH,70.2,13.3,58.0,0
+1436,Kazan National Research Technological University,Europe,Public,L,CO,HI,27.9,1.9,30.9,0
+1305,Tecnológico de Costa Rica (TEC),Americas,Public,M,FO,HI,23.2,9.7,3.0,0
+592,American University of Ras Al Khaimah ( AURAK ),Asia,Public,S,SP,MD,37.6,100.0,100.0,0
+784,University of Maynooth,Europe,Public,L,FO,VH,14.2,91.2,32.2,0
+695,"Vellore Institute of Technology (VIT), Vellore, India",Asia,Private not for Profit,XL,CO,VH,11.6,5.0,5.3,0
+982,Saint Louis University,Americas,Private not for Profit,L,CO,VH,50.8,20.6,42.2,0
+957,Amity University,Asia,Private not for Profit,L,CO,VH,18.2,12.1,34.9,0
+518,Pontificia Universidad Católica Argentina Santa María de los Buenos Aires - UCA,Americas,Private not for Profit,L,FC,MD,100.0,3.0,14.8,0
+1021,Birmingham City University,Europe,Public,XL,FO,HI,8.7,54.9,65.5,0
+197,University of Otago,Oceania,Public,L,FC,VH,14.8,100.0,39.6,1
+781,Thapar Institute of Engineering & Technology,Asia,Public,M,FO,VH,14.3,17.1,4.7,0
+361,Virginia Polytechnic Institute (Virginia Tech),Americas,Public,XL,FC,VH,26.3,81.6,27.9,1
+608,University of Siena,Europe,Public,M,FC,VH,15.3,4.6,19.7,0
+1503,Yamaguchi University,Asia,Public,M,FC,HI,46.1,8.0,4.5,0
+549,University of Windsor,Americas,Public,L,CO,VH,2.7,89.4,94.6,0
+846,University of Lincoln,Europe,Public,L,CO,VH,13.0,84.8,73.7,0
+273,North Carolina State University,Americas,Public,XL,CO,VH,12.2,67.5,25.6,1
+1162,University of Idaho,Americas,Public,M,CO,VH,15.4,8.6,12.2,0
+1383,University of Mosul,Asia,Public,XL,FC,HI,23.4,1.0,1.3,0
+421,Université de Strasbourg,Europe,Public,XL,FC,VH,7.3,41.7,45.4,1
+1098,Southern Methodist University,Americas,Private not for Profit,M,CO,VH,37.6,15.8,16.3,0
+1200,Yerevan State University,Asia,Public,M,CO,HI,64.8,8.7,3.0,0
+1366,Université Jean Moulin Lyon 3,Europe,Public,L,SP,VH,2.4,27.0,44.1,0
+63,City University of Hong Kong,Asia,Public,M,CO,VH,94.8,100.0,100.0,1
+305,Xi'an Jiaotong University,Asia,Public,XL,FC,VH,15.9,5.5,6.8,1
+465,Anna University,Asia,Public,L,SP,VH,9.2,,1.6,1
+715,Budapest University of Technology and Economics,Europe,Public,L,FO,VH,18.6,4.6,22.7,0
+1005,Adamson University,Asia,Private for Profit,M,CO,MD,7.6,18.1,2.8,0
+1045,IU Indianapolis,Americas,Public,L,FC,HI,23.5,38.8,9.0,0
+228,Université Libre de Bruxelles (ULB),Europe,Public,L,FC,VH,4.6,99.2,89.6,1
+180,Indian Institute of Technology Madras (IITM),Asia,Public,M,CO,VH,21.3,3.1,3.2,1
+1348,Universidade Federal de Pernambuco (UFPE),Americas,Public,XL,FC,HI,20.3,4.8,1.4,0
+1465,Tashkent University of Information Technologies,Asia,Public,L,SP,HI,7.4,10.4,3.3,0
+161,Michigan State University,Americas,Public,XL,FC,VH,13.9,67.2,21.1,1
+668,University of Oklahoma,Americas,Public,L,FC,VH,19.8,27.8,9.8,0
+368,Sciences Po Paris,Europe,Public,L,SP,VH,81.1,61.8,98.2,1
+1043,Howard University,Americas,Private not for Profit,M,FC,HI,43.6,1.2,6.4,0
+439,National Sun Yat-sen University,Asia,Public,M,CO,VH,35.6,35.5,16.5,1
+1243,International Islamic University Islamabad (IIU),Asia,Public,L,CO,HI,5.0,5.7,9.6,0
+1267,National Dong Hwa University,Asia,Public,M,CO,HI,8.6,13.9,18.6,0
+916,Kanazawa University,Asia,Public,M,FC,VH,58.1,11.6,10.8,0
+1335,Universidad Jesuita de Guadalajara - ITESO,Americas,Private not for Profit,M,FO,MD,84.6,3.8,2.5,0
+1108,Telkom University (aka Telkom Institute of Technology),Asia,Private for Profit,L,SP,VH,23.3,53.5,12.1,0
+586,Eotvos Lorand University,Europe,Public,XL,CO,VH,16.6,5.7,26.1,0
+132,University of Bath,Europe,Public,L,CO,VH,20.5,95.6,86.8,1
+970,Ivane Javakhishvili Tbilisi State University,Asia,Public,L,FC,MD,83.5,1.9,7.5,0
+960,Clarkson University,Americas,Private not for Profit,S,CO,VH,19.0,42.9,38.0,0
+534,University of Iowa,Americas,Public,L,FC,VH,50.1,40.4,8.5,0
+724,University of Nebraska - Lincoln,Americas,Public,L,CO,VH,23.8,27.1,12.1,0
+1479,Universidad Latinoamericana de Ciencia y Tecnología Costa Rica (ULACIT),Americas,Private not for Profit,S,CO,LO,32.6,13.8,12.8,0
+743,Yildiz Technical University,Asia,Public,L,CO,VH,5.6,9.5,27.8,0
+1373,University of Babylon,Asia,Public,L,FC,HI,19.6,1.3,1.2,0
+597,Zayed University,Asia,Public,M,SP,VH,34.7,100.0,2.8,0
+627,Universidad del Pais Vasco,Europe,Public,XL,CO,VH,38.4,3.0,6.3,0
+593,Bond University,Oceania,Private not for Profit,S,FO,VH,52.1,63.5,90.4,0
+1123,Universidad del Valle,Americas,Public,XL,FC,MD,11.1,3.3,2.2,0
+137,Newcastle University,Europe,Public,L,FC,VH,49.5,92.5,81.0,1
+1385,University of Novi Sad,Europe,Public,XL,FC,HI,10.5,,,0
+61,Korea University,Asia,Private not for Profit,L,FC,VH,77.0,24.5,64.0,1
+304,University of Southern Denmark,Europe,Public,L,CO,VH,31.9,91.7,46.4,1
+1468,Universidad Autónoma de Baja California,Americas,Public,XL,CO,HI,6.0,4.8,5.8,0
+1405,West University of Timisoara,Europe,Public,L,CO,HI,7.4,2.0,10.6,0
+201,Universität Freiburg,Europe,Public,L,FC,VH,31.1,78.7,44.2,1
+1360,Université de Caen Normandie,Europe,Public,L,FC,HI,9.2,11.0,11.4,0
+1030,Dankook University,Asia,Private not for Profit,L,FC,HI,72.0,5.5,12.6,0
+896,University of Dubai,Asia,Private not for Profit,S,SP,MD,12.6,100.0,88.7,0
+275,University of Virginia,Americas,Public,L,FC,VH,68.2,5.3,19.2,1
+486,University of Trento,Europe,Public,L,CO,VH,32.9,32.3,11.3,1
+574,Isfahan University of Technology,Asia,,M,FO,VH,6.4,2.2,3.9,0
+1222,Canterbury Christ Church University,Europe,Public,XL,CO,MD,5.3,41.5,60.4,0
+57,Kyoto University,Asia,Public,L,FC,VH,94.3,22.9,29.2,1
+711,Universidad Panamericana (UP),Americas,Private not for Profit,L,FO,HI,81.2,24.5,5.0,0
+646,Libera Universita' di Bolzano,Europe,Public,S,FO,VH,20.6,66.1,56.3,0
+789,Kuwait University,Asia,Public,XL,FC,HI,9.4,24.1,32.0,0
+1281,Pukyong National University,Asia,Public,L,CO,VH,21.2,6.6,13.9,0
+182,Emory University,Americas,Private not for Profit,L,FC,VH,92.8,70.0,49.6,1
+1309,"The University of Notre Dame, Australia",Oceania,Private not for Profit,M,FC,HI,6.3,53.7,21.9,0
+763,Al-Ahliyya Amman University,Asia,Private not for Profit,M,FO,VH,15.8,93.7,100.0,0
+55,New York University (NYU),Americas,Private not for Profit,XL,FC,VH,89.0,33.1,99.7,1
+840,University of Bari,Europe,Public,XL,FO,VH,7.4,6.9,4.0,0
+416,Czech Technical University In Prague,Europe,Public,L,SP,VH,89.4,28.7,56.0,1
+1467,Tongmyong University,Asia,,M,FO,HI,38.8,8.5,60.2,0
+642,"University of Chemistry and Technology, Prague",Europe,Public,S,FO,VH,99.5,33.7,85.4,0
+616,International Islamic University Malaysia (IIUM),Asia,Public,L,FC,HI,17.9,29.1,69.0,0
+145,Technische Universität Berlin,Europe,Public,L,CO,VH,70.6,64.2,84.5,1
+940,Università degli Studi Roma Tre,Europe,Public,XL,CO,VH,3.3,8.8,7.8,0
+327,Universidade Nova de Lisboa,Europe,Public,L,FC,VH,18.1,27.2,77.7,1
+679,American University in Dubai,Asia,Private for Profit,S,FO,HI,26.2,100.0,100.0,0
+972,Kumamoto University,Asia,Public,M,FC,VH,67.5,8.2,6.9,0
+900,University of Seoul,Asia,Public,M,CO,VH,49.2,6.4,12.0,0
+1462,State University Malang (Universitas Negeri Malang),Asia,Public,XL,FO,VH,9.9,23.4,1.6,0
+350,Technion - Israel Institute of Technology,Asia,Public,L,FO,VH,67.3,91.1,10.6,1
+758,Martin-Luther-Universität Halle-Wittenberg,Europe,Public,L,FC,VH,89.4,,17.0,0
+448,Universität Bayreuth,Europe,Public,M,CO,VH,64.6,63.6,39.7,1
+520,Kyungpook National University,Asia,Public,L,FC,VH,78.5,18.7,44.6,0
+1203,Yuan Ze University,Asia,Private for Profit,M,CO,VH,13.7,22.2,23.0,0
+906,Yarmouk University,Asia,Public,L,FC,HI,5.3,7.7,25.9,0
+1298,Taibah University,Asia,Public,XL,FC,HI,7.6,90.6,3.6,0
+293,"University of California, Irvine",Americas,Public,XL,FC,VH,26.8,39.5,64.2,1
+749,Shahid Beheshti University (SBU),Asia,Public,L,FO,VH,6.0,5.2,24.7,0
+753,University of Malta,Europe,Public,M,FC,VH,47.7,33.1,42.2,0
+386,Gwangju Institute of Science and Technology (GIST),Asia,Public,S,SP,VH,56.7,15.7,18.5,1
+930,Taif University,Asia,Public,XL,FC,VH,9.2,100.0,4.7,0
+1191,University of Wolverhampton,Europe,Public,L,CO,HI,14.0,40.8,78.9,0
+886,Universidad Anahuac,Americas,Private not for Profit,L,CO,MD,60.9,6.2,5.2,0
+1384,University of North Carolina at Greensboro,Americas,Public,L,FO,VH,12.2,10.3,4.3,0
+692,Eastern Mediterranean University,Asia,Public,L,FC,HI,5.6,77.1,100.0,0
+96,University of Technology Sydney,Oceania,Public,L,CO,VH,11.8,97.6,91.7,1
+216,Indian Institute of Technology Kharagpur (IITKGP),Asia,Public,L,CO,VH,10.6,,1.3,1
+2,Imperial College London,Europe,Public,L,FO,VH,99.3,100.0,100.0,1
+1113,Universidad Andrés Bello - UNAB,Americas,Private not for Profit,XL,FC,HI,11.1,9.6,3.8,0
+1372,Universiti Teknikal Malaysia Melaka (UTeM),Asia,Public,M,SP,VH,18.0,5.4,10.7,0
+536,King Khalid University,Asia,Public,L,FC,VH,64.6,100.0,35.9,0
+1336,Universidad Nacional Costa Rica,Americas,Public,L,CO,MD,17.5,13.1,4.1,0
+1341,Universidad Nacional del Centro de la Provincia de Buenos Aires,Americas,Public,L,FC,MD,81.4,,,0
+1094,Silesian University of Technology in Gliwice,Europe,Public,L,FO,VH,39.3,4.9,7.1,0
+461,Jordan University of Science & Technology,Asia,Public,L,CO,VH,23.1,66.7,87.9,1
+1272,Novosibirsk State Technical University,Europe,Public,L,FO,VH,27.7,2.0,56.7,0
+805,Universiti Tunku Abdul Rahman (UTAR),Asia,Private not for Profit,M,FC,HI,19.2,15.8,8.0,0
+1269,National Taiwan Ocean University,Asia,Public,M,FO,VH,16.0,10.2,13.9,0
+470,Laval University,Americas,Public,L,FC,VH,33.3,57.4,54.9,1
+1493,University of Hawaii at Hilo,Americas,,S,CO,HI,32.4,3.3,7.8,0
+531,The Education University of Hong Kong,Asia,,M,FO,VH,71.7,99.8,68.6,0
+783,University of Calcutta,Asia,Public,L,CO,VH,7.7,31.3,1.3,0
+207,Deakin University,Oceania,Public,XL,FC,VH,5.9,97.2,83.3,1
+729,Taras Shevchenko National University of Kyiv,Europe,Public,L,CO,VH,30.7,1.7,3.7,0
+927,Panjab University,Asia,Public,L,CO,VH,10.3,,3.2,0
+843,University of Greenwich,Europe,Public,L,CO,HI,5.2,94.0,99.6,0
+687,China University of Petroleum,Asia,Public,L,CO,VH,10.7,7.2,5.2,0
+1023,CEU University,Europe,,L,FO,VH,26.5,8.4,58.4,0
+1003,University of the Western Cape,Africa,Public,L,CO,VH,6.1,30.3,5.5,0
+1453,Rajshahi University of Engineering and Technology,Asia,,M,SP,HI,9.9,,,0
+879,Mendel University in Brno,Europe,Public,M,FO,VH,68.8,14.3,38.8,0
+150,University of Cape Town,Africa,Public,L,FC,VH,14.6,66.1,27.9,1
+127,Universiti Kebangsaan Malaysia (UKM),Asia,Public,L,FC,VH,78.7,50.1,94.7,1
+1461,Soongsil University,Asia,Private for Profit,L,FO,VH,12.0,5.7,24.0,0
+296,University of Notre Dame,Americas,Private not for Profit,L,CO,VH,70.8,28.9,32.7,1
+265,Charles University,Europe,Public,XL,FC,VH,37.0,33.5,61.7,1
+156,University of Geneva,Europe,Public,L,FC,VH,47.4,100.0,98.6,1
+404,Sabanci University,Asia,Private not for Profit,S,CO,VH,40.0,51.2,28.0,1
+670,Chang Gung University,Asia,Private not for Profit,M,FO,VH,74.6,7.9,9.5,0
+922,Lovely Professional University (LPU),Asia,Private not for Profit,XL,CO,VH,17.1,14.0,7.0,0
+1042,Hohai University,Asia,Public,XL,FO,VH,17.8,,,0
+1312,Tokushima University,Asia,Public,M,SP,VH,70.1,3.3,3.8,0
+346,Pontificia Universidad Católica del Perú (PUCP),Americas,Private not for Profit,L,FO,VH,50.0,4.2,1.9,1
+838,Universität Duisburg-Essen,Europe,Public,XL,FC,VH,21.9,33.0,52.7,0
+800,Beijing University of Technology,Asia,Public,L,CO,VH,41.9,5.3,2.7,0
+1166,University of Lagos,Africa,,XL,CO,HI,2.5,,,0
+1278,Pontificia Universidade Católica do Rio Grande do Sul,Americas,Private not for Profit,M,FC,HI,18.4,3.2,2.2,0
+369,Universiti Brunei Darussalam (UBD),Asia,Public,S,CO,VH,94.2,100.0,43.5,1
+613,University of Ulster,Europe,Public,L,CO,VH,11.4,100.0,90.1,0
+354,Quaid-i-azam University,Asia,Public,M,CO,VH,5.3,9.8,3.1,1
+40,University of British Columbia,Americas,Public,XL,FC,VH,34.7,98.5,79.8,1
+449,Iowa State University,Americas,Public,L,CO,VH,10.8,6.7,17.8,1
+923,Macao Polytechnic University,Asia,,M,FO,HI,34.3,100.0,96.4,0
+977,National Chung Cheng University,Asia,Public,M,CO,VH,16.6,7.9,6.3,0
+142,"University of North Carolina, Chapel Hill",Americas,Public,L,FC,VH,85.6,31.1,25.0,1
+1454,Rikkyo University,Asia,Private for Profit,L,FO,HI,9.9,32.8,10.6,0
+1189,University of Vermont,Americas,Public,L,FC,HI,39.8,8.8,3.8,0
+317,L.N. Gumilyov Eurasian National University,Asia,Public,L,FO,VH,94.7,84.6,25.8,1
+648,University of Manitoba,Americas,Public,L,FC,VH,31.8,,68.4,0
+702,Tokyo Medical and Dental University,Asia,Public,S,FO,VH,100.0,3.1,22.6,0
+91,The University of Osaka,Asia,Public,L,FC,VH,45.6,25.2,21.1,1
+1211,Bahauddin Zakariya University,Asia,Public,L,CO,VH,4.1,,1.0,0
+811,Bournemouth University,Europe,Public,L,CO,VH,8.1,84.7,47.7,0
+434,Leibniz Universität Hannover,Europe,Public,L,FO,VH,19.9,54.7,33.3,1
+866,China University of Geosciences,Asia,Public,L,FO,VH,60.4,1.8,4.5,0
+911,Colegio de México,Americas,Public,S,SP,VH,100.0,11.5,26.7,0
+1132,Universidad Técnica Federico Santa María,Americas,Private not for Profit,L,FO,VH,4.7,19.0,1.8,0
+539,Universität Leipzig,Europe,Public,L,FC,VH,85.3,,24.0,0
+865,Catania University,Europe,Public,L,FC,VH,8.7,15.4,8.2,0
+475,Pusan National University,Asia,Public,L,FC,VH,57.6,19.9,27.1,1
+829,Universidad de la Habana,Americas,Public,L,FO,HI,71.0,3.3,6.9,0
+85,Tokyo Institute of Technology,Asia,Public,M,FO,VH,87.6,29.8,43.4,1
+1082,Poznan University of Life Sciences,Europe,Public,M,FO,VH,92.2,1.7,11.1,0
+1040,Hallym University,Asia,Private not for Profit,M,FC,VH,95.6,4.3,3.5,0
+937,Universidad de Valladolid,Europe,,L,CO,VH,41.2,9.6,7.7,0
+1051,Kyrgyz Russian Slavic University,Asia,Public,M,CO,MD,99.9,,,0
+568,Indian Institute of Technology BHU Varanasi (IIT BHU Varanasi),Asia,Public,M,FO,VH,5.2,2.5,1.2,0
+1053,Leeds Beckett University,Europe,Public,L,CO,HI,5.2,46.9,45.2,0
+689,Baku State University,Asia,Public,L,CO,HI,94.0,13.4,7.0,0
+1106,Technical University of Kosice,Europe,Public,M,FO,VH,21.4,1.8,89.6,0
+674,East China University of Science and Technology,Asia,Public,XL,CO,VH,15.4,3.3,2.5,0
+770,Kaohsiung Medical University,Asia,Private for Profit,M,FO,VH,46.9,11.2,7.4,0
+958,Athens University of Economics And Business,Europe,Public,M,SP,HI,2.1,1.9,6.6,0
+513,Singapore Management University,Asia,Public,M,SP,VH,14.2,100.0,83.2,0
+1367,Université Mohammed V de Rabat,Africa,Public,XL,CO,VH,2.4,4.7,5.7,0
+385,Brunel University of London,Europe,Public,L,CO,VH,12.2,99.5,100.0,1
+44,The Hong Kong University of Science and Technology,Asia,Public,M,FO,VH,67.5,100.0,99.3,1
+999,University of Cyberjaya,Asia,,S,FO,HI,48.9,23.4,87.3,0
+632,National Chung Hsing University,Asia,Public,L,CO,VH,29.4,12.3,14.0,0
+1090,Sebelas Maret University,Asia,Public,XL,FC,HI,25.2,33.3,11.2,0
+1099,Southwest University,Asia,Public,XL,CO,VH,12.0,1.5,5.3,0
+850,University of Namur,Europe,,M,FO,VH,5.8,37.2,59.3,0
+209,"University of Maryland, College Park",Americas,Public,XL,FC,VH,44.2,28.0,24.9,1
+995,Universidad Torcuato Di Tella,Americas,Private not for Profit,S,SP,HI,18.5,41.2,13.6,0
+120,Rice University,Americas,Private not for Profit,M,CO,VH,74.9,91.3,96.6,1
+438,IE University,Europe,Private for Profit,M,FO,HI,47.6,94.0,100.0,1
+1280,Pratt Institute,Americas,Private not for Profit,M,FO,HI,47.5,7.5,95.6,0
+212,Universidad de Los Andes Colombia,Americas,Private not for Profit,L,FC,HI,17.6,28.7,3.3,1
+1316,UCAM Universidad Católica San Antonio de Murcia,Europe,,L,FO,VH,9.9,14.6,43.8,0
+279,Radboud University Nijmegen,Europe,Public,L,FC,VH,34.8,83.5,30.1,1
+1248,Ivan Franko National University of Lviv,Europe,Public,L,CO,HI,32.8,1.3,1.6,0
+1471,Universidad de Cuenca,Americas,Public,L,FC,MD,6.1,6.8,3.2,0
+525,University of Huddersfield,Europe,Public,L,CO,VH,9.1,79.7,91.6,0
+1134,Universidade Federal do Paraná (UFPR),Americas,Public,XL,FC,VH,25.7,3.9,11.2,0
+403,University of Limerick,Europe,Public,L,FC,HI,23.6,93.2,48.4,1
+414,University of Southern Queensland,Oceania,Public,M,CO,VH,7.9,78.5,48.7,1
+610,Nottingham Trent University,Europe,Public,XL,CO,VH,15.5,67.1,90.4,0
+1357,Universitas Pendidikan Indonesia,Asia,Public,XL,CO,HI,16.2,17.6,2.5,0
+974,Lodz University,Europe,Public,L,CO,VH,47.9,5.7,19.0,0
+428,Aix-Marseille University,Europe,Public,XL,FC,VH,11.0,22.8,29.0,1
+92,The University of Sheffield,Europe,Public,L,FC,VH,50.3,81.6,98.0,1
+1504,Youngsan University,Asia,Private for Profit,M,SP,MD,25.6,3.5,25.3,0
+1232,Feng Chia University,Asia,Private for Profit,L,FO,VH,6.4,5.6,6.8,0
+512,Ateneo de Manila University,Asia,Private not for Profit,L,FC,MD,33.1,3.6,4.3,0
+997,Università della Calabria,Europe,Public,M,CO,VH,10.6,9.2,7.9,0
+223,Tel Aviv University,Asia,Public,L,FC,VH,6.1,48.9,15.3,1
+1177,University of Parma,Europe,Public,XL,FC,HI,4.5,5.2,16.8,0
+834,Universidade Federal de São Paulo (UNIFESP),Americas,Public,L,FC,VH,97.9,6.1,2.2,0
+920,King Mongkut's University of Technology Thonburi,Asia,Public,L,CO,VH,17.9,11.7,7.1,0
+1114,Universidad Argentina de la Empresa -UADE,Americas,Private not for Profit,L,FO,MD,98.1,2.7,9.9,0
+768,"Jamia Millia Islamia, New Delhi",Asia,Public,M,CO,VH,40.1,4.2,10.7,0
+340,Shandong University,Asia,Public,XL,FC,VH,21.8,11.2,5.7,1
+524,Ural Federal University,Europe,Public,XL,CO,VH,98.2,8.7,49.3,0
+1484,Universidad Tecnológica Centroamericana (UNITEC) - Honduras,Americas,Private not for Profit,M,FO,HI,29.9,6.0,3.3,0
+544,Universiti Teknologi MARA - UiTM,Asia,Public,XL,FC,VH,26.3,2.5,3.4,0
+124,Indian Institute of Technology Delhi (IITD),Asia,Public,M,FO,VH,21.9,3.2,1.9,1
+1184,University of Texas at San Antonio,Americas,Public,L,FC,HI,5.8,14.1,4.6,0
+1400,University of Texas El Paso,Americas,Public,L,CO,VH,7.6,13.9,10.1,0
+1480,Universidad Metropolitana,Americas,Private not for Profit,M,CO,LO,6.4,3.9,3.3,0
+405,University of Florence,Europe,Public,XL,FC,VH,7.0,11.2,20.8,1
+476,Università della Svizzera Italiana,Europe,Public,S,FO,VH,70.3,100.0,100.0,1
+565,American University of the Middle East,Asia,Private for Profit,M,SP,HI,28.9,100.0,36.9,0
+272,American University of Sharjah (AUS),Asia,Private not for Profit,M,CO,VH,24.6,100.0,100.0,1
+499,Central Queensland University Australia (CQUniversity),Oceania,Public,S,CO,VH,42.2,97.6,99.9,1
+387,Flinders University,Oceania,Public,L,FC,VH,11.3,97.9,97.3,1
+909,Baku Engineering University,Asia,Public,M,FO,MD,37.1,21.3,8.7,0
+1225,Chitkara University,Asia,Private not for Profit,L,CO,VH,18.2,13.1,5.4,0
+1067,Narxoz University,Asia,Private not for Profit,M,FO,MD,26.1,31.0,20.7,0
+430,Masaryk University,Europe,Public,XL,CO,VH,13.1,34.5,76.8,1
+302,Stellenbosch University,Africa,Public,L,FC,VH,5.0,25.4,14.5,1
+231,University of Lisbon,Europe,Public,XL,FC,VH,15.5,14.3,58.6,1
+1097,Southern Federal University,Europe,Public,L,CO,VH,65.4,4.9,42.3,0
+104,Utrecht University,Europe,Public,XL,FC,VH,39.5,63.4,30.5,1
+342,University of Oulu,Europe,Public,M,FC,VH,29.5,80.9,19.7,1
+994,Universidad Nacional Mayor de San Marcos,Americas,Public,XL,FC,HI,11.0,,,0
+667,University of Mumbai,Asia,Public,M,FC,VH,4.7,3.0,4.3,0
+736,National Institute of Technology Tiruchirappalli,Asia,Public,M,FO,VH,10.6,,3.5,0
+801,Chiba University,Asia,Public,L,FC,VH,65.8,11.3,7.9,0
+741,Universidad Central de Venezuela - UCV,Americas,Public,L,FC,MD,41.5,3.3,2.0,0
+1019,Beijing University of Posts and Telecommunications,Asia,Public,L,FO,VH,19.8,6.4,2.8,0
+519,University of Stirling,Europe,Public,M,CO,VH,14.6,79.5,81.3,0
+1035,Gebze Technical University,Asia,Public,M,CO,VH,9.1,19.7,10.6,0
+983,Sohar University,Asia,Private not for Profit,S,FO,VH,3.8,100.0,4.6,0
+942,University at Albany SUNY,Americas,Public,L,CO,VH,7.3,5.3,10.1,0
+1129,Universidad Pontificia Bolivariana,Americas,Private not for Profit,M,FO,VH,83.9,4.8,4.5,0
+726,National University of Uzbekistan,Asia,Public,L,CO,HI,7.5,92.9,6.8,0
+1494,University of Missouri Saint Louis,Americas,Public,M,CO,HI,19.5,5.8,7.9,0
+1394,University of San Diego,Americas,Private not for Profit,M,CO,HI,27.8,4.9,10.5,0
+1170,"University of Missouri, Kansas City",Americas,Public,M,CO,VH,21.9,6.9,31.3,0
+1230,Doshisha University,Asia,Private not for Profit,L,CO,HI,7.0,22.1,6.3,0
+694,Universität Regensburg,Europe,Public,L,FO,VH,77.3,39.4,17.7,0
+144,Texas A&M University,Americas,Public,XL,FC,VH,6.2,28.0,20.7,1
+529,University of Hull,Europe,Public,L,FC,HI,15.9,68.3,95.6,0
+775,University of Nizwa,Asia,Private not for Profit,S,CO,VH,47.5,100.0,26.2,0
+1140,Universitat de Lleida,Europe,,M,CO,VH,27.5,7.3,16.2,0
+540,University of Ljubljana,Europe,Public,XL,FC,VH,45.6,7.1,18.1,0
+1205,"Ahmadu Bello University, Zaria",Africa,,XL,CO,HI,10.0,2.0,1.4,0
+1135,"Universita' degli Studi di Napoli ""Parthenope""",Europe,Public,M,FO,VH,4.2,2.0,4.2,0
+115,"University of California, Davis",Americas,Public,XL,FC,VH,28.3,86.5,61.9,1
+252,University of Strathclyde,Europe,Public,L,CO,VH,17.8,99.2,89.0,1
+74,The University of Warwick,Europe,Public,L,FC,VH,48.3,99.5,99.2,1
+1050,Kookmin University,Asia,Private for Profit,L,CO,HI,51.0,7.0,63.5,0
+537,Lebanese American University,Asia,Private not for Profit,M,FC,HI,31.3,80.6,26.6,0
+522,Universidad Austral - Argentina,Americas,Private not for Profit,M,FC,MD,89.6,2.9,16.7,0
+809,Alfaisal University,Asia,Private not for Profit,S,FO,VH,31.7,100.0,96.7,0
+239,Maastricht University,Europe,Public,L,FO,VH,18.6,99.9,100.0,1
+971,Khazar University,Asia,Private not for Profit,M,CO,MD,60.6,82.3,37.1,0
+297,Vrije Universiteit Brussel (VUB),Europe,Public,L,FC,VH,75.6,96.8,72.1,1
+158,University of Basel,Europe,Public,M,FC,VH,70.2,100.0,91.4,1
+288,Universitas Airlangga,Asia,Public,XL,FC,VH,69.6,77.3,10.8,1
+1297,Suranaree University of Technology,Asia,Public,L,FC,HI,5.9,7.4,2.4,0
+1210,Ataturk University,Asia,Public,XL,CO,VH,4.1,4.7,20.7,0
+1063,Mississippi State University,Americas,Public,L,CO,VH,9.1,19.7,5.5,0
+128,Sapienza University of Rome,Europe,Public,XL,FC,VH,7.8,4.0,14.8,1
+65,The University of Auckland,Oceania,Public,XL,FC,VH,17.6,100.0,95.5,1
+1240,Institut Teknologi Nasional Bandung (ITENAS Bandung),Asia,Private not for Profit,M,SP,LO,13.2,3.1,1.3,0
+442,Macau University of Science and Technology,Asia,Private not for Profit,L,CO,VH,4.8,100.0,100.0,1
+1012,An-Najah National University,Asia,Public,L,FC,MD,11.5,49.8,47.4,0
+825,Qassim University,Asia,Public,L,FC,VH,47.0,100.0,25.1,0
+1389,University of Peradeniya,Asia,Public,L,CO,HI,14.3,,1.6,0
+862,Beijing Jiaotong University,Asia,Public,L,FO,VH,31.4,4.9,17.0,0
+10,California Institute of Technology (Caltech),Americas,Private not for Profit,S,FO,VH,100.0,100.0,90.7,1
+472,Universidad de Sevilla,Europe,Public,XL,FC,VH,23.4,5.1,25.8,1
+1102,Sumy State University,Europe,Public,M,FC,HI,47.1,3.9,29.1,0
+28,PSL University,Europe,Public,L,CO,VH,98.6,69.6,75.5,1
+1396,University of Sarajevo,Europe,Public,L,CO,HI,6.5,,5.2,0
+630,Kazakh National Pedagogical University Abai,Asia,Public,L,CO,MD,71.2,55.4,13.5,0
+1180,University of Salento,Europe,Public,L,CO,VH,8.2,1.5,4.5,0
+169,University of York,Europe,Public,L,FC,VH,55.8,92.4,75.4,1
+1441,M. Kozybayev North Kazakhstan University,Asia,Public,M,CO,MD,33.4,5.4,8.0,0
+1056,London Metropolitan University,Europe,Public,L,CO,MD,4.7,68.5,97.6,0
+860,Azerbaijan State Oil and Industry University,Asia,Public,L,FO,HI,73.3,46.8,9.7,0
+164,Nagoya University,Asia,Public,L,FC,VH,84.2,22.6,27.6,1
+1164,University of Isfahan,Asia,Public,L,CO,VH,4.9,,2.5,0
+791,Universidad de Alicante,Europe,Public,L,FC,VH,36.0,11.5,21.4,0
+1157,University of Denver,Americas,Private not for Profit,M,CO,VH,43.6,6.0,14.2,0
+1321,Universidad Autónoma del Estado de México,Americas,Public,XL,FC,MD,7.5,3.9,1.7,0
+807,AGH University of Krakow,Europe,Public,L,CO,VH,54.7,4.4,7.3,0
+195,Vrije Universiteit Amsterdam,Europe,Public,L,FC,VH,23.3,82.9,57.6,1
+3,Stanford University,Americas,Private not for Profit,L,FC,VH,100.0,94.2,73.5,1
+1046,Kalinga Institute of Industrial Technology,Asia,Private not for Profit,L,CO,VH,52.1,18.0,25.0,0
+479,Chung-Ang University,Asia,Private not for Profit,L,FC,VH,79.2,19.7,62.4,1
+604,University of Texas at Dallas,Americas,Public,L,FC,VH,5.5,14.4,61.1,0
+1315,Tunghai University,Asia,Private for Profit,L,FO,VH,6.7,13.5,17.8,0
+602,Tulane University,Americas,Private not for Profit,L,FC,HI,87.2,20.3,18.5,0
+366,University of Turku,Europe,Public,L,FC,VH,63.2,46.2,8.9,1
+300,Université Paris Cité,Europe,Public,XL,FO,VH,11.0,24.8,61.0,1
+778,Philipps-Universität Marburg,Europe,Public,L,FC,VH,7.4,19.0,31.9,0
+423,Murdoch University,Oceania,Public,M,CO,VH,7.4,89.6,82.5,1
+260,Universidad Nacional de Colombia,Americas,Public,XL,FC,HI,6.7,8.1,2.2,1
+1149,Universiti Malaysia Sarawak (UNIMAS),Asia,Public,M,FC,HI,17.3,43.9,19.7,0
+885,Tokyo University of Agriculture and Technology,Asia,Public,M,FO,VH,18.7,11.6,11.3,0
+1070,National University Lviv Polytechnic,Europe,Public,L,CO,VH,38.6,3.7,2.1,0
+1358,Universitas Trisakti,Asia,Private not for Profit,M,FO,VH,29.0,3.0,1.3,0
+837,Università  degli Studi di Palermo,Europe,Public,L,CO,VH,7.1,3.3,3.8,0
+773,University of Belgrade,Europe,Public,XL,FC,VH,6.5,3.6,7.4,0
+236,University of Rochester,Americas,Private not for Profit,M,FC,VH,98.2,80.5,96.2,1
+163,King Abdul Aziz University (KAU),Asia,Public,XL,FC,VH,41.4,83.1,9.2,1
+1239,Industrial University of Ho Chi Minh City,Asia,Public,L,CO,HI,5.2,1.5,2.8,0
+1329,Universidad de Monterrey,Americas,Private not for Profit,M,FO,HI,8.7,18.2,6.8,0
+931,Tallinn University,Europe,Public,M,FO,VH,12.6,63.9,30.6,0
+904,Worcester Polytechnic Institute,Americas,Private not for Profit,M,FO,VH,20.5,36.9,36.6,0
+419,University of Aveiro,Europe,Public,L,CO,VH,13.1,5.2,24.8,1
+247,Beijing Normal University,Asia,Public,L,CO,VH,30.3,9.0,32.9,1
+1411,American International University-Bangladesh (AIUB),Asia,Private not for Profit,M,FO,VH,9.0,5.4,17.7,0
+1497,University of Sri Jayewardenepura,Asia,Public,L,CO,HI,5.7,,1.3,0
+1346,Universidade do Estado do Rio de Janeiro (UERJ),Americas,Public,XL,FC,HI,22.6,4.8,1.4,0
+1375,University of Derby,Europe,Public,L,CO,HI,12.0,40.8,49.9,0
+24,Johns Hopkins University,Americas,Private not for Profit,L,FC,VH,100.0,70.8,94.2,1
+118,University College Dublin,Europe,Public,L,FC,VH,19.7,99.5,89.6,1
+488,Technische Universität Bergakademie Freiberg,Europe,,S,FO,VH,10.1,59.7,100.0,1
+189,UNIVERSITAS INDONESIA,Asia,Public,XL,FC,VH,68.8,86.6,10.9,1
+427,Graz University of Technology,Europe,Public,M,FO,VH,99.2,86.6,71.3,1
+219,Indian Institute of Science (IISc) Bangalore,Asia,Public,M,SP,VH,39.1,5.6,2.1,1
+543,Ain Shams University,Africa,Public,XL,FC,VH,17.1,29.5,13.7,0
+108,Universidade de São Paulo (USP),Americas,Public,XL,FC,VH,30.5,9.2,3.5,1
+1265,Nagoya Institute of Technology (NIT),Asia,Public,M,FO,VH,11.5,6.9,7.8,0
+254,Technische Universität Darmstadt,Europe,Public,L,CO,VH,9.8,67.8,92.8,1
+72,Lund University,Europe,Public,L,FC,VH,68.1,98.8,82.0,1
+588,American University,Americas,Private not for Profit,M,CO,VH,45.1,16.7,27.0,0
+1215,Beni-Suef University,Africa,Public,XL,FC,HI,2.1,13.7,1.6,0
+633,Universidade de Santiago de Compostela,Europe,Public,L,CO,VH,17.5,3.0,11.8,0
+779,Rovira i Virgili University,Europe,Public,L,FC,VH,19.9,9.8,28.4,0
+1313,Tomas Bata University in Zlin,Europe,Public,M,CO,HI,13.6,33.1,30.7,0
+857,Altai State University,Europe,Public,M,CO,VH,90.7,8.6,71.3,0
+73,Sorbonne University (merged from Paris IV & UPMC),Europe,Public,XL,FC,VH,56.4,35.5,66.8,1
+1077,Obuda University,Europe,Public,M,FO,VH,3.9,34.7,13.3,0
+688,Cyprus University of Technology,Asia,Public,S,CO,VH,49.3,68.1,42.0,0
+1068,National Research Saratov State University,Europe,Public,M,FO,VH,97.6,4.0,26.9,0
+1481,Universidad Nacional Agraria la Molina,Americas,Public,M,FO,VH,16.7,1.5,2.8,0
+955,Al Nahrain University,Asia,Public,M,FO,VH,98.9,2.5,1.0,0
+188,University Complutense Madrid,Europe,Public,XL,FC,VH,41.6,18.2,32.9,1
+1399,University of Split,Europe,Public,L,FC,HI,8.7,1.6,3.3,0
+1039,Glasgow Caledonian University,Europe,Public,L,FO,VH,6.3,45.5,77.3,0
+1391,University of Primorska,Europe,Public,M,CO,HI,12.3,31.6,38.9,0
+810,Azerbaijan State University of Economics,Asia,Public,L,FO,HI,36.7,32.0,10.7,0
+1398,University of South Alabama (USA),Americas,Public,L,CO,HI,23.1,,2.7,0
+802,Lanzhou University,Asia,Public,XL,CO,VH,43.4,3.0,2.2,0
+381,The American University in Cairo,Africa,Private not for Profit,M,CO,VH,39.0,98.0,7.1,1
+1142,Université de Bretagne Occidentale (UBO),Europe,,L,FO,VH,32.1,,,0
+373,Pontificia Universidad Javeriana,Americas,Private not for Profit,L,FC,HI,37.8,3.8,3.7,1
+1319,Universidad Autónoma de Nuevo León (UANL),Americas,Public,XL,FC,HI,3.1,4.0,1.3,0
+1402,University of Wisconsin Milwaukee,Americas,Public,L,CO,VH,13.8,11.8,12.4,0
+114,Aalto University,Europe,Public,L,FO,VH,35.1,97.2,60.0,1
+963,Escuela Superior Politécnica del Litoral - ESPOL,Americas,Public,M,CO,VH,32.6,20.1,2.4,0
+285,Georgetown University,Americas,Private not for Profit,L,FC,VH,74.2,22.8,51.1,1
+538,Prince Sultan University,Asia,Private not for Profit,S,SP,VH,19.4,100.0,23.2,0
+1032,Financial University under the Government of the Russian Federation,Europe,Public,L,FO,VH,44.1,6.7,39.2,0
+263,University of Navarra,Europe,Private not for Profit,L,FC,HI,50.6,26.8,84.0,1
+1115,Universidad Austral de Chile,Americas,Private not for Profit,L,FC,HI,4.1,20.5,2.5,0
+483,Duy Tan University,Asia,Private for Profit,L,CO,VH,6.3,43.4,2.1,1
+577,Chandigarh University,Asia,Private not for Profit,XL,FC,HI,34.2,44.5,25.1,0
+952,Virginia Commonwealth University,Americas,Public,L,FC,VH,42.8,12.6,6.0,0
+326,University of Leicester,Europe,Public,L,FC,VH,40.1,90.6,90.6,1
+1339,Universidad Nacional de Ingeniería Peru,Americas,,L,FO,HI,10.2,1.3,1.4,0
+1332,Universidad del Norte,Americas,Private not for Profit,M,FC,HI,12.7,8.5,1.7,0
+1474,Universidad de Piura,Americas,Private not for Profit,M,FO,HI,8.0,7.6,1.2,0
+454,Stony Brook University,Americas,Public,L,FC,VH,43.6,47.4,53.4,1
+917,Kansas State University,Americas,Public,L,CO,VH,16.2,26.2,9.5,0
+411,Dublin City University,Europe,Public,L,FC,HI,27.8,80.8,43.2,1
+1300,Tanta University,Africa,Public,XL,FC,HI,7.2,1.5,3.0,0
+1478,Universidad La Salle (ULSA),Americas,Private for Profit,M,FO,MD,28.9,3.4,2.4,0
+1501,Voronezh State University,Europe,Public,L,CO,HI,31.3,3.7,34.5,0
+1437,Khulna University,Asia,,M,CO,HI,14.3,,,0
+764,Babes-Bolyai University,Europe,Public,XL,CO,VH,8.7,18.9,7.1,0
+468,University of Kansas,Americas,Public,L,FC,VH,91.9,79.0,12.6,1
+1350,Universidade Federal de Viçosa,Americas,Public,L,FC,HI,17.4,3.4,3.7,0
+908,American University of Central Asia,Asia,Private not for Profit,S,FO,MD,60.9,58.0,96.4,0
+1154,University of Balamand,Asia,Private not for Profit,M,CO,HI,49.8,20.5,26.9,0
+504,China Agricultural University,Asia,Public,L,FC,VH,19.2,4.8,2.3,0
+1119,Universidad de León,Europe,,M,CO,VH,52.1,3.7,20.6,0
+867,Chungnam National University,Asia,Public,L,FC,VH,54.7,8.4,20.0,0
+1268,National Research University Moscow Power Engineering Institute (MPEI),Europe,Public,M,FO,VH,21.9,6.0,54.9,0
+1037,German University of Technology in Oman  (GUTECH),Asia,Private for Profit,S,FO,HI,5.7,100.0,5.9,0
+873,Imam Muhammad Ibn Saud Islamic University - IMSIU,Asia,Public,XL,FC,HI,27.1,91.9,18.5,0
+1409,Zarqa University,Asia,Private not for Profit,M,FC,HI,9.0,24.9,63.5,0
+511,INTI International University,Asia,Private for Profit,S,CO,VH,95.1,100.0,99.7,0
+1181,University of South Bohemia,Europe,Public,M,CO,VH,53.7,27.7,19.8,0
+1015,Assiut University,Africa,Public,XL,FC,HI,20.7,21.1,7.2,0
+294,Case Western Reserve University,Americas,Private not for Profit,M,FC,VH,88.6,47.6,76.7,1
+933,Universidad Católica Andrés Bello - UCAB,Americas,Private not for Profit,M,FO,MD,7.4,5.5,5.3,0
+299,University of Colorado Boulder,Americas,Public,XL,CO,VH,52.1,38.6,8.5,1
+1470,Universidad Católica de Temuco,Americas,Private not for Profit,M,CO,HI,2.7,49.7,1.4,0
+1075,Northwest University (China),Asia,Public,L,CO,VH,55.7,4.8,4.7,0
+1308,The University of Northampton,Europe,Public,L,CO,MD,6.4,51.5,93.4,0
+654,University of Brescia,Europe,Public,M,FO,VH,8.7,2.0,8.5,0
+615,City University of New York,Americas,Public,XL,FC,VH,14.3,8.4,8.3,0
+90,Purdue University,Americas,Public,XL,FC,VH,16.4,96.4,55.3,1
+605,Canadian University of Dubai,Asia,Private for Profit,S,FO,HI,40.3,100.0,100.0,0
+1025,Chungbuk National University,Asia,Public,M,FC,VH,47.9,10.7,21.5,0
+993,Universidad Externado de Colombia,Americas,Private not for Profit,L,FO,MD,48.9,10.7,2.1,0
+1152,University of Anbar,Asia,Public,L,CO,HI,27.2,3.5,1.8,0
+94,Durham University,Europe,Public,L,FC,VH,37.3,99.2,94.5,1
+1429,Hue University,Asia,Public,XL,CO,HI,3.7,1.5,2.0,0
+97,The University of Nottingham,Europe,Public,XL,FC,VH,44.5,92.7,78.5,1
+1378,University of Khartoum,Africa,Public,L,FO,HI,8.2,,2.1,0
+162,Ghent University,Europe,Public,XL,FC,VH,84.5,83.4,33.8,1
+728,Prince Sattam Bin Abdulaziz University,Asia,Public,L,FO,VH,69.3,99.6,15.5,0
+1076,Notre Dame University-Louaize (NDU),Asia,Private not for Profit,S,CO,HI,25.1,87.9,27.1,0
+1104,Széchenyi István University,Europe,Private for Profit,M,FO,VH,28.9,4.9,13.4,0
+1430,"Independent University,Bangladesh",Asia,Private not for Profit,M,CO,HI,2.5,1.3,1.1,0
+651,MGIMO University,Europe,Public,M,CO,HI,100.0,15.4,57.2,0
+1130,Universidad Rey Juan Carlos,Europe,Public,XL,CO,VH,11.5,24.2,20.3,0
+707,Kasetsart University,Asia,Public,XL,CO,VH,10.3,7.7,1.7,0
+437,Universitat Ramon Llull,Europe,Private not for Profit,L,CO,HI,10.3,80.4,68.0,1
+661,Bar-Ilan University,Asia,Public,L,FC,VH,10.4,54.4,4.9,0
+912,Future University in Egypt,Africa,Private not for Profit,M,FO,VH,47.2,18.2,33.0,0
+210,University of Minnesota (System),Americas,Public,XL,FC,VH,37.2,6.5,15.4,1
+1055,Lodz University of Technology,Europe,Public,M,SP,VH,59.0,4.1,8.3,0
+1412,Anadolu University,Asia,Public,L,SP,VH,17.5,2.2,5.3,0
+457,University of Essex,Europe,Public,L,CO,VH,17.1,99.9,99.2,1
+842,University of Engineering & Technology (UET) Lahore,Asia,Public,L,SP,VH,20.4,,2.3,0
+213,University of Florida,Americas,Public,XL,FC,VH,75.1,31.4,18.1,1
+1446,Naresuan University,Asia,Public,L,FC,MD,9.3,6.9,1.8,0
+1362,Université de Poitiers,Europe,Public,L,CO,VH,7.6,,38.9,0
+1086,Ritsumeikan Asia Pacific University,Asia,Private for Profit,M,SP,LO,4.3,99.5,99.7,0
+628,Yeshiva University,Americas,Private not for Profit,M,FC,MD,62.7,36.4,27.7,0
+82,Adelaide University,Oceania,,XL,CO,VH,30.5,100.0,97.5,1
+612,Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA),Asia,Public,M,FO,VH,23.6,32.1,19.0,0
+928,Princess Sumaya University for Technology,Asia,Private not for Profit,S,SP,HI,14.3,60.1,57.2,0
+1071,Nicolaus Copernicus University,Europe,Public,L,FC,HI,65.8,4.6,11.3,0
+135,Universiti Sains Malaysia (USM),Asia,Public,L,FC,VH,47.6,34.7,99.3,1
+1190,University of Warmia and Mazury in Olsztyn,Europe,Public,L,FC,HI,42.0,2.6,4.6,0
+16,Cornell University,Americas,Private not for Profit,L,FC,VH,64.3,57.6,75.7,1
+849,University of Modena and Reggio Emilia,Europe,Public,L,FC,VH,4.6,4.8,7.5,0
+87,University of Southampton,Europe,Public,L,FC,VH,40.1,96.8,98.6,1
+390,National and Kapodistrian University of Athens,Europe,Public,XL,FC,VH,3.0,12.7,27.2,1
+1276,Palestine Technical University - Kadoorie,Asia,Public,S,CO,HI,29.8,66.5,16.4,0
+1258,Kyoto Institute of Technology,Asia,Public,S,FO,VH,18.6,15.3,13.6,0
+89,Freie Universität Berlin,Europe,Public,L,FC,VH,8.3,73.8,56.0,1
+1260,Kyrgyz State Technical University named after I. Razzakov,Asia,Public,L,SP,LO,13.9,10.7,11.5,0
+344,University of Pisa,Europe,Public,L,FC,VH,12.8,5.0,10.5,1
+49,Zhejiang University,Asia,Public,XL,FC,VH,53.0,94.1,23.5,1
+1421,Chittagong University of Engineering and Technology,Asia,Public,M,SP,HI,10.0,1.6,,0
+31,King's College London (KCL),Europe,Public,XL,FC,VH,74.4,99.5,99.0,1
+625,Diponegoro University,Asia,Public,XL,FC,HI,30.5,46.4,7.1,0
+310,"City St George’s, University of London",Europe,,L,FO,VH,9.2,92.4,97.9,1
+815,German Jordanian University,Asia,Public,S,FO,VH,34.6,85.3,23.9,0
+1415,Atma Jaya Catholic University Indonesia,Asia,Private for Profit,M,FO,HI,10.5,9.8,1.7,0
+59,Universiti Malaya (UM),Asia,Public,L,FC,VH,74.2,69.2,86.8,1
+1425,Escuela Politécnica Nacional,Americas,Public,M,FO,VH,18.8,6.3,3.0,0
+585,Charles Darwin University,Oceania,Public,M,FO,VH,6.4,41.8,88.9,0
+1259,Kyrgyz National University,Asia,Public,L,CO,LO,28.4,2.6,14.0,0
+51,University of Bristol,Europe,Public,XL,FC,VH,36.7,90.7,95.7,1
+1201,Yokohama City University,Asia,Public,M,FO,VH,96.7,7.2,6.0,0
+523,University of Electronic Science and Technology of China,Asia,Public,XL,FO,VH,11.3,4.2,4.4,0
+1121,Universidad de San Andrés,Americas,Private not for Profit,S,SP,HI,53.0,10.2,7.6,0
+133,University of Science and Technology of China,Asia,Public,L,CO,VH,98.1,14.9,7.8,1
+1314,Transilvania University of Brasov,Europe,Public,L,FC,HI,8.4,5.0,3.8,0
+431,Universitat de Valencia,Europe,Public,XL,FC,VH,17.3,2.7,39.4,1
+582,Universidad Pontificia Comillas,Europe,Private not for Profit,M,FO,VH,48.4,25.4,11.2,0
+498,University of Jyväskylä,Europe,Public,M,FO,VH,87.8,51.1,6.3,1
+441,James Cook University,Oceania,Public,M,FC,VH,27.5,46.9,37.6,1
+379,University of Liege,Europe,Public,L,FC,VH,10.8,62.1,65.6,1
+516,Lebanese University,Asia,Public,XL,FC,HI,16.0,52.2,47.2,0
+828,Tokyo University of Science (RIKADAI),Asia,Private not for Profit,L,FO,VH,12.1,15.1,7.2,0
+894,Universiti Pendidikan Sultan Idris (UPSI),Asia,Public,M,FO,VH,39.1,45.3,63.4,0
+598,Asia Pacific University of Technology and Innovation (APU) Malaysia,Asia,Private for Profit,S,SP,HI,74.2,95.6,100.0,0
+1084,Rhodes University,Africa,Public,M,FO,VH,17.2,,46.4,0
+1438,Khulna University of Engineering and Technology,Asia,Public,M,SP,HI,10.5,1.4,,0
+1179,University of Rhode Island,Americas,Public,L,CO,VH,8.7,7.8,4.3,0
+1334,Universidad Industrial de Santander,Americas,Public,L,FC,MD,5.8,6.0,2.0,0
+817,Instituto Tecnológico Autonomo de México (ITAM),Americas,Private not for Profit,S,SP,MD,22.3,51.1,2.2,0
+68,University of Texas at Austin,Americas,Public,XL,FC,VH,10.7,9.1,19.1,1
+314,University of Miami,Americas,Private not for Profit,L,FC,VH,57.9,87.8,25.1,1
+1058,Makerere University,Africa,Public,XL,FC,HI,5.8,8.3,13.6,0
+599,Hasselt University,Europe,Public,M,FC,HI,85.7,78.5,41.1,0
+1229,Dokuz Eylül Üniversitesi,Asia,Public,XL,FC,HI,5.9,2.7,19.4,0
+211,University of Calgary,Americas,Public,XL,FC,VH,24.4,87.4,76.9,1
+918,Karaganda Buketov University,Asia,Private not for Profit,L,CO,MD,60.0,14.5,18.5,0
+717,"Goldsmiths, University of London",Europe,Public,M,FO,VH,20.8,89.1,97.8,0
+1444,Mapua University,Asia,Private for Profit,M,FO,VH,4.3,3.0,1.9,0
+409,Università  Cattolica del Sacro Cuore,Europe,Private not for Profit,L,FO,VH,28.7,17.1,13.9,1
+816,IIT Gandhinagar,Asia,Public,S,FO,VH,51.9,2.7,2.2,0
+1221,Can Tho University,Asia,Public,XL,CO,HI,3.1,65.2,1.0,0
+204,University of Twente,Europe,Public,M,CO,VH,56.0,100.0,95.2,1
+84,Universidad de Buenos Aires,Americas,Public,XL,FC,VH,82.0,72.3,78.5,1
+561,Jawaharlal Nehru University,Asia,Public,M,CO,VH,16.7,,1.7,0
+1187,University of Toledo,Americas,Public,L,FC,HI,13.8,7.7,21.6,0
+934,Universidad Católica del Uruguay (UCU),Americas,Private not for Profit,S,CO,MD,77.3,13.2,6.0,0
+230,Massey University,Oceania,Public,M,CO,VH,57.3,99.4,98.9,1
+746,Brandeis University,Americas,Private not for Profit,M,CO,VH,50.2,33.0,83.4,0
+609,University of Tennessee,Americas,Public,XL,FC,VH,12.9,6.9,4.6,0
+420,National Taipei University of Technology,Asia,Public,M,FO,VH,28.6,25.6,31.7,1
+947,University of North Texas,Americas,Public,XL,FC,HI,3.2,6.3,51.5,0
+569,Renmin (People’s) University of China,Asia,Public,L,FO,VH,21.3,8.9,9.1,0
+170,Hokkaido University,Asia,Public,L,FC,VH,76.8,28.2,20.5,1
+1172,University of Nairobi,Africa,Public,XL,FC,HI,25.7,,,0
+363,University of Pretoria,Africa,Public,XL,FC,VH,6.2,57.2,17.4,1
+336,Tufts University,Americas,Private not for Profit,L,FC,VH,65.6,42.9,48.3,1
+355,Nankai University,Asia,Public,XL,FC,VH,28.8,17.8,5.0,1
+1502,Walailak University,Asia,Public,L,FC,MD,12.5,13.9,3.0,0
+881,Nantes University,Europe,Public,XL,CO,VH,12.3,20.2,25.0,0
+1351,Universidade Federal do Ceará (UFC),Americas,Public,XL,FC,HI,7.9,1.5,1.7,0
+509,China Medical University,Asia,Private not for Profit,M,SP,VH,27.4,5.8,12.7,0
+1049,Kent State University,Americas,Public,L,FO,VH,9.0,25.4,15.7,0
+640,Southern Cross University,Oceania,Public,M,CO,VH,3.9,92.7,62.6,0
+1011,Amrita Vishwa Vidyapeetham,Asia,Private not for Profit,L,FC,VH,39.2,36.7,2.5,0
+639,"Lincoln University College, Malaysia",Asia,Private for Profit,S,CO,HI,95.6,100.0,100.0,0
+1368,Université Paris-Nanterre,Europe,Public,XL,FO,VH,4.7,11.7,2.1,0
+159,Hanyang University,Asia,Private not for Profit,L,FC,VH,81.7,23.7,70.1,1
+173,Arizona State University,Americas,Public,XL,CO,VH,9.5,72.5,53.2,1
+234,Universidade Estadual de Campinas (Unicamp),Americas,Public,XL,FC,VH,22.1,15.1,4.0,1
+790,Technological University of Dublin,Europe,Public,L,CO,HI,18.0,49.8,63.7,0
+406,Institut National des Sciences Appliquées de Lyon (INSA),Europe,Public,M,FO,VH,42.7,34.4,77.5,1
+1057,Loyola University Chicago,Americas,Private not for Profit,L,FC,HI,30.5,9.3,5.0,0
+723,Université de Rennes 1,Europe,Public,L,FO,VH,15.6,15.9,19.0,0
+1065,Mutah University,Asia,Public,L,FC,MD,12.1,15.7,32.9,0
+398,University of Kent,Europe,Public,L,CO,VH,16.2,96.4,49.2,1
+496,Iran University of Science and Technology,Asia,Public,M,FO,VH,4.3,7.0,8.6,1
+1450,Perm State University,Europe,Public,M,CO,VH,35.4,1.8,20.4,0
+1228,Delta University for Science & Technology,Africa,Private not for Profit,L,FO,HI,5.7,8.5,2.4,0
+1087,Saint-Petersburg Mining University,Europe,Public,M,FO,VH,79.1,28.1,44.4,0
+402,University of Granada,Europe,Public,XL,FC,VH,11.2,9.9,31.7,1
+171,Kyushu University,Asia,Public,L,FC,VH,87.1,24.5,39.0,1
+1273,Odessa I.I.Mechnikov National University,Europe,Public,M,FO,HI,70.5,2.2,6.1,0
+1048,Kazakh-British Technical University,Asia,Public,M,FO,HI,17.8,15.3,4.1,0
+53,The University of Amsterdam,Europe,Public,XL,FC,VH,27.5,98.8,95.8,1
+253,Taylor's University (Malaysia),Asia,Private for Profit,M,CO,VH,69.7,73.0,100.0,1
+858,Auburn University,Americas,Public,XL,CO,VH,10.7,58.1,10.1,0
+33,The Chinese University of Hong Kong,Asia,Public,L,FC,VH,75.9,100.0,93.3,1
+1386,University of Ostrava,Europe,Public,M,FC,HI,20.5,34.6,32.2,0
+673,Palacký University in Olomouc,Europe,Public,L,FO,VH,36.5,40.1,28.5,0
+1377,University of Kerbala,Asia,Public,L,FC,HI,35.3,2.1,1.9,0
+21,Yale University,Americas,Private not for Profit,L,FC,VH,100.0,86.7,72.7,1
+991,Universidad EAFIT,Americas,Private not for Profit,L,CO,HI,6.8,4.1,1.9,0
+1079,Pavol Josef Safarik University,Europe,Public,M,FC,HI,69.2,7.0,78.5,0
+256,Harbin Institute of Technology,Asia,Public,XL,FO,VH,42.0,12.9,9.2,1
+471,Tashkent Institute of Irrigation and Agricultural Mechanization Engineers - National Research University (TIIAME-NRU),Asia,Public,M,CO,VH,87.1,44.3,16.7,1
+1112,Tokyo Metropolitan University,Asia,Public,M,CO,VH,41.9,9.7,8.0,0
+218,Technische Universität Dresden,Europe,Public,L,FC,VH,74.9,40.4,42.0,1
+64,National Taiwan University (NTU),Asia,Public,L,FC,VH,38.8,25.3,59.2,1
+1137,"Universita degli Studi ""G. D'Annunzio"" Chieti-Pescara",Europe,Public,L,FO,VH,4.6,5.1,5.1,0
+1473,Universidad de Panama,Americas,Public,XL,FO,MD,4.3,4.1,4.6,0
+713,University of Zagreb,Europe,Public,XL,FC,VH,26.8,1.9,5.1,0
+460,"University of California, Santa Cruz",Americas,Public,L,CO,VH,10.0,71.4,10.0,1
+555,University of Delaware,Americas,Public,L,CO,VH,9.6,48.2,22.5,0
+1001,University of Lahore,Asia,Private not for Profit,L,CO,VH,14.3,8.0,6.0,0
+286,University of Macau,Asia,Public,L,CO,VH,11.7,100.0,100.0,1
+718,ISCTE - Instituto Universitario de Lisboa,Europe,Public,L,FO,VH,3.2,27.1,55.8,0
+267,Norwegian University of Science And Technology,Europe,Public,XL,FC,VH,30.7,87.4,17.7,1
+647,Manchester Metropolitan University,Europe,Public,XL,CO,VH,11.4,63.1,61.4,0
+944,University of Alaska Fairbanks,Americas,Public,S,CO,VH,99.7,6.3,5.5,0
+706,Jeonbuk National University (formerly known as Chonbuk National University),Asia,Public,L,FC,VH,73.7,12.5,16.5,0
+1109,The City College of New York,Americas,Public,L,FC,HI,15.0,5.0,8.6,0
+220,University of Ottawa,Americas,Public,XL,FC,VH,5.4,96.1,85.5,1
+289,University of Arizona,Americas,Public,XL,FC,VH,42.8,25.4,15.2,1
+451,"Universidade Estadual Paulista ""Júlio de Mesquita Filho"" (UNESP)",Americas,Public,XL,FC,VH,20.1,7.4,5.3,1
+902,Verona University,Europe,Public,L,FO,VH,5.9,6.3,8.4,0
+1416,Belarusian State University of Informatics and Radioelectronics,Europe,Public,M,CO,HI,26.1,2.6,17.6,0
+168,University of Montreal,Americas,Public,XL,FC,VH,79.5,91.5,66.4,1
+819,Middlesex University,Europe,Public,L,CO,HI,11.3,88.6,99.7,0
+199,National Yang Ming Chiao Tung University,Asia,Public,L,FC,VH,55.4,29.1,31.9,1
+998,University of Bahrain,Asia,Public,L,CO,HI,8.1,94.1,10.5,0
+337,Universidad Politécnica de Madrid,Europe,Public,XL,CO,VH,24.8,4.3,45.2,1
+891,Universität Rostock,Europe,Public,L,FC,HI,92.6,,21.2,0
+1423,Cleveland State University,Americas,Public,M,FO,VH,12.3,5.6,47.6,0
+417,Julius-Maximilians-Universität Würzburg,Europe,Public,L,FC,VH,8.9,60.1,19.7,1
+281,University of Pittsburgh,Americas,Public,L,FC,VH,98.1,9.9,23.0,1
+766,Czech University of Life Sciences in Prague,Europe,Public,L,FO,VH,13.7,36.0,82.5,0
+820,"National Technical University of Ukraine ""Igor Sikorsky Kyiv Polytechnic Institute""",Europe,Public,L,CO,VH,38.5,1.3,3.0,0
+362,University of Chinese Academy of Sciences (UCAS),Asia,Public,XL,FC,VH,100.0,,3.9,1
+351,Universität Innsbruck,Europe,Public,L,FC,VH,76.9,100.0,100.0,1
+147,Stockholm University,Europe,Public,L,CO,VH,28.3,83.0,79.4,1
+953,Yeungnam University,Asia,Private for Profit,L,FC,VH,18.9,38.6,17.8,0
+242,Politecnico di Torino,Europe,Public,XL,FO,VH,4.5,7.3,57.9,1
+32,Australian National University,Oceania,Public,L,FC,VH,40.9,100.0,99.0,1
+1318,Universidad Autónoma de Guadalajara,Americas,Private for Profit,M,FC,MD,28.7,45.7,23.6,0
+1283,Riphah International University,Asia,Private not for Profit,L,CO,HI,26.2,2.2,1.5,0
+334,Indian Institute of Technology Guwahati (IITG),Asia,Public,M,CO,VH,10.2,8.1,1.6,1
+214,University of Lausanne,Europe,Public,L,FO,VH,49.0,100.0,67.0,1
+143,King Saud University,Asia,Public,XL,FC,VH,55.7,100.0,29.2,1
+323,Koc University,Asia,Private not for Profit,M,FC,VH,21.0,30.1,22.2,1
+1234,Galgotias University,Asia,Private not for Profit,L,CO,HI,36.2,21.1,15.0,0
+943,University of Alabama,Americas,Public,XL,CO,VH,8.0,7.1,4.4,0
+497,Justus-Liebig-Universität Gießen,Europe,Public,L,FC,VH,2.7,19.3,28.9,1
+1418,Benha University,Africa,Public,XL,FC,HI,8.2,1.0,2.4,0
+485,Aristotle University of Thessaloniki,Europe,Public,XL,FC,VH,6.4,2.1,8.1,1
+262,University of Aberdeen,Europe,,M,FC,VH,44.9,95.8,87.2,1
+494,Université de Bordeaux,Europe,Public,XL,FO,VH,13.5,31.7,35.2,1
+1095,Slovak University of Technology in Bratislava,Europe,Public,M,FO,VH,48.9,4.8,29.1,0
+1111,The Hashemite University,Asia,Public,L,FC,HI,5.5,9.9,18.4,0
+1158,University of Deusto,Europe,,M,FO,VH,7.4,8.8,29.9,0
+226,Queensland University of Technology,Oceania,Public,XL,CO,VH,11.6,96.6,44.8,1
+241,Victoria University of Wellington,Oceania,Public,L,CO,VH,15.7,100.0,56.7,1
+1271,New Mexico State University,Americas,,L,CO,VH,13.0,10.4,10.0,0
+1302,Technical University of Cluj-Napoca,Europe,Public,L,SP,VH,10.5,4.0,5.6,0
+734,Auezov South Kazakhstan State University (SKSU),Asia,Public,L,CO,MD,91.6,20.1,29.3,0
+680,University of Haifa,Asia,Public,L,CO,VH,15.8,17.8,6.7,0
+747,Kaunas University of Technology,Europe,Public,M,FO,VH,37.9,4.8,40.0,0
+392,Sejong University,Asia,Private not for Profit,L,CO,VH,16.3,32.4,50.7,1
+418,Universität Mannheim,Europe,Public,M,FO,VH,4.6,55.7,41.2,1
+358,George Washington University,Americas,Private not for Profit,L,FC,VH,30.3,13.0,39.2,1
+237,American University of Beirut (AUB),Asia,Private not for Profit,M,FC,VH,52.3,71.4,45.2,1
+806,Wake Forest University,Americas,Private not for Profit,M,FC,VH,100.0,6.2,16.0,0
+1500,University of West Bohemia,Europe,Public,M,CO,VH,12.5,,6.2,0
+1125,Universidad ICESI,Americas,Private not for Profit,M,FO,HI,87.6,5.1,5.2,0
+677,Beirut Arab University,Asia,Private not for Profit,S,FC,HI,28.8,94.8,61.1,0
+1455,Sakarya University,Asia,Public,XL,FC,HI,4.9,2.6,21.8,0
+545,University of Milano-Bicocca,Europe,Public,L,FO,VH,5.2,7.3,8.3,0
+335,Sultan Qaboos University,Asia,Public,M,FC,VH,62.3,100.0,6.0,1
+796,University of Mons,Europe,Public,M,CO,VH,5.2,40.9,47.0,0
+194,University of Reading,Europe,Public,L,CO,VH,20.2,95.0,85.8,1
+976,Nanjing Normal University,Asia,Public,XL,SP,VH,20.7,,7.8,0
+925,Nagasaki University,Asia,Public,M,FC,VH,84.3,8.5,10.8,0
+1353,Universidade Presbiteriana Mackenzie,Americas,Private not for Profit,M,CO,HI,19.5,2.3,1.1,0
+1117,Universidad de Guadalajara (UDG),Americas,Public,XL,FC,HI,21.3,2.8,1.3,0
+776,"Vietnam National University, Hanoi",Asia,Public,XL,CO,HI,9.2,6.6,1.3,0
+1088,Samarkand State University,Asia,Public,L,CO,MD,41.0,25.1,6.5,0
+1052,Kyushu Institute of Technology,Asia,Public,M,SP,VH,12.9,10.4,5.9,0
+1092,Sheffield Hallam University,Europe,Public,XL,CO,HI,10.9,42.6,42.7,0
+35,The University of Manchester,Europe,Public,XL,FC,VH,58.2,95.3,99.5,1
+833,Universidade Federal de Santa Catarina,Americas,Public,L,FC,VH,25.2,5.9,4.0,0
+105,Lomonosov Moscow State University,Europe,Public,L,FC,VH,99.9,25.5,96.0,1
+99,Politecnico di Milano,Europe,Public,XL,CO,VH,9.3,74.4,69.3,1
+1060,Marmara University,Asia,Public,XL,FO,VH,5.4,5.5,6.8,0
+324,Sichuan University,Asia,Public,XL,FC,VH,14.0,9.7,9.2,1
+1328,Universidad de los Andes Mérida,Americas,Public,L,FC,MD,26.3,1.5,2.0,0
+530,University of Salamanca,Europe,Public,L,FC,VH,36.8,10.2,25.9,0
+38,Columbia University,Americas,Private not for Profit,XL,FC,VH,100.0,48.5,98.1,1
+560,Coventry University,Europe,Public,L,CO,VH,21.8,85.1,99.5,0
+1301,Tashkent State Transport University,Asia,Public,L,FO,HI,24.7,3.5,2.3,0
+848,"University of Maryland, Baltimore County",Americas,Public,L,FC,HI,18.9,72.9,50.8,0
+1381,University of Memphis,Americas,Public,L,CO,VH,18.6,2.5,19.4,0
+727,Pakistan Institute of Engineering and Applied Sciences (PIEAS),Asia,Public,S,SP,HI,62.8,,,0
+1445,Mendeleev University of Chemical Technology of Russia,Europe,Public,M,FO,VH,26.1,1.1,15.7,0
+1299,Tamkang University,Asia,Private for Profit,L,CO,HI,5.2,8.0,11.6,0
+948,University of Peshawar,Asia,Public,L,FO,VH,87.2,,2.0,0
+596,Universidade Federal de Minas Gerais,Americas,Public,XL,FC,VH,21.1,9.0,2.5,0
+892,Université de Franche-Comté,Europe,Public,S,CO,VH,100.0,,,0
+907,Al Jouf University,Asia,Public,M,FC,VH,44.8,99.2,3.2,0
+709,Nanjing University of Science and Technology,Asia,Public,L,FO,VH,14.6,,,0
+276,Sun Yat-sen University,Asia,Public,XL,FC,VH,53.4,4.1,6.8,1
+812,De Montfort University,Europe,Public,L,FO,VH,6.8,81.4,96.4,0
+308,Simon Fraser University,Americas,Public,L,CO,VH,7.6,99.1,86.1,1
+1387,University of Pannonia,Europe,Public,S,FO,VH,33.3,5.8,7.2,0
+1428,Hongik University,Asia,Private for Profit,L,FO,VH,13.8,18.9,14.8,0
+198,Vienna University of Technology,Europe,Public,M,FO,VH,18.5,91.8,95.9,1
+905,Wroclaw University of Science and Technology (WUST),Europe,Public,L,SP,VH,45.7,4.7,10.6,0
+261,University of Canterbury,Oceania,Public,L,CO,VH,12.1,100.0,48.1,1
+1496,University of Oradea,Europe,Public,L,FC,MD,6.5,1.7,9.4,0
+887,Universidad Nacional de Córdoba,Americas,Public,XL,FC,HI,8.0,1.6,2.2,0
+7,ETH Zurich (Swiss Federal Institute of Technology),Europe,Public,L,FO,VH,71.7,100.0,99.3,1
+282,University of Waikato,Oceania,Public,M,CO,VH,16.2,99.5,79.7,1
+557,Indian Institute of Technology Indore,Asia,Public,S,FO,VH,28.8,1.8,1.3,0
+1163,University of Ioannina,Europe,,XL,FC,HI,1.9,2.0,7.5,0
+556,Lahore University of Management Sciences (LUMS),Asia,Private not for Profit,S,CO,VH,28.8,10.8,3.1,0
+897,University of Gdansk,Europe,Public,L,CO,VH,41.4,4.5,5.1,0
+769,Khoja Akhmet Yassawi International Kazakh-Turkish University,Asia,Public,M,FC,MD,57.5,27.8,45.5,0
+1062,Middle East University Jordan,Asia,Private not for Profit,S,FO,VH,12.4,10.6,90.9,0
+1427,Herzen State Pedagogical University of Russia,Europe,Public,L,FO,HI,22.2,1.7,59.8,0
+452,Johannes Gutenberg Universität Mainz,Europe,Public,L,FO,VH,70.5,51.3,26.4,1
+841,University of Brighton,Europe,Public,L,FO,VH,12.4,64.9,68.1,0
+1264,Miami University,Americas,Public,L,CO,HI,8.9,7.0,11.1,0
+1343,Universidad Peruana de Ciencias Aplicadas (UPC),Americas,Private not for Profit,XL,FO,HI,4.7,17.1,2.1,0
+1256,King Mongkut's University of Technology North Bangkok,Asia,Public,L,FO,VH,5.3,3.8,1.4,0
+742,Université de Tunis El Manar,Africa,Public,L,FC,VH,39.9,61.9,16.7,0
+1482,Universidad Nacional de San Martín (UNSAM),Americas,Public,L,CO,HI,7.6,1.9,6.9,0
+835,Universita' degli studi di Salerno,Europe,Public,L,FC,VH,9.6,4.4,2.6,0
+935,Universidad de los Andes Chile,Americas,Private not for Profit,M,FC,HI,13.4,15.1,3.5,0
+505,Chongqing University,Asia,Public,XL,SP,VH,18.2,28.1,3.9,0
+1000,University of Ha'il,Asia,Public,L,FC,HI,41.1,100.0,5.4,0
+244,Hamad Bin Khalifa University,Asia,Public,S,FO,VH,100.0,100.0,100.0,1
+1085,Riga Stradins University,Europe,Public,M,SP,HI,16.3,30.9,96.1,0
+233,La Trobe University,Oceania,Public,L,CO,VH,13.2,95.6,97.4,1
+696,Rensselaer Polytechnic Institute,Americas,Private not for Profit,M,CO,VH,28.7,,34.4,0
+1457,"Shakarim University of the City of Semey, Kazakhstan",Asia,Public,M,CO,MD,16.4,27.7,3.3,0
+672,Lehigh University,Americas,Private not for Profit,M,CO,VH,30.5,68.9,40.0,0
+903,Vilnius Gediminas Technical University,Europe,Public,M,SP,VH,38.4,19.3,54.3,0
+851,University of Ulsan,Asia,Private not for Profit,L,FC,VH,60.2,2.7,3.6,0
+443,"National Research University Higher School of Economics (HSE, Moscow)",Europe,Public,XL,CO,VH,92.0,10.2,24.0,1
+1143,Université de Sfax,Africa,Public,XL,CO,VH,56.3,1.1,5.6,0
+1044,Islamic University of Lebanon,Asia,Private for Profit,M,FO,MD,39.6,36.7,98.8,0
+508,University of Guelph,Americas,Public,L,CO,VH,7.9,49.6,24.0,0
+1355,Universitas Muhammadiyah Yogyakarta (UMY),Asia,Private not for Profit,L,FO,HI,4.8,82.5,3.9,0
+206,Universidad Autónoma de Madrid,Europe,Public,XL,FC,VH,39.7,22.3,29.6,1
+58,Ludwig-Maximilians-Universität München,Europe,Public,XL,FC,VH,41.0,80.3,53.2,1
+755,University of Pecs,Europe,Public,L,FC,HI,52.3,12.8,77.3,0
+412,Sunway University,Asia,Private not for Profit,M,CO,VH,56.9,57.1,66.9,1
+1483,Universidad Nacional del Sur,Americas,Public,L,FC,HI,23.1,,,0
+202,University of Gothenburg,Europe,Public,L,FC,VH,73.0,94.1,85.8,1
+29,University of Toronto,Americas,Public,XL,FC,VH,45.7,97.9,97.9,1
+1186,University of the Free State,Africa,Public,L,FO,VH,4.9,,8.3,0
+151,Western University,Americas,Public,L,FC,VH,5.2,100.0,68.7,1
+1127,Universidad ORT Uruguay,Americas,Private not for Profit,M,FO,MD,84.2,17.1,2.9,0
+550,Florida State University,Americas,Public,XL,FC,VH,11.4,16.4,9.0,0
+1178,University of Regina,Americas,Public,L,CO,HI,5.7,4.0,51.2,0
+1390,University of Petra,Asia,Private for Profit,M,CO,HI,10.0,25.9,47.1,0
+318,Universidade Federal do Rio de Janeiro,Americas,Public,XL,FC,VH,18.2,10.3,2.3,1
+959,Charles Sturt University,Oceania,Public,L,CO,VH,14.1,66.0,47.2,0
+697,Symbiosis International (Deemed University),Asia,Private not for Profit,L,CO,VH,26.5,23.3,16.1,0
+5,Harvard University,Americas,Private not for Profit,L,FC,VH,98.3,79.1,81.4,1
+341,Xiamen University,Asia,Public,XL,FC,VH,25.0,10.8,9.3,1
+808,Ahlia University,Asia,Private not for Profit,S,SP,HI,38.4,100.0,61.7,0
+645,Inha University,Asia,Private not for Profit,L,FC,VH,74.7,17.7,25.7,0
+1202,Yokohama National University,Asia,Public,M,CO,VH,22.9,17.2,12.5,0
+924,Michigan Technological University,Americas,Public,M,CO,VH,32.2,18.2,20.1,0
+75,"Trinity College Dublin, The University of Dublin",Europe,Public,L,FC,VH,28.7,100.0,94.9,1
+1254,Kharkiv National University of Radio Electronics,Europe,Public,M,SP,HI,31.1,1.8,10.7,0
+217,Keio University,Asia,Private not for Profit,XL,FC,VH,65.2,15.2,19.6,1
+533,University of Genoa,Europe,Public,L,FC,VH,19.8,9.2,17.5,0
+1161,University of Ibadan,Africa,,XL,CO,VH,6.4,,,0
+731,University of Cincinnati,Americas,Public,XL,FC,VH,24.8,6.2,23.7,0
+926,Osaka Metropolitan University,Asia,,L,FC,VH,57.2,6.2,5.2,0
+1356,Universitas Negeri Yogyakarta,Asia,Public,L,CO,HI,12.2,18.8,2.8,0
+553,Universiti Tenaga Nasional (UNITEN),Asia,Private for Profit,S,SP,VH,76.6,34.7,70.5,0
+1235,German university in Cairo,Africa,Private not for Profit,L,CO,HI,9.8,17.8,1.4,0
+46,"University of California, Los Angeles (UCLA)",Americas,Public,XL,FC,VH,43.6,50.8,31.8,1
+716,Drexel University,Americas,Private not for Profit,L,FC,VH,30.2,31.3,37.4,0
+446,Vilnius University,Europe,Public,L,FC,HI,73.1,28.4,28.5,1
+1487,Università degli studi di Bergamo,Europe,Public,L,FO,VH,2.5,5.8,12.3,0
+478,Universität Potsdam,Europe,Public,L,FO,VH,28.4,60.9,34.9,1
+295,Swinburne University of Technology,Oceania,Public,L,CO,VH,14.7,87.8,94.7,1
+804,Pontificia Universidad Católica de Valparaíso,Americas,Private not for Profit,L,CO,VH,6.8,15.1,2.6,0
+1014,Asfendiyarov Kazakh National Medical University,Asia,Public,M,FO,HI,67.2,15.8,76.8,0
+1031,Ege Üniversitesi,Asia,Public,XL,FC,HI,21.0,1.4,9.2,0
+18,"University of California, Berkeley (UCB)",Americas,Public,XL,FC,VH,29.4,95.6,70.6,1
+243,Georg-August-Universität Göttingen,Europe,Public,L,FC,VH,87.0,59.2,37.9,1
+86,University of Leeds,Europe,Public,XL,FC,VH,39.7,89.7,96.3,1
+1388,University of Pardubice,Europe,Public,M,CO,VH,47.8,12.3,15.5,0
+622,Zhengzhou University,Asia,Public,XL,FC,VH,7.0,,4.1,0
+493,Universiti Utara Malaysia (UUM),Asia,Public,M,CO,VH,48.0,25.6,86.9,1
+1477,Universidad del Zulia,Americas,Public,L,FC,MD,5.2,1.2,1.5,0
+1293,Shiv Nadar University,Asia,Private for Profit,S,CO,VH,42.1,17.4,3.2,0
+1126,Universidad Nacional de Rosario,Americas,Public,XL,FC,MD,29.9,,10.8,0
+152,University of Vienna,Europe,Public,XL,FC,VH,31.0,100.0,96.6,1
+1226,Cukurova University,Asia,Public,XL,FC,HI,8.6,2.5,6.5,0
+932,Tashkent State Technical University,Asia,Public,L,CO,HI,20.1,62.9,1.8,0
+503,Shoolini University of Biotechnology and Management Sciences,Asia,Private not for Profit,S,CO,VH,12.1,29.0,2.2,0
+364,University of Tartu,Europe,Public,M,FC,VH,94.6,62.1,20.8,1
+884,Prince of Songkla University,Asia,Public,XL,FC,HI,20.4,7.4,2.7,0
+526,The University of Georgia,Americas,Public,XL,FC,VH,14.0,11.1,8.8,0
+464,Università Vita-Salute San Raffaele,Europe,Private not for Profit,S,SP,VH,89.3,6.2,11.3,1
+339,Indian Institute of Technology Roorkee (IITR),Asia,Public,M,FO,VH,9.5,2.0,3.6,1
+1237,Hanoi University of Science and Technology,Asia,Public,XL,FO,VH,3.3,5.7,1.5,0
+467,Shanghai University,Asia,Public,XL,FO,VH,51.1,29.6,10.2,1
+1433,Istanbul Bilgi Üniversitesi,Asia,Private not for Profit,M,FO,HI,15.2,4.1,25.4,0
+347,Cairo University,Africa,Public,XL,FC,VH,13.8,4.2,14.4,1
+301,Universidad Carlos III de Madrid,Europe,Public,L,FO,VH,50.5,73.8,75.2,1
+1491,Universiti Sultan Zainal Abidin,Asia,Public,M,CO,VH,13.8,19.5,9.9,0
+671,Karl-Franzens-Universität Graz,Europe,Public,L,FO,VH,18.9,53.4,38.6,0
+245,Hong Kong Baptist University,Asia,Public,M,CO,VH,67.3,99.4,100.0,1
+26,The University of Sydney,Oceania,Public,XL,FC,VH,15.7,99.9,100.0,1
+177,Khalifa University of Science and Technology,Asia,Public,S,SP,VH,83.2,100.0,83.0,1
+172,Universitat Autónoma de Barcelona,Europe,Public,XL,FC,VH,15.2,26.5,27.2,1
+964,Ferdowsi University of Mashhad,Asia,Public,L,CO,VH,5.7,,9.5,0
+1004,Wuhan University of Technology,Asia,Public,XL,CO,VH,24.1,,4.4,0
+1124,Universidad Diego Portales,Americas,Private not for Profit,L,FO,VH,11.9,17.5,6.3,0
+266,Universitat Pompeu Fabra,Europe,Public,M,FO,VH,19.1,84.7,40.0,1
+39,Seoul National University,Asia,Public,L,FC,VH,85.6,13.2,27.5,1
+250,Vanderbilt University,Americas,Private not for Profit,L,FC,VH,100.0,48.4,50.9,1
+399,IPB University (aka Bogor Agricultural University),Asia,Public,L,FO,VH,82.9,73.7,6.0,1
+179,"University of California, Santa Barbara (UCSB)",Americas,Public,L,CO,VH,9.3,81.3,27.5,1
+699,Ankara Üniversitesi,Asia,Public,XL,FC,HI,12.8,2.8,9.7,0
+258,Université Paris 1 Panthéon-Sorbonne,Europe,Public,XL,FO,VH,6.8,39.0,61.2,1
+1241,Instituto Tecnológico de Santo Domingo (INTEC),Americas,Public,M,FO,MD,36.2,22.9,5.2,0
+375,Saint Petersburg State University,Europe,Public,L,FC,VH,65.8,6.7,52.2,1
+1089,San Diego State University,Americas,Public,XL,CO,VH,4.5,7.9,4.6,0
+915,Huazhong Agricultural University,Asia,Public,XL,CO,VH,8.5,5.0,2.4,0
+559,Al Ain University,Asia,Private not for Profit,S,FO,VH,20.8,100.0,100.0,0
+1185,University of the Algarve,Europe,,M,CO,VH,13.6,6.6,53.0,0
+160,University of Barcelona,Europe,Public,XL,FC,VH,19.0,39.9,40.8,1
+1016,Azerbaijan University of Architecture and Construction,Asia,Public,M,FO,MD,42.1,9.9,14.5,0
+752,University of Baghdad,Asia,Public,XL,FC,VH,31.1,2.8,1.2,0
+754,University of Messina,Europe,Public,L,FC,VH,18.6,1.4,17.8,0
+380,University of Naples - Federico II,Europe,Public,XL,FC,VH,6.8,2.9,1.2,1
+876,Liverpool John Moores University,Europe,Public,L,CO,VH,9.6,53.8,21.2,0
+818,Keele University,Europe,Public,M,FC,VH,21.3,60.9,50.7,0
+1442,Mahasarakham University,Asia,Public,XL,FC,MD,2.8,8.7,3.6,0
+126,Sungkyunkwan University,Asia,Private not for Profit,L,FC,VH,83.8,24.2,57.6,1
+771,New Jersey Institute of Technology (NJIT),Americas,Public,M,FO,VH,13.2,36.0,65.4,0
+1296,Sookmyung Women's University,Asia,Private for Profit,M,CO,HI,46.8,4.8,5.0,0
+1488,Universitas Andalas,Asia,Public,XL,CO,HI,13.9,14.4,3.6,0
+12,"Nanyang Technological University, Singapore (NTU Singapore)",Asia,Public,L,FC,VH,83.9,100.0,93.1,1
+1131,Universidad Simón Bolívar Venezuela,Americas,Public,S,FO,VH,23.5,2.1,1.1,0
+1194,Utah State University,Americas,Public,L,CO,VH,8.6,1.1,2.7,0
+462,Novosibirsk State University,Europe,Public,M,FO,VH,93.6,9.1,70.6,1
+17,Tsinghua University,Asia,Public,XL,FC,VH,97.1,39.5,31.9,1
+359,Mahidol University,Asia,Public,L,FC,VH,82.4,8.5,9.1,1
+704,University of Klagenfurt,Europe,Public,S,CO,VH,57.4,98.2,94.8,0
+644,Abo Akademi University,Europe,Public,M,CO,VH,22.1,60.7,43.6,0
+1103,Sungshin Women's University,Asia,Private not for Profit,M,CO,MD,85.0,3.7,6.6,0
+1145,Université Paris 2 Panthéon-Assas,Europe,Public,L,SP,VH,63.1,15.8,38.6,0
+571,University of Minho,Europe,Public,L,FC,VH,28.3,21.3,26.0,0
+480,Hiroshima University,Asia,Public,L,FC,VH,79.8,19.2,22.7,1
+1295,Slovak University of Agriculture in Nitra,Europe,Public,S,SP,HI,36.7,8.8,8.9,0
+558,University of Houston,Americas,Public,XL,CO,VH,8.1,48.0,43.9,0
+572,Colorado School of Mines,Americas,Public,M,FO,VH,18.8,28.7,11.2,0
+1010,Almaty Technological University,Asia,Public,M,CO,MD,93.9,27.8,14.4,0
+1182,University of Tabuk,Asia,Public,L,FC,HI,27.3,93.7,5.5,0
+772,Riga Technical University,Europe,Public,M,CO,VH,31.7,22.1,84.9,0
+1311,Tokai University,Asia,Private not for Profit,L,FC,HI,18.1,7.7,5.3,0
+1447,National Taipei University,Asia,Public,M,FO,HI,11.6,5.9,10.1,0
+360,University of Victoria,Americas,Public,L,CO,VH,6.2,97.2,46.0,1
+1342,Universidad Nacional del Litoral,Americas,Public,XL,CO,HI,3.1,6.6,1.5,0
+176,National Tsing Hua University,Asia,Public,M,CO,VH,34.2,26.7,37.3,1
+191,"Queen's University, Ontario",Americas,Public,L,FC,VH,7.9,75.6,35.5,1
+985,South Ural State University,Europe,Public,L,CO,VH,57.4,5.6,22.5,0
+1006,Aga Khan University,Asia,Private not for Profit,S,FO,VH,100.0,1.5,2.0,0
+1213,Beijing University of Chinese Medicine,Asia,Public,L,FO,VH,44.2,,13.3,0
+1452,Pontificia Universidad Catolica Madre y Maestra (PUCMM),Americas,Private not for Profit,L,FC,LO,14.8,12.0,14.2,0
+1354,Universita' degli Studi di Urbino Carlo Bo,Europe,Public,L,FO,VH,3.0,22.6,9.1,0
+1061,MATE Hungarian University of Agriculture and Life Sciences,Europe,Private not for Profit,M,FO,VH,34.1,4.1,43.1,0
+280,University of Antwerp,Europe,Public,L,FC,VH,42.8,96.4,45.5,1
+1392,University of Rajshahi,Asia,,L,CO,HI,6.2,1.3,1.2,0
+676,Technische Universität Dortmund,Europe,Public,L,FO,VH,42.7,32.3,36.7,0
+659,"University of Agriculture, Faisalabad",Asia,Public,XL,CO,VH,2.2,2.6,1.2,0
+1282,"Queen Margaret University , Edinburgh",Europe,Public,M,FO,HI,6.3,68.4,67.4,0
+15,University of Pennsylvania,Americas,Private not for Profit,L,FC,VH,99.9,96.9,76.3,1
+1475,Universidad de Tarapaca,Americas,Public,M,CO,VH,4.4,17.7,,0
+378,University of Saskatchewan,Americas,Public,L,FC,VH,21.1,82.4,65.4,1
+1009,"Aligarh Muslim University (AMU), Aligarh",Asia,Public,L,CO,VH,18.4,,1.8,0
+1199,Xi'an Jiaotong-Liverpool University,Asia,Private not for Profit,L,CO,HI,8.1,95.2,5.2,0
+619,Christian-Albrechts-Universität zu Kiel,Europe,Public,L,FC,VH,56.7,,15.1,0
+700,Beijing University of Chemical Technology,Asia,Public,L,CO,VH,28.6,3.2,2.5,0
+106,Rheinisch-Westfälische Technische Hochschule Aachen,Europe,Public,L,FC,VH,10.7,59.6,93.0,1
+1002,University of Massachusetts - Boston,Americas,Public,L,FC,HI,14.4,7.2,27.1,0
+196,Waseda University,Asia,Private not for Profit,XL,CO,VH,29.5,35.2,43.7,1
+395,Aston University,Europe,Public,L,CO,VH,12.0,97.9,63.4,1
+1365,Université Ibn Tofail,Africa,Public,XL,CO,HI,1.5,27.0,4.2,0
+190,Ohio State University,Americas,Public,XL,FC,VH,53.1,37.4,20.6,1
+1153,University of Arkansas Fayetteville,Americas,Public,L,CO,VH,7.8,9.2,4.4,0
+367,RUDN University,Europe,Public,XL,FC,VH,94.0,10.9,95.3,1
+1216,Birzeit university,Asia,Private not for Profit,M,CO,HI,6.7,17.9,7.4,0
+1150,Universiti Tun Hussein Onn University of Malaysia (UTHM),Asia,Public,L,CO,VH,11.7,6.8,12.0,0
+384,Northeastern University,Americas,Private not for Profit,XL,CO,VH,23.3,63.3,95.8,1
+474,Johannes Kepler University Linz,Europe,Public,M,FO,VH,80.0,89.9,57.5,1
+270,UCSI University,Asia,Private for Profit,M,FO,VH,87.7,92.9,99.0,1
+751,The Catholic University of Korea,Asia,Private not for Profit,M,FC,VH,97.4,4.7,52.9,0
+122,University of Waterloo,Americas,Public,XL,CO,VH,8.8,81.5,76.6,1
+823,Perugia University,Europe,Public,L,FC,VH,5.0,8.8,10.0,0
+938,Universidad Europea de Madrid,Europe,,L,FC,MD,56.6,14.4,96.1,0
+510,Institut Teknologi Sepuluh Nopember (ITS),Asia,Public,L,CO,VH,62.1,69.6,11.9,0
+268,Griffith University,Oceania,Public,L,FC,VH,13.3,100.0,70.7,1
+1263,Meiji University,Asia,Private for Profit,XL,FO,HI,5.9,14.5,8.9,0
+1499,University of Tripoli,Africa,Public,XL,FC,MD,8.6,1.2,3.4,0
+221,Chulalongkorn University,Asia,Public,XL,FC,VH,44.8,32.0,6.2,1
+595,National Research Nuclear University MEPhI (Moscow Engineering Physics Institute),Europe,Public,M,FO,VH,99.3,60.6,93.3,0
+1306,"The ""Gheorghe Asachi"" Technical University of Iasi",Europe,Public,L,SP,VH,3.8,,8.6,0
+274,Universität zu Köln,Europe,Public,L,FO,VH,23.6,39.3,47.1,1
+827,"The New School, New York City and Paris",Americas,Private not for Profit,M,FO,VH,47.6,8.2,97.9,0
+573,Hacettepe University,Asia,Public,L,FC,VH,18.5,3.9,6.1,0
+541,Jinan University (China),Asia,Public,XL,FC,VH,12.3,41.6,89.1,0
+501,Tomsk State University,Europe,Public,M,CO,VH,99.3,28.0,94.7,1
+450,Kazan Federal University,Europe,Public,L,FC,VH,98.1,14.0,97.7,1
+1456,San Francisco State University,Americas,,L,CO,HI,8.3,4.9,7.7,0
+1105,Tashkent State University of Economics,Asia,Public,L,SP,MD,14.0,19.2,11.3,0
+1024,Chung Yuan Christian University,Asia,Public,L,CO,HI,6.9,5.3,11.8,0
+56,London School of Economics and Political Science (LSE),Europe,Public,L,FO,VH,47.2,100.0,100.0,1
+1261,Latvia University of Life Sciences and Technologies,Europe,Public,S,FO,VH,5.7,1.8,16.5,0
+445,"University of California, Riverside",Americas,Public,L,FC,VH,10.0,80.9,30.4,1
+249,"University of Massachusetts, Amherst",Americas,Public,L,CO,VH,15.8,77.9,46.3,1
+232,Universität Erlangen-Nürnberg,Europe,Public,L,FC,VH,5.2,39.5,60.6,1
+566,University of Debrecen,Europe,Public,L,FC,HI,45.9,14.4,76.5,0
+1344,Universidad Tecnológica de Panamá (UTP),Americas,Public,L,CO,MD,38.2,4.9,8.0,0
+590,Université Claude Bernard Lyon 1,Europe,Public,XL,FC,VH,9.6,10.1,20.5,0
+1440,Lublin University of Technology,Europe,Public,M,FO,VH,28.1,2.5,29.5,0
+376,Sharif University of Technology,Asia,Public,M,FO,VH,8.2,2.6,1.6,1
+1007,Al Azhar University,Africa,Public,XL,CO,VH,14.9,1.7,16.8,0
+490,Universidad de Santiago de Chile - USACH,Americas,Public,L,FC,HI,11.4,10.6,3.8,1
+447,Belarusian State University,Europe,Public,L,CO,HI,91.8,4.9,71.1,1
+1217,BRAC University,Asia,Private not for Profit,L,CO,HI,11.6,1.7,1.8,0
+821,Northwest Agriculture and Forestry University,Asia,Public,XL,CO,VH,35.0,,2.0,0
+125,RMIT University,Oceania,Public,XL,CO,VH,7.2,100.0,95.2,1
+184,University of Bern,Europe,Public,M,FC,VH,49.0,100.0,52.9,1
+154,Wageningen University & Research,Europe,Public,L,CO,VH,99.5,72.0,90.7,1

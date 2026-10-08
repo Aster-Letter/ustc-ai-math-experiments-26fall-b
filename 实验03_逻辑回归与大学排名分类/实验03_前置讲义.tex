@@ -1,0 +1,342 @@
+\documentclass[UTF8,a4paper,11pt,fontset=fandol]{ctexart}
+\newcommand{\DocTitle}{第三次实验：逻辑回归与大学排名分类}
+\newcommand{\DocSubject}{2026年秋季课程B；135分钟；逻辑回归实验}
+\newcommand{\DocShortTitle}{实验03：逻辑回归}
+\newcommand{\DocType}{学生前置讲义}
+\input{assets/experiment-style.tex}
+\usepackage{xurl,bookmark}
+\setmonofont[BoldFont=DejaVuSansMono-Bold.ttf,ItalicFont=DejaVuSansMono-Oblique.ttf]{DejaVuSansMono.ttf}
+\setCJKmonofont[AutoFakeBold=2]{FandolFang-Regular.otf}
+\setlength{\headheight}{15pt}
+\setcounter{tocdepth}{1}
+\hypersetup{pdfauthor={钟志诚（主讲）；曾有成（整理）},pdftitle={第三次实验：课程前置讲义}}
+\lstset{numbers=none,xleftmargin=0pt,framexleftmargin=0pt,basicstyle=\ttfamily\small}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\begin{document}
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{1.4cm}
+{\Large\color{Navy}人工智能数学原理与算法 B\par}
+\vspace{1.0cm}
+{\huge\bfseries\color{Ink}第三次实验\par}
+\vspace{.4cm}
+{\LARGE\bfseries\color{Navy}逻辑回归与大学排名分类\par}
+\vspace{.8cm}
+{\Large 课程前置讲义\par}
+\vspace{1.1cm}
+\begin{tabular}{@{}ll}
+主讲 & 钟志诚\\[.5em]
+整理 & 曾有成\\[.5em]
+单位 & 中国科学技术大学\\
+ & 人工智能与数据科学学院
+\end{tabular}
+\vspace{1cm}
+\begin{keybox}[从数据到可解释的分类流程]
+数据清洗与划分 $\rightarrow$ 数值表示 $\rightarrow$ 线性得分与概率
+$\rightarrow$ 交叉熵与正则化 $\rightarrow$ 梯度更新 $\rightarrow$ 独立评估。
+\end{keybox}
+\vfill
+2026 年秋季\quad 建议 3 学时（135 分钟）\\
+C0--C7 分阶段完成；日期与提交平台以课程通知为准。\\
+随包数据为 QS（Quacquarelli Symonds）2026 排名的教学整理版。
+\end{titlepage}
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}\tableofcontents\clearpage\pagenumbering{arabic}
+\section{任务、边界与数据来源}
+\subsection{从属性判断走向概率模型}
+上次实验通过属性问题构造决策树。本次使用一组可训练权重，将混合类型的大学数据转换成概率。逻辑回归（《机器学习》称对数几率回归）虽然含“回归”，这里解决的仍是二分类。
+
+贯穿任务：给定学校的地区、办学性质、规模等信息，以及三个已公布的指标分数，识别它是否位于 \textbf{2026 年 QS（Quacquarelli Symonds）榜单前 500 名}。标签 \texttt{top500=1} 表示属于前 500 名，0 表示榜单中其余学校。并列名次按所列名次判断，所以正类有 502 所；不把“第 500 行”作为截断位置。
+\begin{keybox}[这是什么任务]
+这是同年榜单内的分类练习，使用的数值分数也是该年已公布信息。它不是预测未来排名，不是给全球所有大学判定优劣，也不说明模型学到了学校发展的因果规律。
+\end{keybox}
+\subsection{学习目标与先修知识}
+能识别标签泄漏；能只用训练集拟合填充值、尺度和类别表；能手算独热编码、概率、交叉熵及一次更新；能实现 PyTorch 模型并用验证集选择方案。已具备变量、循环、函数、字典、类、数组切片和矩阵乘法基础。先以 C0 复习形状，再学习新的编码步骤。
+\subsection{课堂版本的规模与来源}
+原镜像为 1504 行、30 列，来自公开的 QS 2026 数据整理仓库，保存原文件和摘要。只选三个数值字段与五个类别字段；保留原行号和学校名用于追溯，二者不能输入模型。保留真实缺失，不人为制造缺失，不平衡抽样。
+
+种子 20261008，按标签分层约 60\%/20\%/20\%：训练 902 条（正类 301）、验证 300 条（正类 100）、测试 302 条（正类 101）。学校名在源表中不重复，三份学校互斥。课堂目录为 \file{code/data/classroom/}。原教材贷款案例及其 65.5\% 准确率示例不适用于本次数据。
+\begin{questionbox}[C0：先说清任务]
+预测概率为 0.7，标签是否就是 0.7？阈值 0.5 时输出哪一类？若使用 \texttt{row\_id}，为何也可能泄漏答案？
+\end{questionbox}
+\clearpage
+\section{从原表选择可用字段}
+\subsection{字段白名单与数值含义}
+CSV（Comma-Separated Values，逗号分隔值）文件每行是一所学校，每列是一个字段。程序只从白名单取输入，不对整张表直接转换成张量。
+\par\noindent\begin{tabularx}{\linewidth}{L{4.4cm}Y}\toprule
+课堂字段 & 角色与处理\\\midrule
+\file{faculty_student_score} & 师生比指标\textbf{分数}，不是原始人数比\\
+\file{international_faculty_score} & 国际教师指标分数，不是百分比\\
+\file{international_student_score} & 国际学生指标分数，不是百分比\\
+\file{region}, \file{status} & 地区与办学性质，无大小顺序\\
+\file{size} & S、M、L、XL，学校规模档位\\
+\file{focus} & SP、FO、CO、FC，学科覆盖类型\\
+\file{research} & LO、MD、HI、VH，研究活跃程度\\
+\file{row_id}, \file{name} & 原表行号与名称，只用于追溯\\
+\file{top500} & 0/1 标签，不填补、不标准化\\\bottomrule
+\end{tabularx}
+
+学校规模虽然有序，档位间隔却不等于相同人数；本次五个类别字段统一采用独热编码。字母排序只决定输出列顺序，不代表大小关系。
+\subsection{筛选不是追求更高的测试分数}
+当年排名和总分直接暴露目标；上一年排名虽可能是合法的历史预测变量，本次也预先排除，以集中练习混合字段。学校名称不作记忆键；原行号来自按排名排列的表，也必须排除。完整评分向量能近似重构排名规则，本实验只保留三个分数，但它们仍与榜单构造有关。
+\begin{pitfallbox}[不能把数值化等同于可用]
+给学校名编码成 1、2、3，或者把排名填补后当输入，都可能让程序跑通，却不符合任务。原镜像部分名次是区间，不能把区间起点当精确排名；本次阈值 500 不被现有区间跨越。
+\end{pitfallbox}
+\begin{questionbox}[C1：缺失是什么]
+数值列中的空白、横线、无法解析文本转为缺失；数值 0 不是缺失。若标签缺失，能否把它填成多数类？给出理由。
+\end{questionbox}
+\clearpage
+\section{数值填补、标准化与数据划分}
+\subsection{只从训练集估计统计量}
+训练集用于学习预处理和权重，验证集用于选择方案，测试集只在冻结后评价。令 $N$ 为训练样本数，$x_j^{(n)}$ 表示第 $n$ 个样本的第 $j$ 个数值特征。括号上标 $(n)$ 是样本编号，不是幂；下标 $j$ 是特征编号。
+
+每个数值字段先对非缺失训练值求均值 $\mu_j$，用它填补该列。令填补值为 $\bar x_j^{(n)}$；波浪号保留给后面的增广向量，不在此处混用。填补后计算总体标准差 $s_j$，再转换为标准化值 $u_j^{(n)}$：
+\begin{equation}
+s_j=\sqrt{\frac1N\sum_{n=1}^{N}(\bar x_j^{(n)}-\mu_j)^2},\qquad
+u_j^{(n)}=\frac{\bar x_j^{(n)}-\mu_j}{s_j}.
+\end{equation}
+$\sum$ 表示求和，平方根将尺度还原到原单位。代码用 \texttt{std(ddof=0)}，不除以 $N-1$。尺度为零时替换为 1；全空训练列均值约定为 0。验证、测试复用训练均值与尺度，不能重新拟合。
+\begin{examplebox}[C2：可复核的小例子]
+训练值为 $[1,3,\text{缺失}]$，均值 2，填补后为 $[1,3,2]$；总体标准差 $\sqrt{2/3}\approx0.816497$，标准化后约为 $[-1.224745,1.224745,0]$。验证值 100 转成约 120.025，而不是影响训练均值；验证缺失转成 0。
+\end{examplebox}
+\subsection{真实缺失与适用边界}
+训练表的办学性质缺失 31 条、国际教师分数缺失 49 条、国际学生分数缺失 18 条。数值缺失用训练均值处理；类别缺失在下一节编码为 Unknown。缺失机制未被确认，不能声称它完全随机，也不能把缺失分数解释为该校真实得分为零。
+\begin{questionbox}[C2：检查是否泄漏]
+把验证集某个数值改成一百万，训练均值与训练张量应不应该改变？若先在全部数据上填补再划分，会出现什么问题？
+\end{questionbox}
+\clearpage
+\section{类别编码与增广设计矩阵}
+\subsection{独热编码由训练类别表确定}
+独热编码（one-hot encoding）用一列指示一个类别。对地区字段，若训练表观察到 Asia、Europe，则固定列序为 Asia、Europe、Unknown；Unknown 接收缺失和验证/测试中训练未见的类别。
+\begin{center}\begin{tabular}{lrrr}\toprule
+原始取值 & Asia & Europe & Unknown\\\midrule
+Asia & 1 & 0 & 0\\Europe & 0 & 1 & 0\\缺失 & 0 & 0 & 1\\训练未见类别 & 0 & 0 & 1\\\bottomrule\end{tabular}\end{center}
+类别表只从训练集拟合；验证与测试必须使用相同列顺序，不能各自生成自己的编码列。Unknown 即使未在训练中出现也预留一列，其权重可能始终为零；这不意味着模型学会了未知类别的特殊规律。
+
+本次保留完整独热列，方便直观看到每个类别；独热列保持 0/1，\textbf{不再标准化}。完整独热列与截距存在冗余，未正则化参数不一定可唯一解释，但仍可计算预测。删去每组一个参考列是另一种约定，本次不混用。
+\subsection{拼接并在首列增加常数}
+先放三个标准化数值，再按 region、status、size、focus、research 顺序放独热列。每个字段内取训练类别的字母排序，再加 Unknown。当前共 $d=28$ 个特征：3 个数值与 25 个独热列。
+
+令 $\mathbf x^{(n)}\in\mathbb R^d$ 为处理后的样本列向量，粗体表示向量；转置 $\top$ 将列变成行。波浪号表示增加常数项，以统一处理截距：
+\begin{equation}
+\tilde{\mathbf x}^{(n)}=(1,(\mathbf x^{(n)})^\top)^\top,\qquad
+\mathbf X=\begin{bmatrix}(\tilde{\mathbf x}^{(1)})^\top\\\vdots\\(\tilde{\mathbf x}^{(N)})^\top\end{bmatrix}\in\mathbb R^{N\times(d+1)}.
+\end{equation}
+标签列为 $\mathbf y\in\mathbb R^{N\times1}$，元素取 0 或 1。训练张量形状为 $(902,29)$，标签为 $(902,1)$；验证为 $(300,29)$ 与 $(300,1)$。只标准化数值列，不标准化标签或新增常数列。
+\begin{questionbox}[C2：编码自查]
+为何不能把 Asia、Europe、Americas 编为 1、2、3 后直接输入？为何测试集中首次出现的类别不能添加新列？
+\end{questionbox}
+\clearpage
+\section{批次、数据集与训练顺序}
+\subsection{Dataset 与 DataLoader 各做什么}
+Dataset 保存特征与标签，\texttt{\_\_getitem\_\_} 按同一索引取一对样本。DataLoader 负责组成批次，并且只在训练时打乱。标签与特征不能分别打乱。
+\begin{lstlisting}[language=Python]
+dataset = student.UniversityDataset(X, y)
+loader = student.make_loader(dataset, 64, True)
+for X_batch, y_batch in loader:
+    print(X_batch.shape, y_batch.shape)
+\end{lstlisting}
+一轮（epoch）遍历训练数据一次。训练集有 902 条，批量大小 64，因此有 14 个满批和最后 6 条，共 15 个批次。一个批次大小记为 $B$，输入形状 $(B,29)$，标签形状 $(B,1)$。不足批量的最后一批不丢弃。
+\subsection{从一个小例子进入补全}
+先用 5 条样本、批量大小 2、顺序取样，观察批量大小为 $2,2,1$；再开启训练打乱，核对特征标签始终配对。参考实现优先使用显式循环和普通 \texttt{import}，不需要理解复杂配置系统。
+\begin{teacherbox}[代码阅读节奏]
+C0 观察张量形状；C1 清洗数值与标签；C2 数值处理和独热编码；C3 成对取批；C4 输出线性得分；C5 构造目标；C6 自动求导与更新；C7 解释验证和测试结果。每一步先预测小例子的输出，再补函数、运行和解释。
+\end{teacherbox}
+\begin{questionbox}[C3：为什么保留末批]
+如果丢弃最后 6 条，是否每轮都训练了所有学校？批次大小变化时，为什么平均损失仍应除以本批实际样本数？
+\end{questionbox}
+\clearpage
+\section{线性得分、概率和类别}
+\subsection{三个不同的输出}
+参数 $\boldsymbol\theta=(\theta_0,\ldots,\theta_d)^\top\in\mathbb R^{d+1}$，其中 $\theta_0$ 是截距；代码保存为 \texttt{(d+1,1)}。线性得分 $z^{(n)}$ 可以取任意实数。sigmoid 函数 $\sigma:\mathbb R\to(0,1)$ 将得分变成概率：
+\begin{equation}
+z^{(n)}=(\tilde{\mathbf x}^{(n)})^\top\boldsymbol\theta,\quad
+p^{(n)}=P(y^{(n)}=1\mid\mathbf x^{(n)};\boldsymbol\theta)=\sigma(z^{(n)})=\frac1{1+e^{-z^{(n)}}}.
+\end{equation}
+$P$ 表示概率，条件竖线“$\mid$”表示给定特征；分号后的参数确定当前模型。$e$ 是自然指数的底。$p^{(n)}$ 是模型概率，不是已观察到的标签。
+\begin{equation}
+\hat y^{(n)}=\mathbf1[p^{(n)}\ge\tau],\qquad \tau\in(0,1).
+\end{equation}
+帽号在这里表示\textbf{预测类别}。$\tau$ 是决策阈值；指示函数 $\mathbf1[\cdot]$ 在括号内条件成立时为 1，否则为 0。本课预先固定主实验阈值为 0.5，恰好等于阈值也判为前 500 名。
+\subsection{为什么叫对数几率回归}
+几率是属于与不属于前 500 名的概率之比 $p/(1-p)$；对数几率函数 $\operatorname{logit}:(0,1)\to\mathbb R$ 是 sigmoid 的反函数：
+\begin{equation}
+\operatorname{logit}(p)=\log\frac{p}{1-p}=z.
+\end{equation}
+$\log$ 表示自然对数。本模型假设\textbf{对数几率是处理后特征的线性函数}。sigmoid 和 logit 不能互称。阈值为 0.5 时，边界为 $z=0$；提高阈值时，边界得分变为 $\log(\tau/(1-\tau))$。
+\begin{center}\begin{tabular}{rrrr}\toprule
+得分 $z$ & $-2$ & $0$ & $2$\\\midrule
+概率 $p$ & 0.119203 & 0.5 & 0.880797\\
+类别（$\tau=0.5$） & 0 & 1 & 1\\\bottomrule
+\end{tabular}\end{center}
+\begin{questionbox}[检查点 C4：模型接口]
+若参数是 $(1,2,-1)^\top$，增广输入是 $(1,3,2)^\top$，\texttt{forward} 应返回什么？\texttt{sigmoid(forward(X))} 又是什么？
+\end{questionbox}
+\clearpage
+\section{从伯努利似然到交叉熵}
+\subsection{为什么采用这个损失}
+给定特征，一个二分类标签服从伯努利模型：只可能取 0 或 1，取 1 的概率为 $p^{(n)}$。单条观测标签的概率质量为
+\begin{equation}
+P(y^{(n)}\mid\mathbf x^{(n)};\boldsymbol\theta)
+=(p^{(n)})^{y^{(n)}}(1-p^{(n)})^{1-y^{(n)}}.
+\end{equation}
+若 $y^{(n)}=1$，式子只留下 $p^{(n)}$；若标签为 0，只留下 $1-p^{(n)}$。假定样本在给定参数后条件独立，整批数据的似然 $\Lambda$ 是这些概率的连乘；$\prod$ 表示逐项相乘：
+\begin{equation}
+\Lambda(\boldsymbol\theta)=\prod_{n=1}^N P(y^{(n)}\mid\mathbf x^{(n)};\boldsymbol\theta).
+\end{equation}
+最大似然选择让已观察数据更可能出现的参数。取对数将连乘变成求和；加负号将最大化改成最小化；除以 $N$ 得到与样本规模无关的平均损失。
+\begin{equation}
+\begin{aligned}
+\mathcal L^{(n)}&=-y^{(n)}\log p^{(n)}-(1-y^{(n)})\log(1-p^{(n)}),\\
+R(\boldsymbol\theta)&=\frac1N\sum_{n=1}^N\mathcal L^{(n)}=-\frac1N\log\Lambda(\boldsymbol\theta).
+\end{aligned}
+\end{equation}
+$\mathcal L^{(n)}$ 是单样本损失，$R$ 是经验风险（样本平均）。该损失称二元交叉熵，简称 BCE（Binary Cross-Entropy）。当真实标签为 1 时，预测 0.9 的损失约为 0.10536，预测 0.1 的损失约为 2.30259，错误且自信会受到更大惩罚。
+\subsection{让计算接口与公式一致}
+实际训练用 \texttt{BCEWithLogitsLoss}：它接收原始得分并在内部稳定计算 sigmoid 与交叉熵的组合。单样本等价式为
+\begin{equation}
+\mathcal L(z,y)=\max(z,0)-yz+\log(1+e^{-|z|}).
+\end{equation}
+$\max(z,0)$ 取较大值，$|z|$ 是绝对值；此式避免直接计算过大的指数。\texttt{BCELoss} 接收概率，\texttt{BCEWith\allowbreak{}LogitsLoss} 接收得分，不能把两种接口混用。
+\begin{questionbox}[检查点 C5]
+所有得分为 0 时，平均数据损失是多少？为什么不能先 sigmoid 再传给 \texttt{BCEWithLogitsLoss}？
+\end{questionbox}
+\clearpage
+\section{从损失到一次参数更新}
+\subsection{梯度给出每个参数的变化方向}
+梯度 $\nabla_{\boldsymbol\theta}R$ 是 $R$ 对每个参数的偏导数组成的列向量；在当前位置，小幅沿负梯度移动会使损失一阶近似下降。先对单样本逐步求导：
+\begin{equation}
+\begin{aligned}
+\frac{\partial\mathcal L}{\partial p}&=-\frac yp+\frac{1-y}{1-p},\qquad
+\frac{\partial p}{\partial z}=p(1-p),\\
+\frac{\partial\mathcal L}{\partial z}&=\frac{\partial\mathcal L}{\partial p}\frac{\partial p}{\partial z}=p-y.
+\end{aligned}
+\end{equation}
+$\partial$ 表示把其他变量暂时固定的偏导；链式法则把前两项相乘，约去分母，得到 $p-y$。又因 $z=\tilde{\mathbf x}^{\top}\boldsymbol\theta$，有
+\begin{equation}
+\nabla_{\boldsymbol\theta}R=\frac1N\mathbf X^\top(\mathbf p-\mathbf y),\qquad
+\boldsymbol\theta^{[t+1]}=\boldsymbol\theta^{[t]}-\eta\nabla_{\boldsymbol\theta}R.
+\end{equation}
+$\mathbf p,\mathbf y\in\mathbb R^{N\times1}$；$\mathbf X^\top\in\mathbb R^{(d+1)\times N}$，梯度形状为 $(d+1)\times1$。$\eta>0$ 是学习率；方括号上标 $[t]$ 表示迭代次数，与样本编号 $(n)$ 区分。
+\subsection{贯穿手算：两所假设学校的更新}
+为便于手算，仅保留“标准化师生比分数、标准化国际学生分数”两个坐标。下表\textbf{专为课堂构造}，不是教材记录，也不是随包数据的抽样；标准化坐标 0 表示处于训练均值。
+\begin{center}\begin{tabular}{crrr}\toprule
+当前样本 $n$ & 师生比分数坐标 & 国际学生分数坐标 & 标签 $y^{(n)}$\\\midrule
+1 & 1 & 0 & 1\\2 & 0 & 1 & 0\\\bottomrule\end{tabular}\end{center}
+\begin{equation}
+\mathbf X=\begin{bmatrix}1&1&0\\1&0&1\end{bmatrix},\quad
+\boldsymbol\theta^{[0]}=\begin{bmatrix}0\\0\\0\end{bmatrix},\quad
+\mathbf p=\begin{bmatrix}0.5\\0.5\end{bmatrix},\quad
+\nabla R=\frac12\begin{bmatrix}1&1\\1&0\\0&1\end{bmatrix}\begin{bmatrix}-0.5\\0.5\end{bmatrix}
+=\begin{bmatrix}0\\-0.25\\0.25\end{bmatrix}.
+\end{equation}
+取 $\eta=0.4$，更新后参数为 $(0,0.1,-0.1)^\top$，两条概率分别为 0.524979 和 0.475021。平均损失从 0.693147 降至 0.644397。
+\begin{questionbox}[检查点 C6：核对方向]
+第一个分数权重变大、第二个分数权重变小，为何能让这两条已知标签更可能？请用代码输出 \texttt{theta.grad} 与更新后的 \texttt{theta} 核对，不能只看损失是否下降。
+\end{questionbox}
+\clearpage
+\section{正则化与训练循环}
+\subsection{区分拟合损失和训练总目标}
+训练集拟合得好不保证新样本表现好。参数过大可能把样本噪声也拟合进去。用 $\Omega$ 表示权重惩罚，$\lambda\ge0$ 控制其强度，训练总目标 $J$ 为
+\begin{equation}
+\begin{aligned}
+J(\boldsymbol\theta)&=R(\boldsymbol\theta)+\lambda\Omega(\boldsymbol\theta),\\
+\Omega_{\mathrm{L1}}(\boldsymbol\theta)&=\sum_{j=1}^d|\theta_j|,\qquad
+\Omega_{\mathrm{L2}}(\boldsymbol\theta)=\frac12\sum_{j=1}^d\theta_j^2.
+\end{aligned}
+\end{equation}
+L1（L1 Norm，一范数）是绝对值之和；本实验的 L2（L2 Norm，二范数）\textbf{惩罚采用二范数平方的一半}，并非二范数本身。这里不惩罚截距 $\theta_0$。若参数为 $(10,3,-4)^\top$，两种惩罚分别为 7 和 12.5。
+
+L2 惩罚的梯度是 $(0,\theta_1,\ldots,\theta_d)^\top$。L1 在非零坐标用符号函数求导，零点不唯一；PyTorch 在该处取 0。普通梯度更新下不保证权重恰好为零，不能把 L1 等同于本程序一定自动删除特征。
+\subsection{一批数据如何执行更新}
+本实验用小批量随机梯度下降 SGD（Stochastic Gradient Descent）更新参数。对当前批次，把上一节梯度式中的 $N$ 换成当前批次大小 $B$。\texttt{torch.optim.SGD} 已提供参数更新规则，学生连接五个步骤：
+\begin{lstlisting}[language=Python]
+optimizer.zero_grad()
+logits = model(X_batch)
+loss = data_loss(logits, y_batch)
+objective = loss + strength * model.penalty(kind)
+objective.backward()
+optimizer.step()
+\end{lstlisting}
+\texttt{backward()} 用自动微分得到每个参数的梯度；\texttt{step()} 更新参数。梯度默认会累加，所以每批先清零。损失在反向传播前不能用 \texttt{item()} 转成普通数，也不能 \texttt{detach()} 切断计算图。
+\begin{pitfallbox}[曲线必须比较同一种量]
+不同 $\lambda$ 的训练总目标不能直接拿来选模型。本实验每轮结束，用当前同一组参数分别计算全训练集与验证集的\textbf{无正则数据损失}，画出两条曲线；模型选择也看验证数据损失。
+\end{pitfallbox}
+\begin{questionbox}[检查点 C5/C6]
+把 \texttt{zero\_grad()} 删除，第二次更新仍与手算一致吗？若 $\lambda$ 极大，可能发生什么？
+\end{questionbox}
+\clearpage
+\section{正则化之外：有边界的特征选择}
+\subsection{必要排除与验证选择不是一回事}
+建模前删除排名、总分、名称和行号，是按照任务排除泄漏和标识字段。特征选择则是在\textbf{允许使用的字段}中比较完整与精简表示；这里称特征选择，避免与决策树剪枝混淆。
+
+主实验完整组为三个数值字段与五个类别字段。选做精简组删除 focus 与 research，保留三个数值与 region、status、size；编码后由 28 维变为 18 维。提前规定对照，固定同一划分、学习率、训练种子、最大轮数和 L2 系数 0.01，只改变字段组。
+\begin{keybox}[对照必须回答的问题]
+删除两个字段后，验证损失、召回率和特征维数怎样变化？若精简组更差，说明这些字段在当前划分中提供了信息；不应继续查看测试集并逐列试删直到得到高分。
+\end{keybox}
+\subsection{正则化不等于保证提高分数}
+L2 通常缩小权重，L1 鼓励稀疏，但本程序用普通小批量梯度下降，L1 不保证权重精确为零。一个独热类别权重很小，也不等于整个原始字段无用；相关字段还可能分摊作用。不能用任意权重阈值直接宣布完成“自动剪枝”。
+
+主实验的三种正则化方案只比较验证\textbf{数据损失}，不比较包含不同惩罚项的总目标；无正则也可能最好。所有方案在第 60 轮表现最好，也不证明已经达到全局数值最优，可能需要更多训练；本次不据测试结果延长训练。
+\subsection{选做与主实验如何衔接}
+命令 \texttt{python run\_lab.py --feature-study} 只读取训练和验证表，不覆盖主实验冻结模型。报告中将它单独列为拓展分析，不对两个特征组分别反复测试。若另行设计将特征组也纳入选模，必须在查看测试结果前规定联合选择规则。
+\begin{questionbox}[C7 选做]
+精简组维数更少但验证损失更大，可以为了“更简单”选它吗？可以讨论性能与复杂度的取舍，但必须如实报告损失，不应声称它在所有方面更好。
+\end{questionbox}
+\clearpage
+\section{评价、泛化与实验解释}
+\subsection{从四种计数到评价指标}
+以前 500 名为正类。TP（True Positive，真正例）是真实正类且预测正类；FP（False Positive，假正例）是误报；FN（False Negative，假负例）是漏判；TN（True Negative，真负例）是真实负类且预测负类。
+\begin{equation}
+\mathrm{Accuracy}=\frac{TP+TN}{N},\qquad
+\mathrm{Precision}=\frac{TP}{TP+FP},\qquad
+\mathrm{Recall}=\frac{TP}{TP+FN}.
+\end{equation}
+准确率衡量整体正确比例，精确率回答预测前 500 中有多少正确，召回率回答实际前 500 找到多少。F1 分数（F1 Score）是精确率和召回率的调和平均：
+\begin{equation}
+F1=\frac{2\,\mathrm{Precision}\,\mathrm{Recall}}{\mathrm{Precision}+\mathrm{Recall}}.
+\end{equation}
+代码约定分母为零时返回 0。主实验阈值预先固定为 0.5；降低阈值一般增加召回，也可能增加误报。在学校信息筛查中，漏掉目标学校与把非目标纳入待核查名单的代价不同，本实验不虚构实际业务代价。验证表比较 0.3、0.5、0.7，只用于解释权衡。
+\subsection{不要只看单一准确率}
+约三分之二样本为负类，全部预测负类就有约 66.6\% 的测试准确率，因此同时报告多数类基线、混淆矩阵、精确率、召回率与 F1。验证损失选择参数及轮次，冻结后测试一次；不反复换种子、字段或阈值挑高分。
+\subsection{当前模型在完整工作流中的位置}
+任务与可用时点 $\to$ 来源核对 $\to$ 划分 $\to$ 训练拟合预处理 $\to$ 概率模型与目标 $\to$ 优化 $\to$ 验证选择 $\to$ 冻结测试 $\to$ 后续监测。若未来改成跨年预测，要用早期信息预测后续标签，并按时间评估；不能把同一学校多年的记录随机混入三份数据，便声称能泛化到新学校。
+
+当前只覆盖榜单中学校，排名规则及缺失模式会变化；原数据来自第三方公开镜像，保留出处与原文件，但未逐校核验。输出是模型概率，并不自动保证校准。特征权重表示条件关联，不证明地区或办学性质导致排名变化。
+\clearpage
+\section{自测、符号索引与资料}
+\subsection{课堂追问的预期答案}
+\begin{enumerate}
+\item C0：0.7 是概率；阈值 0.5 时预测 1，阈值 0.8 时预测 0。原行号与排序相关，不能输入。
+\item C1：不填补标签。数值 0 保留，横线或无效文本转为缺失。
+\item C2：训练均值 2、标准差约 0.816497；验证不能改变它们。未知类别归 Unknown，列数不变。
+\item C3：902 条、每批 64，得到 15 批，最后 6 条；5 条、每批 2，得到 $2,2,1$。
+\item C4：输入 $(1,3,2)$、参数 $(1,2,-1)$，得分 5，概率约 0.993307。
+\item C5：零得分的平均交叉熵为 $\log 2\approx0.693147$；不要重复 sigmoid。
+\item C6：首次更新为 $(0,0.1,-0.1)^\top$；删除清梯度会让第二次更新偏离手算。
+\item C7：小例子四种计数各 1，准确率、精确率、召回率和 F1 均为 0.5；阈值降为 0.3 后召回率为 1，但仍有一个误报。
+\end{enumerate}
+退出卡：写出“类别表为什么只能在训练上拟合”与“为什么不能只按准确率选模型”的各一句解释。下次实验可继续研究优化算法、学习率与收敛。
+\subsection{按角色索引记号}
+\par\noindent\begin{tabularx}{\linewidth}{L{2.3cm}Y L{1.8cm}}\toprule
+类别 & 符号及含义 & 首次解释\\\midrule
+数据 & $N$、$x_j^{(n)}$：样本数与第 $n$ 个样本的第 $j$ 个数值 & 3.1\\
+预处理 & $\mu_j,s_j,\bar x_j^{(n)},u_j^{(n)}$：均值、尺度、填补值、标准化值 & 3.1\\
+表示 & $\mathbf x^{(n)},\tilde{\mathbf x}^{(n)},\mathbf X,\mathbf y,d,\top$：向量、增广、矩阵、标签、维数、转置 & 4.2\\
+模型 & $\boldsymbol\theta,z,p,\sigma,\tau,\hat y,\mathbf1$：参数、得分、概率、函数、阈值、预测、指示 & 6.1\\
+概率 & $P,\mid,\operatorname{logit},\log,\Lambda,\prod$：概率、条件、对数几率、对数、似然、连乘 & 6--7\\
+目标与优化 & $\mathcal L,R,J,\Omega,\lambda,\nabla,\partial,\eta,[t],B$：损失、风险、目标、惩罚、系数、梯度、偏导、步长、迭代、批量 & 5、7--9\\\bottomrule
+\end{tabularx}
+\clearpage
+\subsection{实际使用资料与改编边界}
+\begin{itemize}
+\item 项目上级目录《人工智能数学原理与算法：实验指导书（最终）.pdf》第 1 章，书内第 1--13 页：保留数据准备、PyTorch 逻辑回归、正则化与评价主线；贷款案例改为大学排名，增加独热编码和特征选择对照。
+\item 仓库 \file{source/slides/} 下的《2.5 逻辑回归\_v2.pdf》：沿用得分、概率、最大似然与梯度顺序；本实验统一采用 0/1 标签与增广截距。
+\item 仓库 教案目录中的《人工智能数学原理与算法\_12次课程与助教分工\_最终版.xlsx》：第三次实验衔接；本材料建议 135 分钟，不替代课程具体日期安排。
+\item 同级实验 01 的实验手册与报告模板：提交方式；实验 02 的代码：分阶段补全与小例子风格。
+\item 本次原表 \file{code/data/qs2026_raw.csv} 与 \file{code/data/classroom/split_manifest.json}：固定来源、原行号、划分与真实缺失。镜像地址见数据说明。
+\item \href{https://support.qs.com/hc/en-gb/articles/360021876820-QS-Institution-Classifications}{QS 官方学校分类说明}：规模、学科覆盖及研究活跃程度；\href{https://www.qs.com/insights/world-university-rankings-methodology}{QS 排名方法说明}：指标与排名构造。核对日期为 2026-10-08。
+\end{itemize}
+第三方镜像中的某些低排名段以区间起点表示，不能用于精确排名回归。本实验只使用能确定的前 500 标签，课堂文件没有跨越 500 的模糊标签。参考运行只说明这份划分上的表现，不能挪用教材、旧贷款实验或其他数据集的准确率。
+\end{document}
