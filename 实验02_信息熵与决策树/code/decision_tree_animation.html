@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>决策树构建动画 · 实验02 从二叉树到决策树</title>
+<style>
+  :root{
+    --navy:#0E3F8C; --blue:#1E4FA8; --mid:#3D7BD9; --ice:#E8EFF8; --ice2:#F0F5FC;
+    --ink:#1A2230; --sub:#4A5568; --mut:#8B97A8; --line:#D6DCE5; --amber:#FFC107; --amberD:#B8860B;
+    --good:#2E7D32; --goodbg:#E8F5E9; --bad:#C84B4B; --badbg:#FDECEA; --bg:#F7F9FC;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; background:#FFFFFF; color:var(--ink); height:100vh; display:flex; flex-direction:column; overflow:hidden;}
+  header{background:var(--navy); color:#fff; padding:10px 24px; display:flex; align-items:center; gap:16px; flex:none;}
+  header h1{font-size:18px; font-weight:700;}
+  header .src{font-size:12px; color:#9DB8E8;}
+  .controls{margin-left:auto; display:flex; align-items:center; gap:8px;}
+  .controls button{border:none; border-radius:8px; padding:7px 14px; font-size:13px; cursor:pointer; background:rgba(255,255,255,.14); color:#fff; transition:.15s;}
+  .controls button:hover{background:rgba(255,255,255,.28);}
+  .controls button.primary{background:var(--amber); color:#1A2230; font-weight:700;}
+  .controls select{border:none; border-radius:8px; padding:7px 8px; font-size:13px; background:rgba(255,255,255,.14); color:#fff;}
+  .controls select option{color:#1A2230;}
+  #stepInfo{font-size:12.5px; color:#C9D8F0; min-width:88px; text-align:center;}
+  main{flex:1; display:flex; min-height:0;}
+  .left{flex:1.45; display:flex; flex-direction:column; min-width:0; border-right:1px solid var(--line);}
+  .treeWrap{flex:1; overflow:auto; background:#fff; padding:6px 10px;}
+  svg#tree{width:100%; height:auto; min-height:340px; cursor:grab;}
+  svg#tree.panning{cursor:grabbing;}
+  .treeWrap{position:relative;}
+  .zoomBar{position:absolute; top:8px; right:12px; display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:10px; padding:4px 8px; box-shadow:0 1px 4px rgba(14,63,140,.10); z-index:5;}
+  .zoomBar button{border:1px solid var(--line); background:#fff; border-radius:7px; width:26px; height:24px; font-size:13px; cursor:pointer; color:var(--navy); line-height:1;}
+  .zoomBar button:hover{background:var(--ice2);}
+  .zoomBar .zbtn{width:auto; padding:0 8px; font-size:12px; height:24px;}
+  .zoomBar label{font-size:12px; color:var(--sub); display:flex; align-items:center; gap:3px; cursor:pointer;}
+  .panelTitle{font-size:13px; font-weight:700; color:var(--navy); padding:8px 14px 4px;}
+  .right{width:390px; flex:none; display:flex; flex-direction:column; overflow:auto; background:var(--bg);}
+  .card{margin:8px 12px 0; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px;}
+  .card h3{font-size:13.5px; color:var(--navy); margin-bottom:6px;}
+  .kv{display:flex; justify-content:space-between; font-size:13px; padding:2.5px 0;}
+  .kv .k{color:var(--sub);}
+  .kv .v{font-weight:600;}
+  .barWrap{display:flex; align-items:center; gap:8px; font-size:12.5px; padding:3px 0;}
+  .barWrap .nm{width:44px; color:var(--sub); flex:none;}
+  .barWrap .track{flex:1; height:12px; background:var(--ice); border-radius:6px; overflow:hidden;}
+  .barWrap .fill{height:100%; background:var(--mid); border-radius:6px; transition:width .4s;}
+  .barWrap.chosen .fill{background:var(--amber);}
+  .barWrap.chosen .nm,.barWrap.chosen .gv{color:var(--amberD); font-weight:700;}
+  .barWrap.skip .nm,.barWrap.skip .gv{color:var(--mut);}
+  .barWrap .gv{width:64px; text-align:right; font-variant-numeric:tabular-nums;}
+  .badge{display:inline-block; border-radius:12px; padding:2px 10px; font-size:12px; font-weight:700;}
+  .badge.pure{background:var(--goodbg); color:var(--good);}
+  .badge.exhaust{background:var(--ice); color:var(--navy);}
+  .bottom{flex:none; height:238px; display:flex; border-top:1px solid var(--line);}
+  .logBox{width:46%; border-right:1px solid var(--line); display:flex; flex-direction:column;}
+  .tableBox{flex:1; overflow:auto;}
+  #log{flex:1; overflow:auto; padding:6px 14px 10px; font-size:12.5px; line-height:1.75;}
+  #log div{color:var(--sub);}
+  #log div.cur{color:var(--ink); font-weight:600;}
+  #log div .no{color:var(--mut); margin-right:6px; font-variant-numeric:tabular-nums;}
+  table.data{border-collapse:collapse; width:100%; font-size:12px;}
+  table.data th{background:var(--navy); color:#fff; padding:4px 6px; position:sticky; top:0; font-weight:600;}
+  table.data td{border:1px solid var(--line); padding:2.5px 6px; text-align:center; color:var(--ink);}
+  table.data tr.cur td{background:#FFF3D6;}
+  table.data tr.dim td{color:#B9C2CE;}
+  table.data td.lbl1{color:var(--good); font-weight:700;}
+  table.data td.lbl0{color:var(--bad); font-weight:700;}
+  .empty{color:var(--mut); font-size:13px; padding:20px; text-align:center;}
+  footer{flex:none; font-size:11.5px; color:var(--mut); padding:4px 16px; border-top:1px solid var(--line); background:#fff;}
+</style>
+</head>
+<body>
+<header>
+  <h1>决策树是怎么从数据里长出来的？</h1>
+  <span class="src">算法与 teacher_only/decision_tree_answer.py 逐行一致 · 数据 = 西瓜数据集 2.0（17 条）</span>
+  <div class="controls">
+    <button id="btnReset">⟲ 重置</button>
+    <button id="btnPrev">← 上一步</button>
+    <button id="btnNext" class="primary">下一步 →</button>
+    <button id="btnPlay">▶ 自动播放</button>
+    <select id="speed"><option value="2200">0.5×</option><option value="1100" selected>1×</option><option value="550">2×</option></select>
+    <span id="stepInfo"></span>
+  </div>
+</header>
+
+<main>
+  <div class="left">
+    <div class="panelTitle">决策树的生长（琥珀色粗框 = 当前正在处理的节点）</div>
+    <div class="treeWrap">
+    <div class="zoomBar">
+      <button id="zIn" title="放大">＋</button>
+      <button id="zOut" title="缩小">－</button>
+      <button id="zFit" class="zbtn" title="适应窗口">适应</button>
+      <button id="zCur" class="zbtn" title="定位到当前节点">定位</button>
+      <label><input type="checkbox" id="zFollow">跟随</label>
+    </div>
+    <svg id="tree" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  </div>
+  <div class="right">
+    <div class="card">
+      <h3>当前节点</h3>
+      <div id="nodeInfo"><div class="empty">点击「下一步」开始构建</div></div>
+    </div>
+    <div class="card">
+      <h3>候选属性的信息增益（选最大的）</h3>
+      <div id="gainInfo"><div class="empty">进入节点后显示</div></div>
+    </div>
+  </div>
+</main>
+
+<div class="bottom">
+  <div class="logBox">
+    <div class="panelTitle">决策日志</div>
+    <div id="log"></div>
+  </div>
+  <div class="tableBox">
+    <div class="panelTitle">西瓜数据集 2.0（琥珀色行 = 当前节点的样本）</div>
+    <table class="data" id="dataTable"></table>
+  </div>
+</div>
+
+<footer>分支顺序遵循代码中的 sorted(values)（Unicode 序）；并列增益保留候选列表中靠前的属性；本页算法逻辑与 decision_tree_answer.py 完全一致，回代正确 17/17。</footer>
+
+<script>
+/* ================= 数据（西瓜数据集 2.0，与 decision_tree_answer.py 相同） ================= */
+const FEATURE_NAMES = ["色泽","根蒂","敲声","纹理","脐部","触感"];
+const ROWS = [
+ [1,"青绿","蜷缩","浊响","清晰","凹陷","硬滑",1],[2,"乌黑","蜷缩","沉闷","清晰","凹陷","硬滑",1],
+ [3,"乌黑","蜷缩","浊响","清晰","凹陷","硬滑",1],[4,"青绿","蜷缩","沉闷","清晰","凹陷","硬滑",1],
+ [5,"浅白","蜷缩","浊响","清晰","凹陷","硬滑",1],[6,"青绿","稍蜷","浊响","清晰","稍凹","软粘",1],
+ [7,"乌黑","稍蜷","浊响","稍糊","稍凹","软粘",1],[8,"乌黑","稍蜷","浊响","清晰","稍凹","硬滑",1],
+ [9,"乌黑","稍蜷","沉闷","稍糊","稍凹","硬滑",0],[10,"青绿","硬挺","清脆","清晰","平坦","软粘",0],
+ [11,"浅白","硬挺","清脆","模糊","平坦","硬滑",0],[12,"浅白","蜷缩","浊响","模糊","平坦","软粘",0],
+ [13,"青绿","稍蜷","浊响","稍糊","凹陷","硬滑",0],[14,"浅白","稍蜷","沉闷","稍糊","凹陷","硬滑",0],
+ [15,"乌黑","稍蜷","浊响","清晰","稍凹","软粘",0],[16,"浅白","蜷缩","浊响","模糊","平坦","硬滑",0],
+ [17,"青绿","蜷缩","沉闷","稍糊","稍凹","硬滑",0]];
+const X = ROWS.map(r=>r.slice(1,7)), Y = ROWS.map(r=>r[7]), IDS = ROWS.map(r=>r[0]);
+
+/* ================= 算法（与 decision_tree_answer.py 逐行对应） ================= */
+function entropy(y){
+  if(!y.length) return 0;
+  let e = 0;
+  for(const k of [0,1]){
+    const p = y.filter(v=>v===k).length / y.length;
+    if(p>0) e -= p*Math.log2(p);
+  }
+  return e;
+}
+function majority(y){ return y.filter(v=>v===1).length > y.filter(v=>v===0).length ? 1 : 0; }
+function colValues(X,j){ return [...new Set(X.map(r=>r[j]))].sort(); }
+function infoGain(X,y,j){
+  let after = 0;
+  for(const v of colValues(X,j)){
+    const cy = y.filter((_,i)=>X[i][j]===v);
+    after += cy.length/y.length * entropy(cy);
+  }
+  return entropy(y) - after;
+}
+function bestFeature(X,y,feats){
+  let bf=null, bg=-Infinity;
+  for(const j of feats){
+    if(colValues(X,j).length<=1) continue;
+    const g = infoGain(X,y,j);
+    if(g > bg+1e-12){ bg=g; bf=j; }
+  }
+  return bf;
+}
+
+/* ================= 记录构建过程（事件脚本） ================= */
+let steps = [], nodeSeq = 0;
+const nodes = {};   // id -> {id,parentId,edgeValue,depth,feature,label,children:{},rowIdx}
+function fmtG(g){ return g.toFixed(3); }
+
+function recBuild(Xs, ys, feats, depth, parentId, edgeValue, rowIdx){
+  const id = nodeSeq++;
+  const good = ys.filter(v=>v===1).length, bad = ys.length-good;
+  nodes[id] = {id, parentId, edgeValue, depth, feature:null, label:majority(ys), children:{}, rowIdx:[...rowIdx]};
+  steps.push({type:'enter', id, parentId, edgeValue, depth, n:ys.length, good, bad, ent:entropy(ys), feats:[...feats], ids:[...rowIdx],
+              desc:`进入节点 N${id}（深度 ${depth}）：${ys.length} 条样本（好瓜 ${good} / 坏瓜 ${bad}），Ent(D) = ${entropy(ys).toFixed(4)}`});
+  if(new Set(ys).size===1){
+    steps.push({type:'leaf', id, reason:'纯节点', label:nodes[id].label,
+                desc:`样本全为${ys[0]===1?'好瓜':'坏瓜'} → 成为叶节点，输出 ${ys[0]===1?'好瓜 1':'坏瓜 0'}`});
+    return id;
+  }
+  if(!feats.length){
+    steps.push({type:'leaf', id, reason:'属性用尽', label:nodes[id].label,
+                desc:`候选属性已用完 → 多数类叶节点，输出 ${nodes[id].label===1?'好瓜 1':'坏瓜 0'}`});
+    return id;
+  }
+  const gains = feats.map(j=>{
+    const skip = colValues(Xs,j).length<=1;
+    return {j, name:FEATURE_NAMES[j], skip, gain: skip?null:infoGain(Xs,ys,j)};
+  });
+  steps.push({type:'gains', id, gains,
+              desc:'计算候选属性增益：' + gains.map(g=>`${g.name} ${g.skip?'（常量，跳过）':'='+fmtG(g.gain)}`).join(' · ')});
+  const bf = bestFeature(Xs,ys,feats);
+  if(bf===null){
+    steps.push({type:'leaf', id, reason:'无可划分属性', label:nodes[id].label,
+                desc:`剩余属性都无法区分样本 → 多数类叶节点，输出 ${nodes[id].label===1?'好瓜 1':'坏瓜 0'}`});
+    return id;
+  }
+  const bg = gains.find(g=>g.j===bf).gain;
+  nodes[id].feature = bf;
+  steps.push({type:'choose', id, feature:bf, gain:bg,
+              desc:`选中划分属性：${FEATURE_NAMES[bf]}（列 ${bf}，Gain = ${bg.toFixed(4)}）—— 增益最大`});
+  const remaining = feats.filter(f=>f!==bf);
+  const values = colValues(Xs,bf);
+  const groups = values.map(v=>({v, n:ys.filter((_,i)=>Xs[i][bf]===v).length}));
+  steps.push({type:'split', id, groups, feature:bf,
+              desc:`按 ${FEATURE_NAMES[bf]} 分出 ${values.length} 个分支：` + groups.map(g=>`${g.v} ${g.n} 条`).join(' / ')});
+  for(const v of values){
+    const idx = [];
+    Xs.forEach((r,i)=>{ if(r[bf]===v) idx.push(i); });
+    const cid = recBuild(idx.map(i=>Xs[i]), idx.map(i=>ys[i]), remaining, depth+1, id, v, idx.map(i=>rowIdx[i]));
+    nodes[id].children[v] = cid;
+  }
+  return id;
+}
+recBuild(X, Y, [0,1,2,3,4,5], 0, null, null, ROWS.map((_,i)=>i));
+steps.push({type:'done', desc:'训练完成：17 条样本回代预测全部正确（17/17）。注意这是训练集回代，不代表对新样本的泛化能力'});
+
+/* ================= 树布局（叶子序号定位） ================= */
+let leafCursor = 0, maxDepth = 0;
+function layout(id){
+  const n = nodes[id];
+  const kidIds = Object.values(n.children);
+  if(!kidIds.length){ n._x = leafCursor++; }
+  else { kidIds.forEach(cid=>layout(cid)); n._x = kidIds.reduce((s,cid)=>s+nodes[cid]._x,0)/kidIds.length; }
+  maxDepth = Math.max(maxDepth, n.depth);
+}
+layout(0);
+const NW=118, NH=42, GAPX=128, GAPY=112, M=30;
+const totalLeaves = leafCursor;
+const VBW = M*2 + (totalLeaves-1)*GAPX + NW, VBH = M*2 + maxDepth*GAPY + NH;
+for(const id in nodes){
+  const n = nodes[id];
+  n._px = M + n._x*GAPX;          // 中心 x
+  n._py = M + n.depth*GAPY;       // 顶部 y
+}
+
+/* ================= 静态 SVG 构建 ================= */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const treeSvg = document.getElementById('tree');
+treeSvg.setAttribute('viewBox', `0 0 ${VBW} ${VBH}`);
+function el(tag, attrs){ const e = document.createElementNS(SVGNS, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+const edgesG = el('g',{}), nodesG = el('g',{});
+const viewportG = el('g',{});
+treeSvg.appendChild(viewportG);
+viewportG.appendChild(edgesG); viewportG.appendChild(nodesG);
+const edgeEls = {}, nodeEls = {};
+for(const id in nodes){
+  const n = nodes[id];
+  if(n.parentId !== null){
+    const p = nodes[n.parentId];
+    const x1 = p._px, y1 = p._py + NH, x2 = n._px, y2 = n._py;
+    const g = el('g',{opacity:0});
+    g.appendChild(el('line',{x1, y1, x2, y2, stroke:'#3D7BD9', 'stroke-width':2}));
+    const lx = (x1+x2)/2, ly = (y1+y2)/2;
+    g.appendChild(el('rect',{x:lx-24, y:ly-11, width:48, height:20, rx:9, fill:'#FFF8E6', stroke:'#FFC107', 'stroke-width':1}));
+    const t = el('text',{x:lx, y:ly+3.5, 'text-anchor':'middle', 'font-size':12.5, fill:'#B8860B', 'font-weight':700});
+    t.textContent = n.edgeValue; g.appendChild(t);
+    edgesG.appendChild(g); edgeEls[id] = g;
+  }
+  const g = el('g',{opacity:0});
+  g.appendChild(el('rect',{x:n._px-NW/2, y:n._py, width:NW, height:NH, rx:10,
+    fill:'#E8EFF8', stroke:'#1E4FA8', 'stroke-width':2}));
+  const t1 = el('text',{x:n._px, y:n._py+18, 'text-anchor':'middle', 'font-size':14, 'font-weight':700, fill:'#0E3F8C'});
+  const t2 = el('text',{x:n._px, y:n._py+33, 'text-anchor':'middle', 'font-size':11, fill:'#4A5568'});
+  g.appendChild(t1); g.appendChild(t2);
+  nodesG.appendChild(g); nodeEls[id] = {g, t1, t2, rect:g.childNodes[0]};
+}
+
+function nodeText(id, shownLeaf){
+  const n = nodes[id];
+  if(n.feature !== null) return [FEATURE_NAMES[n.feature] + ' (列'+n.feature+')', '多数类 '+(n.label===1?'好瓜':'坏瓜')];
+  const isGood = n.label===1;
+  return [(shownLeaf? (isGood?'✓ 好瓜 1':'✓ 坏瓜 0') : '待处理节点'), '样本 '+(isGood?'好瓜':'坏瓜')+'（多数类）'];
+}
+
+/* ================= 状态计算与整体重绘 ================= */
+let cur = 0;   // 0..steps.length
+function stateAt(k){
+  const visible = new Set(), leafOf = {}, featOf = {}, reasonOf = {}, gainsAt = {}, chosenAt = {}, splitAt = {}, idsAt = {};
+  for(let i=0;i<k;i++){
+    const s = steps[i];
+    if(s.type==='enter'){ visible.add(s.id); idsAt[s.id]=s; }
+    if(s.type==='leaf'){ leafOf[s.id]=s; }
+    if(s.type==='choose'){ featOf[s.id]=s.feature; chosenAt[s.id]=i; }
+    if(s.type==='gains'){ gainsAt[s.id]=i; }
+    if(s.type==='split'){ splitAt[s.id]=i; }
+  }
+  let curNode = null;
+  for(let i=k-1;i>=0;i--){
+    const s = steps[i];
+    if(['enter','gains','choose','split','leaf'].includes(s.type)){ curNode = s.id; break; }
+  }
+  let lastGains = null;
+  for(let i=k-1;i>=0;i--){ if(steps[i].type==='gains'){ lastGains = steps[i]; break; } }
+  return {visible, leafOf, featOf, gainsAt, chosenAt, idsAt, curNode, lastGains};
+}
+
+function render(){
+  const st = stateAt(cur);
+  // 树
+  for(const id in nodes){
+    const nid = +id;
+    const vis = st.visible.has(nid);
+    const ne = nodeEls[id], n = nodes[id];
+    ne.g.setAttribute('opacity', vis?1:0);
+    if(vis){
+      const leaf = st.leafOf[nid];
+      const isInternal = st.featOf[nid] !== undefined;
+      const pair = nodeText(nid, !!leaf);
+      ne.t1.textContent = pair[0]; ne.t2.textContent = pair[1];
+      const isCur = nid === st.curNode;
+      ne.rect.setAttribute('stroke', isCur ? '#FFC107' : (leaf ? (n.label===1?'#2E7D32':'#C84B4B') : '#1E4FA8'));
+      ne.rect.setAttribute('stroke-width', isCur ? 4 : 2);
+      ne.rect.setAttribute('fill', leaf ? (n.label===1?'#E8F5E9':'#FDECEA') : '#E8EFF8');
+      ne.g.style.transform = isCur ? 'scale(1.05)' : 'scale(1)';
+      ne.g.style.transformOrigin = `${n._px}px ${n._py+NH/2}px`;
+      ne.g.style.transition = 'opacity .35s, transform .3s';
+    }
+    const ee = edgeEls[id];
+    if(ee) ee.setAttribute('opacity', vis?1:0);
+  }
+  // 右侧面板
+  const info = document.getElementById('nodeInfo');
+  const gainBox = document.getElementById('gainInfo');
+  if(st.curNode===null){
+    info.innerHTML = '<div class="empty">点击「下一步」开始构建</div>';
+    gainBox.innerHTML = '<div class="empty">进入节点后显示</div>';
+  } else {
+    const n = nodes[st.curNode], e = st.idsAt[st.curNode];
+    const leaf = st.leafOf[st.curNode];
+    let html = '';
+    if(e){
+      const tot = e.n || 1;
+      html += `<div class="kv"><span class="k">节点 / 深度</span><span class="v">N${st.curNode} / 第 ${e.depth} 层</span></div>`;
+      html += `<div class="kv"><span class="k">样本数</span><span class="v">${e.n} 条</span></div>`;
+      html += `<div class="kv"><span class="k">好瓜 / 坏瓜</span><span class="v">${e.good} / ${e.bad}</span></div>`;
+      html += `<div style="display:flex;height:10px;border-radius:5px;overflow:hidden;margin:4px 0 2px;">
+                 <div style="width:${e.good/tot*100}%;background:#66BB6A;"></div>
+                 <div style="width:${e.bad/tot*100}%;background:#E57373;"></div></div>`;
+      html += `<div class="kv"><span class="k">Ent(D)</span><span class="v">${e.ent.toFixed(4)} bit</span></div>`;
+      html += `<div class="kv"><span class="k">剩余属性 A</span><span class="v">${e.feats.map(j=>FEATURE_NAMES[j]).join('、')}</span></div>`;
+      html += `<div class="kv"><span class="k">当前多数类</span><span class="v">${n.label===1?'好瓜 1':'坏瓜 0'}</span></div>`;
+      if(leaf) html += `<div style="margin-top:6px"><span class="badge ${leaf.reason==='纯节点'?'pure':'exhaust'}">叶节点：${leaf.reason}</span></div>`;
+    }
+    info.innerHTML = html;
+    const g = st.lastGains;
+    if(g && st.gainsAt[g.id]!==undefined){
+      const chosen = st.chosenAt[g.id]!==undefined ? steps[st.chosenAt[g.id]].feature : null;
+      let h = '';
+      for(const it of g.gains){
+        const cls = it.skip ? 'skip' : (chosen===it.j ? 'chosen' : '');
+        h += `<div class="barWrap ${cls}"><span class="nm">${it.name}</span><span class="track"><span class="fill" style="width:${it.skip?0:Math.min(100, it.gain/0.5*100)}%"></span></span><span class="gv">${it.skip?'常量':it.gain.toFixed(4)}</span></div>`;
+      }
+      h += `<div style="font-size:11.5px;color:#8B97A8;margin-top:4px;">${chosen!==null&&chosen!==undefined ? '★ 琥珀色 = 本节点选中的划分属性（增益最大）' : '条形长度 = 增益大小（满格 0.5 bit）'}</div>`;
+      gainBox.innerHTML = h;
+    } else {
+      gainBox.innerHTML = '<div class="empty">进入节点后显示</div>';
+    }
+  }
+  // 数据表高亮
+  document.querySelectorAll('#dataTable tr').forEach((tr,i)=>{
+    if(i===0) return;
+    tr.classList.remove('cur','dim');
+    if(st.curNode!==null){
+      const e = st.idsAt[st.curNode];
+      if(e){ if(e.ids.includes(i-1)) tr.classList.add('cur'); else tr.classList.add('dim'); }
+    }
+  });
+  if(cur===steps.length){
+    document.querySelectorAll('#dataTable tr').forEach(tr=>tr.classList.remove('dim'));
+  }
+  // 日志
+  const log = document.getElementById('log');
+  log.innerHTML = '';
+  for(let i=0;i<cur;i++){
+    const d = document.createElement('div');
+    if(i===cur-1) d.className='cur';
+    d.innerHTML = `<span class="no">${i+1}.</span>${steps[i].desc}`;
+    log.appendChild(d);
+  }
+  log.scrollTop = log.scrollHeight;
+  document.getElementById('stepInfo').textContent = `${cur} / ${steps.length} 步`;
+  if(document.getElementById('zFollow').checked && st.curNode!==null) centerOn(st.curNode);
+}
+
+/* ================= 数据表 ================= */
+const tbl = document.getElementById('dataTable');
+{
+  const thead = document.createElement('tr');
+  ['编号','色泽','根蒂','敲声','纹理','脐部','触感','标签'].forEach(h=>{
+    const th = document.createElement('th'); th.textContent = h; thead.appendChild(th);
+  });
+  tbl.appendChild(thead);
+  ROWS.forEach(r=>{
+    const tr = document.createElement('tr');
+    r.forEach((v,j)=>{
+      const td = document.createElement('td');
+      td.textContent = v;
+      if(j===7){ td.className = v===1?'lbl1':'lbl0'; td.textContent = v===1?'好瓜 1':'坏瓜 0'; }
+      tr.appendChild(td);
+    });
+    tbl.appendChild(tr);
+  });
+}
+
+/* ================= 缩放与平移 ================= */
+let zS = 1, zTx = 0, zTy = 0;
+function applyView(){ viewportG.setAttribute('transform', `translate(${zTx},${zTy}) scale(${zS})`); }
+function svgCursor(e){
+  const pt = treeSvg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  return pt.matrixTransform(treeSvg.getScreenCTM().inverse());
+}
+function zoomAt(p, factor){
+  const ns = Math.min(4, Math.max(0.5, zS*factor));
+  if(ns===zS) return;
+  const qx = (p.x - zTx)/zS, qy = (p.y - zTy)/zS;
+  zTx = p.x - ns*qx; zTy = p.y - ns*qy; zS = ns; applyView();
+}
+function centerOn(nodeId){
+  if(nodeId===null || nodeId===undefined || !nodes[nodeId]) return;
+  const n = nodes[nodeId];
+  zTx = VBW/2 - zS*n._px; zTy = VBH/2 - zS*(n._py+NH/2); applyView();
+}
+treeSvg.addEventListener('wheel', e=>{ e.preventDefault(); zoomAt(svgCursor(e), e.deltaY<0 ? 1.15 : 1/1.15); }, {passive:false});
+treeSvg.addEventListener('dblclick', e=>{ e.preventDefault(); zoomAt(svgCursor(e), 1.5); });
+document.getElementById('zIn').onclick = ()=>zoomAt({x:VBW/2, y:VBH/2}, 1.25);
+document.getElementById('zOut').onclick = ()=>zoomAt({x:VBW/2, y:VBH/2}, 0.8);
+document.getElementById('zFit').onclick = ()=>{ zS=1; zTx=0; zTy=0; applyView(); };
+document.getElementById('zCur').onclick = ()=>{
+  const st = stateAt(cur);
+  if(st.curNode===null){ zS=1; zTx=0; zTy=0; applyView(); return; }
+  if(zS<1.5) zS=1.5;
+  centerOn(st.curNode);
+};
+let panning = null;
+treeSvg.addEventListener('mousedown', e=>{
+  panning = {px:e.clientX, py:e.clientY, tx:zTx, ty:zTy};
+  treeSvg.classList.add('panning'); e.preventDefault();
+});
+window.addEventListener('mousemove', e=>{
+  if(!panning) return;
+  const ctm = treeSvg.getScreenCTM();
+  const k = (ctm ? ctm.a : 1) * zS;
+  zTx = panning.tx + (e.clientX-panning.px)/k;
+  zTy = panning.ty + (e.clientY-panning.py)/k;
+  applyView();
+});
+window.addEventListener('mouseup', ()=>{ panning=null; treeSvg.classList.remove('panning'); });
+applyView();
+
+/* ================= 播放控制 ================= */
+let timer = null;
+function stopPlay(){ if(timer){ clearInterval(timer); timer=null; document.getElementById('btnPlay').textContent='▶ 自动播放'; } }
+function next(){ if(cur<steps.length){ cur++; render(); } if(cur===steps.length) stopPlay(); }
+function prev(){ if(cur>0){ cur--; render(); } }
+document.getElementById('btnNext').onclick = ()=>{ stopPlay(); next(); };
+document.getElementById('btnPrev').onclick = ()=>{ stopPlay(); prev(); };
+document.getElementById('btnReset').onclick = ()=>{ stopPlay(); cur=0; render(); };
+document.getElementById('btnPlay').onclick = function(){
+  if(timer){ stopPlay(); return; }
+  if(cur>=steps.length) cur=0;
+  this.textContent = '⏸ 暂停';
+  timer = setInterval(()=>{ if(cur>=steps.length){ stopPlay(); return; } next(); }, parseInt(document.getElementById('speed').value));
+};
+document.getElementById('speed').onchange = ()=>{ if(timer){ stopPlay(); document.getElementById('btnPlay').click(); } };
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); stopPlay(); next(); }
+  if(e.key==='ArrowLeft'){ e.preventDefault(); prev(); }
+});
+render();
+</script>
+</body>
+</html>
