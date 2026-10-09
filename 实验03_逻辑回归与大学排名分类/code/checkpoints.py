@@ -12,7 +12,7 @@ def check(implementation, checkpoint):
 
     Args:
         implementation (module): student 或 reference 模块。
-        checkpoint (int): 0 到 7。
+        checkpoint (int): 检查点编号，取 0 到 7，对应 C0–C7。
     """
     s = implementation
     if checkpoint == 0:
@@ -32,6 +32,7 @@ def check(implementation, checkpoint):
         assert len(frame) == 3
         values = s.clean_numeric(pd.Series(["12.5", "-", "", None]))
         assert values.iloc[0] == 12.5 and values.iloc[1:].isna().all()
+        assert s.clean_numeric(pd.Series(["0", 0])).tolist() == [0., 0.], "数值 0 是有效分数，不能转为缺失"
     elif checkpoint == 2:
         frame = pd.DataFrame({"x": [1., 3., None], "constant": [5., 5., 5.], "empty": [None]*3}, dtype=float)
         result = s.fit_statistics(frame)
@@ -61,6 +62,7 @@ def check(implementation, checkpoint):
         X = torch.arange(15).reshape(5, 3).float()
         y = torch.arange(5).reshape(5, 1).float()
         dataset = s.UniversityDataset(X, y)
+        assert dataset.__len__() is not None, "先完成 C3 __len__"
         assert len(dataset) == 5
         row, label = dataset[2]
         assert torch.equal(row, X[2]) and torch.equal(label, y[2])
@@ -79,6 +81,7 @@ def check(implementation, checkpoint):
         assert torch.allclose(p, torch.tensor([[.11920292], [.5], [.88079708]]))
         assert torch.isfinite(s.sigmoid(torch.tensor([-1000., 1000.]))).all()
         model = s.LogisticRegression(3)
+        assert hasattr(model, "theta"), "先完成 C4 __init__，把参数注册为 self.theta"
         assert model.theta.shape == (3, 1)
         assert any(parameter is model.theta for parameter in model.parameters())
         with torch.no_grad():
@@ -108,7 +111,7 @@ def check(implementation, checkpoint):
         loader = s.make_loader(s.UniversityDataset(X, y), 2, False)
         optimizer = torch.optim.SGD(model.parameters(), lr=.4)
         loss = s.train_epoch(model, loader, optimizer, "none", 0.)
-        assert loss is not None, "先完成 C6 train_epoch"
+        assert loss is not None, "先完成 C6 train_epoch，并累计 total 与 count"
         expected = torch.tensor([[0.], [.1], [-.1]])
         assert torch.allclose(model.theta.detach(), expected, atol=1e-6)
         # 第二次更新检查梯度是否清零，和课堂公式独立核对。

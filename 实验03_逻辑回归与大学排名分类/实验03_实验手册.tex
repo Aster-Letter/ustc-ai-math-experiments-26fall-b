@@ -4,7 +4,7 @@
 \newcommand{\DocShortTitle}{实验03：逻辑回归}
 \newcommand{\DocType}{学生实验手册}
 \input{assets/experiment-style.tex}
-\usepackage{xurl,bookmark}
+\usepackage{xurl,bookmark,xltabular}
 \setmonofont[BoldFont=DejaVuSansMono-Bold.ttf,ItalicFont=DejaVuSansMono-Oblique.ttf]{DejaVuSansMono.ttf}
 \setCJKmonofont[AutoFakeBold=2]{FandolFang-Regular.otf}
 \setlength{\headheight}{15pt}
@@ -12,6 +12,15 @@
 \hypersetup{pdfauthor={胡泷（主讲）；胡泷、曾有成（整理）；钟志诚（任课教师）},pdftitle={第三次实验：分阶段实验手册}}
 \lstset{numbers=none,xleftmargin=0pt,framexleftmargin=0pt,basicstyle=\ttfamily\small}
 \newcommand{\file}[1]{\nolinkurl{#1}}
+% 函数规格：#1 函数签名，#2 输入，#3 输出，#4 提示。
+\tcbuselibrary{breakable}
+\newtcolorbox{specbox}[1][]{breakable,colback=PaleBlue,colframe=Blue,title={#1},fonttitle=\bfseries,coltitle=white}
+\newcommand{\fspec}[4]{\par\noindent{\bfseries\texttt{#1}}\par
+\begin{itemize}[leftmargin=1.5em,itemsep=0pt,topsep=1pt,parsep=0pt,before=\raggedright]
+\item[] \textbf{输入：}#2
+\item[] \textbf{输出：}#3
+\item[] \textbf{提示：}#4
+\end{itemize}}
 \begin{document}
 \hypersetup{pageanchor=false}
 \begin{titlepage}
@@ -44,61 +53,79 @@ C0--C7 分阶段完成；日期与提交平台以课程通知为准。\\
 \end{titlepage}
 \hypersetup{pageanchor=true}
 \pagenumbering{roman}\tableofcontents\clearpage\pagenumbering{arabic}
-\section{实验入口与完成目标}
-\subsection{先读什么，再运行什么}
-课前阅读《前置讲义》第 1--5 节，复习表格、填补、独热编码和批次，约 30 分钟。课堂以数学推导、手算和检查点完成训练与评价。主讲胡泷，整理胡泷、曾有成，任课教师钟志诚；建议课堂 3 学时，共 135 分钟，安装时间不计入。
+\section{实验目的与实验环境}
+\subsection{实验目的}
+\begin{enumerate}
+\item 理解逻辑回归将线性得分经 sigmoid 函数转换为概率、再按阈值给出类别的过程，区分得分、概率与预测类别三种输出。
+\item 掌握混合类型表格数据的预处理方法，包括数值清洗与均值填补、仅由训练集拟合的标准化与独热编码，以及缺失和未见类别的处理。
+\item 实现二元交叉熵损失与 L1/L2 正则化，手算并用程序核对一次梯度更新，完成小批量随机梯度下降训练。
+\item 按训练集、验证集与测试集的职责完成模型选择与最终评价，并结合混淆矩阵、多数类基线与多项指标解释分类结果。
+\end{enumerate}
+\subsection{实验任务}
+本实验使用 QS（Quacquarelli Symonds）2026 世界大学排名的教学整理数据，依据学校的三个已公布指标分数与五个类别属性，判断该校是否位于同年榜单前 500 名。该任务是同年榜单内的分类练习，既不预测未来排名，也不对未上榜的大学作出评价。
 
-实验用 QS（Quacquarelli Symonds）2026 排名整理表，识别同年榜单前 500 名；不预测未来排名。沿用实验 01 环境，在 \file{code/} 目录执行：
+课前应阅读《前置讲义》第 1--5 节，复习表格读取、缺失填补、独热编码与批次划分，预计用时约 30 分钟。课堂部分通过数学推导、手算与检查点完成模型的训练与评价，建议用时 3 学时（135 分钟），环境安装时间不计在内。
+\subsection{实验环境与文件}
+本实验沿用实验 01 配置的 conda 环境。进入 \file{code/} 目录后执行：
 \begin{lstlisting}[language=bash]
 conda activate ustc-ai-experiments-26fall-B
 python checkpoints.py C0
 \end{lstlisting}
-缺少依赖时运行 \texttt{python -m pip install -r requirements.txt}。使用 CPU（Central Processing Unit，中央处理器）即可；不要求加速硬件。本包不依赖 scikit-learn。
+若提示缺少依赖，可运行 \texttt{python -m pip install -r requirements.txt} 安装。参考环境为 Python 3.11、PyTorch 2.14、pandas 3.0 与 NumPy 2.4。程序在 CPU（Central Processing Unit，中央处理器）上即可完成运行，不需要加速硬件，也不依赖 scikit-learn。实验所用文件及其作用如下表所示。
 \par\noindent\begin{tabularx}{\linewidth}{L{4.4cm}Y}\toprule
-入口 & 作用\\\midrule
-\file{student.py} & 主要补全文件，17 处 TODO 均有 Hint\\
-\file{checkpoints.py} & C0--C7 小例子自查，可单独执行\\
-\file{support.py}, \file{workflow.py} & 已提供的预处理编排、选择与文件输出\\
-\file{run_lab.py}, \file{logic.ipynb} & 两种入口共用同一份学生实现\\
-\file{data/classroom/} & 固定课堂数据、来源与划分记录\\
-\file{report-template.md} & 逐检查点记录及综合结果模板\\\bottomrule
+文件 & 作用\\\midrule
+\file{student.py} & 学生主要补全的文件，共 17 处 TODO，每处均附 Hint 与可核对的预期结果\\
+\file{checkpoints.py} & C0--C7 各阶段的小样例自检，可按阶段单独运行\\
+\file{support.py}, \file{workflow.py} & 已提供的预处理编排、模型选择与结果输出代码\\
+\file{run_lab.py}, \file{logic.ipynb} & 脚本与 Notebook 两种运行入口，二者调用同一份学生实现\\
+\file{data/classroom/} & 固定的课堂数据、来源与划分记录\\
+\file{report-template.md} & 实验报告模板\\\bottomrule
 \end{tabularx}
-\subsection{统一练习节奏}
-先运行已完成小例子，观察并修改一个值；再补一个函数、运行自检、解释结果。Notebook 通过普通 \texttt{import student} 复用代码；修改文件后重启内核，不在两处维护答案。\texttt{return None} 是待完成占位，不是正确算法输出。
-\begin{pitfallbox}[先明确输入边界]
-模型只用三个数值分数与五个类别字段。名称、行号、排名、总分、历史排名不输入。类别缺失保留为 Unknown，数值缺失由训练均值处理；不能用测试集决定填补规则或删哪些字段。
+\subsection{实验方法与注意事项}
+各检查点均按以下步骤进行：先运行已给出的小例子并观察输出，修改一个数值后预测结果的变化；再根据本手册给出的函数规格补全对应函数，运行自检，并解释所得结果。每个检查点的规格框列出了各函数的输入（参数名、类型与形状）、输出与提示，与 \file{student.py} 中的文档字符串一致。
+
+Notebook 通过普通的 \texttt{import student} 调用同一份代码，因此修改 \file{student.py} 后需重启内核，避免在两处分别维护实现。骨架中的 \texttt{return None} 仅为待完成的占位，并非算法的正确输出。
+\begin{pitfallbox}[明确模型的输入边界]
+模型的输入仅包括三个数值分数与五个类别字段；学校名称、原表行号、各类排名、总分与历史排名均不得作为输入。类别缺失值统一编码为 Unknown，数值缺失值以训练集均值填补；填补规则与字段取舍均不得依据测试集确定。
 \end{pitfallbox}
 \clearpage
-\section{课堂路线与验收方式}
-\subsection{135 分钟安排}
+\section{实验安排与验收方式}
+\subsection{课堂时间安排}
+课堂按检查点分为八个阶段，各阶段的教师活动、学生活动与产出如下表所示。
 \par\noindent\begin{tabularx}{\linewidth}{L{1.7cm}Y Y}\toprule
-阶段/分 & 教师活动 & 学生活动与产出\\\midrule
-C0 / 10 & 从决策树连接概率输出，演示形状 & 运行矩阵乘法，记录改值后的预测\\
-C1 / 15 & 区分标签、标识与数值缺失 & 补两个清洗函数，报告字段与缺失\\
-C2 / 25 & 手算标准化与独热编码，说明未知类别 & 补五个函数，核对列顺序和张量\\
-C3 / 10 & 解释样本成对与末批 & 补数据集和 loader，用五条数据自检\\
-C4 / 15 & 连接得分、概率与预测类别 & 补参数和前向，核对得分 5\\
-C5 / 20 & 推导交叉熵与权重惩罚 & 补损失、正则，验证截距不受罚\\
-C6 / 20 & 手算一次更新，解释五步循环 & 补训练，核对连续两次更新\\
-C7 / 20 & 区分选择和测试，解释错误代价 & 补指标、比较方案，冻结后测试\\\bottomrule
+阶段/分钟 & 教师活动 & 学生活动与产出\\\midrule
+C0 / 10 & 由决策树的概率输出引入本实验，演示张量形状 & 运行矩阵乘法样例，记录修改权重后的输出\\
+C1 / 15 & 区分标签、标识字段与数值缺失 & 补全两个清洗函数，记录字段类型与缺失统计\\
+C2 / 25 & 手算标准化与独热编码，说明未知类别的处理 & 补全五个函数，核对列顺序与张量形状\\
+C3 / 10 & 说明样本配对与末批处理 & 补全数据集类与加载器，用五条样本自检\\
+C4 / 15 & 联系得分、概率与预测类别 & 补全参数注册与前向计算，核对得分 5\\
+C5 / 20 & 推导交叉熵与权重惩罚 & 补全损失与惩罚项，验证截距不受惩罚\\
+C6 / 20 & 手算一次更新，讲解五步训练循环 & 补全训练函数，核对连续两次更新\\
+C7 / 20 & 区分模型选择与最终测试，讨论错误代价 & 补全指标函数，比较方案并在冻结后测试\\\bottomrule
 \end{tabularx}
-合计 $10+15+25+10+15+20+20+20=135$ 分钟。运行完整训练时同步分析图表；特征选择对照为课后选做，不挤占必做课堂时间。
-\subsection{依赖与证据}
-C0 独立可运行；C1 清洗数值和标签；C2 的数值与类别小测试独立于真实数据；C3 使用提供的张量；C4 建模；C5 需要 C4；C6 依赖 C3--C5；C7 指标小例子独立，完整实验需要全部阶段。
+各阶段合计 $10+15+25+10+15+20+20+20=135$ 分钟。完整训练运行期间可同步分析输出图表；特征选择对照安排为课后选做内容，不占用必做部分的课堂时间。
+\subsection{阶段依赖与验收证据}
+C0 可独立运行；C1 完成数值与标签清洗；C2 的数值与类别小测试不依赖真实数据；C3 使用自检提供的张量；C4 完成模型定义。C5 依赖 C4，C6 依赖 C3--C5；C7 的指标小例子可独立检查，完整实验则需要全部阶段完成。
 \begin{questionbox}[检查点验收]
-每个阶段记录对应函数、实现思路、一条小例子的输入与预期/实际输出及解释。\texttt{PASS} 只能证明所列样例通过，不能代替报告中的分析；未完成项如实说明。
+每个阶段需在报告中记录对应函数、实现思路、一条小例子的输入与预期/实际输出，以及对结果的解释。\texttt{PASS} 仅表明所列样例通过，不能替代报告中的分析；未完成的内容应如实说明。
 \end{questionbox}
-\subsection{必做与选做}
-必做：C0--C7、一次梯度手算、三种正则方案比较、冻结后测试及四部分报告。选做：只在训练与验证上比较完整/精简特征。两者不以高准确率作为评分门槛。
+\subsection{必做与选做内容}
+必做内容包括 C0--C7、一次梯度手算、三种正则化方案的比较、模型冻结后的测试以及完整的实验报告。选做内容为仅在训练集和验证集上比较完整与精简两组特征。两部分均不以准确率高低作为评分门槛。
 \begin{teacherbox}[板书安排]
-左：数据角色与编码表；中：$\mathbf X\boldsymbol\theta\to\mathbf p\to R\to\nabla R$（设计矩阵、参数、概率、平均损失、梯度）；右：训练/验证/测试职责和四种分类计数。详细维度与记号见前置讲义。
+左栏：数据角色与编码表；中栏：$\mathbf X\boldsymbol\theta\to\mathbf p\to R\to\nabla R$（设计矩阵、参数、概率、平均损失、梯度）；右栏：训练/验证/测试的职责与四种分类计数。详细的维度与记号见前置讲义。
 \end{teacherbox}
 \clearpage
-\section{C0--C1：认识表格并清洗}
+\section{C0--C1：数据观察与清洗}
 \subsection{C0：运行形状小例子}
-运行 \texttt{python checkpoints.py C0}。训练原表应为 \texttt{(902,11)}，缺失标签 0，矩阵乘法为 \texttt{[[2.0],[-1.0]]}。11 列含名称、行号、标签，不能理解成 11 个模型输入。改变权重后先手算，再运行核对。
-\subsection{C1：补两个简洁函数}
-在 \file{student.py} 补 \texttt{filter\_labels} 和 \texttt{clean\_numeric}。前者只删除标签缺失行，不填补特征；后者把数值字符串转换成数值，空白、横线和无法解析文本转成缺失，不填 0。
+运行 \texttt{python checkpoints.py C0}。程序应输出训练原表形状 \texttt{(902,11)}、缺失标签数 0，以及矩阵乘法结果 \texttt{[[2.0],[-1.0]]}。这 11 列包含学校名称、原表行号与标签，因此不能理解为 11 个模型输入。修改权重后，应先手算预期结果，再运行程序核对。
+\begin{specbox}[C0 输入、输出与提示]
+本阶段无需编写函数。\\
+\textbf{输入：}\texttt{X = [[1, 2], [1, -1]]}（形状 $(2,2)$ 的 \texttt{torch.Tensor}）与 \texttt{w = [[0], [1]]}（形状 $(2,1)$）。\\
+\textbf{输出：}\texttt{X @ w = [[2.0], [-1.0]]}，形状 $(2,1)$；同时打印训练表形状 \texttt{(902, 11)} 与缺失标签数 0。\\
+\textbf{提示：}矩阵乘法结果的行数等于 \texttt{X} 的行数、列数等于 \texttt{w} 的列数；例如将 \texttt{w} 改为 \texttt{[[1], [1]]}，结果应为 \texttt{[[3.0], [0.0]]}。
+\end{specbox}
+\subsection{C1：补全标签过滤与数值清洗函数}
+在 \file{student.py} 中补全 \texttt{filter\_labels} 与 \texttt{clean\_numeric}。前者仅删除标签缺失的行，不填补任何特征；后者将数值字符串转换为数值，空白、横线和无法解析的文本转换为缺失值，而不是填为 0。可用以下代码查看训练表的形状、缺失统计与类别分布：
 \begin{lstlisting}[language=Python]
 import support
 train = support.load_split(support.DATA_DIR, "train")
@@ -107,25 +134,59 @@ print(train.isna().sum())
 print(train["top500"].value_counts())
 print(train["status"].value_counts(dropna=False))
 \end{lstlisting}
-运行 \texttt{python checkpoints.py C1}。小例子三条记录的标签为 1、缺失、0，结果保留两条；第一条的特征仍然缺失。数值例子 \texttt{["12.5", "-", "", None]} 转换后只有第一项是 12.5。
-\subsection{明确哪些信息不能输入}
-课堂字段 region、status、size、focus、research 是类别；三个以 \texttt{score} 结尾的字段为分数。\texttt{name} 与 \texttt{row\_id} 只追溯来源；\texttt{top500} 是标签。源排名按实际名次和并列关系生成标签，有 502 条正类，不按前 500 行生成。
+\begin{specbox}[C1 输入、输出与提示]
+\fspec{filter\_labels(frame)}
+{\texttt{frame}（\texttt{pd.DataFrame}）：$N$ 行的表格，必须含 \texttt{top500} 列，取值为 0、1 或 NaN。}
+{\texttt{pd.DataFrame}：只保留标签非缺失行的新表，行索引从 0 重新编号；列与输入相同，特征缺失保持不变。}
+{\texttt{dropna(subset=["top500"])} 只检查标签列，随后调用 \texttt{reset\_index(drop=True)}。}
+\fspec{clean\_numeric(series)}
+{\texttt{series}（\texttt{pd.Series}）：长度为 $N$ 的一列，元素可为 \texttt{str}、\texttt{float}、\texttt{int} 或 \texttt{None}。}
+{\texttt{pd.Series}：长度为 $N$ 的数值列，无法解析的值为 NaN，数值 0 保留为 0。}
+{先将 \texttt{"-"} 与 \texttt{""} 替换为 \texttt{None}，再调用 \texttt{pd.to\_numeric(..., errors="coerce")}。}
+\textbf{自检：}标签为 1、缺失、0 的三条记录过滤后保留两条，标签为 \texttt{[1, 0]}，且第一条记录的特征缺失保持不变；\texttt{["12.5", "-", "", None]} 转换为 \texttt{[12.5, NaN, NaN, NaN]}；\texttt{"0"} 转换为 \texttt{0.0}。
+\end{specbox}
+\subsection{输入字段与标签说明}
+课堂数据中的 region、status、size、focus、research 为类别字段，三个以 \texttt{score} 结尾的字段为指标分数。\texttt{name} 与 \texttt{row\_id} 仅用于追溯数据来源，\texttt{top500} 为标签。标签依据源表的实际名次及并列关系生成，正类共 502 所，并非按表中前 500 行截取。
 
-三份规模及正类数分别为 902/301、300/100、302/101。真实缺失已保留，不需要人工加缺失。数据构造脚本由教师提供，不是学生另写一遍的任务；原镜像与规则见数据说明。
-\begin{questionbox}[报告中记录]
-列出八个输入字段及其类型，说明为何原行号也要排除；记录训练缺失统计。标签缺失处理用小例子证明，不能伪造真实数据中不存在的标签缺失。
+训练集、验证集与测试集的样本数与正类数分别为 902/301、300/100、302/101。数据中保留了真实缺失，无需人为制造缺失。数据构造脚本由教师提供，学生无需重写；原始镜像与构造规则见数据说明。
+\begin{questionbox}[报告记录要求]
+列出八个输入字段及其类型，说明原表行号也必须排除的原因，并记录训练集的缺失统计。标签缺失的处理以小例子验证即可，不得在真实数据中伪造标签缺失。
 \end{questionbox}
 \clearpage
-\section{C2：数值与类别分别处理}
+\section{C2：数值与类别特征表示}
 \subsection{数值分支：三个函数}
-补 \texttt{fit\_statistics}、\texttt{apply\_statistics}、\texttt{to\_tensors}。先算训练非缺失均值并填充，再算总体标准差；转换验证/测试时不重算。最后转换为浮点张量，首列加常数 1，标签成为列向量。
+补全 \texttt{fit\_statistics}、\texttt{apply\_statistics} 与 \texttt{to\_tensors}。具体步骤为：先计算训练集各列非缺失值的均值并用其填补缺失，再计算填补后的总体标准差；对验证集和测试集进行转换时复用训练统计量，不重新计算。最后将特征转换为浮点张量，在首列增加常数 1，并将标签整理为列向量。
+\begin{specbox}[C2 数值分支的输入、输出与提示]
+\fspec{fit\_statistics(features)}
+{\texttt{features}（\texttt{pd.DataFrame}）：$N\times k$ 的数值训练特征，元素为 \texttt{float} 或 NaN，不含标签、编号和常数列。}
+{元组 \texttt{(means, scales)}，两者均为长度 $k$、以列名为索引的 \texttt{pd.Series}。}
+{\texttt{mean()} 自动跳过 NaN；全空列的均值记为 0；用 \texttt{std(ddof=0)} 计算总体标准差，值为 0 的尺度改为 1。}
+\fspec{apply\_statistics(features, means, scales)}
+{\texttt{features}（\texttt{pd.DataFrame}）：$M\times k$ 的数值特征，列名与训练集一致；\texttt{means}、\texttt{scales}（\texttt{pd.Series}）：长度为 $k$ 的训练统计量。}
+{\texttt{pd.DataFrame}：$M\times k$ 的标准化特征，不含 NaN，行索引与列名不变。}
+{先 \texttt{fillna(means)}，再减去 \texttt{means}、除以 \texttt{scales}；pandas 按列名自动对齐。}
+\fspec{to\_tensors(features, labels)}
+{\texttt{features}（\texttt{pd.DataFrame}）：$N\times d$ 的已处理特征；\texttt{labels}（\texttt{pd.Series}）：长度为 $N$ 的 0/1 标签。}
+{元组 \texttt{(X, y)}：\texttt{X} 为形状 $(N,d+1)$ 的 \texttt{torch.float32} 张量，首列全为 1；\texttt{y} 为形状 $(N,1)$ 的 \texttt{torch.float32} 张量。}
+{\texttt{torch.ones((N, 1))} 与特征张量用 \texttt{torch.cat(..., dim=1)} 按列拼接；标签用 \texttt{reshape(-1, 1)}。}
+\end{specbox}
 \begin{examplebox}[数值核对]
-训练 $[1,3,\text{缺失}]$：均值 2，标准差约 0.816497；验证 100 的标准化值约 120.025。均值不会因为验证值很大而改变。常数列尺度改为 1，全空训练列均值约定为 0。
+训练值为 $[1,3,\text{缺失}]$ 时，均值为 2，填补后为 $[1,3,2]$，总体标准差约为 0.816497；验证值 100 标准化后约为 120.025，验证集中的缺失值标准化后为 0。训练均值不会因验证集中出现较大的值而改变。此外，常数列的尺度约定为 1，全部缺失的训练列均值约定为 0。
 \end{examplebox}
 \subsection{类别分支：两个函数}
-补 \texttt{fit\_categories} 和 \texttt{encode\_categories}。前者逐列取训练中出现的非缺失值、排序，最后添加 Unknown；后者按固定类别表逐列生成 0/1 指示。缺失与未见类别统一归入 Unknown。
-
-小例子训练取值为 Asia、Europe、缺失，列序为 Asia、Europe、Unknown；验证取值 Europe、Atlantis、缺失，预期三行分别为 $(0,1,0)$、$(0,0,1)$、$(0,0,1)$。这里 Atlantis 是用于检查未知值处理的虚构类别，不是源数据地区。
+补全 \texttt{fit\_categories} 与 \texttt{encode\_categories}。前者对每个类别字段收集训练集中出现的非缺失取值，排序后在末尾追加 Unknown；后者按固定的类别表逐列生成 0/1 指示变量，缺失值与训练集中未出现的类别统一归入 Unknown。
+\begin{specbox}[C2 类别分支的输入、输出与提示]
+\fspec{fit\_categories(frame)}
+{\texttt{frame}（\texttt{pd.DataFrame}）：$N$ 行、只含类别字段的训练表，元素为 \texttt{str} 或 NaN。}
+{\texttt{dict}：键为字段名（\texttt{str}），值为按字母排序的类别列表（\texttt{list} of \texttt{str}），最后一项固定为 \texttt{"Unknown"}。}
+{逐列调用 \texttt{dropna().unique()} 后用 \texttt{sorted()} 排序；类别表只能由训练集拟合。}
+\fspec{encode\_categories(frame, categories)}
+{\texttt{frame}（\texttt{pd.DataFrame}）：$M$ 行的待编码表；\texttt{categories}（\texttt{dict}）：\texttt{fit\_categories} 的返回值。}
+{\texttt{pd.DataFrame}：$M$ 行、元素为 0.0 或 1.0 的浮点表，行索引与 \texttt{frame} 相同，列名形如 \texttt{region=Asia}。}
+{先 \texttt{fillna("Unknown")}，再把不在类别表中的取值替换为 \texttt{"Unknown"}；每个类别列为 \texttt{(values == level).astype(float)}。}
+\textbf{自检：}训练取值为 Asia、Europe 和缺失时，类别表为 \texttt{\{"Region": ["Asia", "Europe", "Unknown"]\}}；验证取值 Europe、Atlantis、缺失的编码依次为 $(0,1,0)$、$(0,0,1)$、$(0,0,1)$。其中 Atlantis 是为检查未知类别处理而虚构的取值，并非源数据中的地区。
+\end{specbox}
+可用以下代码查看真实数据的处理结果：
 \begin{lstlisting}[language=Python]
 import student
 train, val, state = support.prepare_train_val(
@@ -134,43 +195,79 @@ print(train[0].shape, train[1].shape)
 print(val[0].shape, val[1].shape)
 print(state["categories"])
 \end{lstlisting}
-运行 \texttt{python checkpoints.py C2}。完整特征为三个标准化数值与 25 个独热列，训练输出 \texttt{(902,29)}、\texttt{(902,1)}，验证输出 \texttt{(300,29)}、\texttt{(300,1)}。新增首列常数包含在 29 中，测试文件尚未读取。
-\begin{questionbox}[报告中记录]
-各给一条数值填补和独热编码证据；解释未知类别、列顺序与首列常数。不要在验证/测试上单独调用类别拟合，也不要标准化标签或独热列。
+运行 \texttt{python checkpoints.py C2}。完整特征由 3 个标准化数值列与 25 个独热列组成；训练集输出形状为 \texttt{(902,29)} 与 \texttt{(902,1)}，验证集为 \texttt{(300,29)} 与 \texttt{(300,1)}。29 列中包含新增的首列常数；此时测试文件尚未被读取。
+\begin{questionbox}[报告记录要求]
+分别给出数值填补与独热编码的一条证据，并解释未知类别的处理、列顺序与首列常数的作用。不得在验证集或测试集上单独拟合类别表，也不应对标签或独热列进行标准化。
 \end{questionbox}
 \clearpage
 \section{C3--C4：从样本到模型}
 \subsection{C3：保持特征与标签成对}
-补 \file{UniversityDataset.__len__}、\texttt{\_\_getitem\_\_} 与 \texttt{make\_loader}。构造函数已保存 X 和 y；每个索引返回对应的一对张量。只在训练打乱，保留不足批量的最后一批。
+补全 \texttt{UniversityDataset} 的 \texttt{\_\_len\_\_}、\texttt{\_\_getitem\_\_} 与 \texttt{make\_loader}。构造函数已保存 \texttt{X} 与 \texttt{y}，每个索引应返回对应的一对张量。仅在训练时打乱样本顺序，并保留不足一个批量的最后一批。
+\begin{specbox}[C3 输入、输出与提示]
+\fspec{UniversityDataset(X, y)}
+{\texttt{X}（\texttt{torch.Tensor}）：形状 $(N,d+1)$ 的增广特征；\texttt{y}（\texttt{torch.Tensor}）：形状 $(N,1)$ 的标签。构造函数已提供。}
+{\texttt{\_\_len\_\_()} 返回 \texttt{int} 类型的样本数 $N$；\texttt{\_\_getitem\_\_(index)} 接收 \texttt{int} 索引（0 至 $N-1$），返回元组 \texttt{(X[index], y[index])}，形状为 $(d+1,)$ 与 $(1,)$。}
+{\texttt{len(self.X)} 即为行数；两个张量必须使用同一个索引，不能分别打乱。}
+\fspec{make\_loader(dataset, batch\_size, training)}
+{\texttt{dataset}（\texttt{UniversityDataset}）；\texttt{batch\_size}（\texttt{int}），如 64；\texttt{training}（\texttt{bool}），\texttt{True} 表示训练。}
+{\texttt{torch.utils.data.DataLoader}：每次迭代给出 \texttt{(X\_batch, y\_batch)}，形状为 $(B,d+1)$ 与 $(B,1)$，最后一批允许 $B$ 小于 \texttt{batch\_size}。}
+{设置 \texttt{shuffle=training}、\texttt{drop\_last=False}、\texttt{num\_workers=0}。}
+\textbf{自检：}5 条样本、每批 2 条且不打乱时，批次大小依次为 2、2、1，拼接后与原数据一致；开启打乱后，每批特征与标签仍保持配对。
+\end{specbox}
 \begin{lstlisting}[language=Python]
 dataset = student.UniversityDataset(*train)
 loader = student.make_loader(dataset, 64, True)
 for X_batch, y_batch in loader:
     print(X_batch.shape, y_batch.shape)
 \end{lstlisting}
-运行 \texttt{python checkpoints.py C3}。五条样本、每批两条得到 $2,2,1$；真实训练 902 条、每批 64 条得到 15 批，末批 6 条。标签不单独洗牌。
-\subsection{C4：线性得分和概率}
-补 \texttt{sigmoid}，以及模型类的 \texttt{\_\_init\_\_}、\texttt{forward}。参数是一个列向量，行数等于增广维数，用 \texttt{nn.Parameter} 注册并零初始化。前向返回矩阵乘积；sigmoid 在概率计算时单独调用。
+运行 \texttt{python checkpoints.py C3}。真实训练集 902 条、每批 64 条时共 15 批，末批为 6 条。
+\subsection{C4：线性得分与概率}
+补全 \texttt{sigmoid} 以及模型类的 \texttt{\_\_init\_\_} 与 \texttt{forward}。模型参数为一个列向量，其行数等于增广后的特征维数，需用 \texttt{nn.Parameter} 注册并初始化为零。\texttt{forward} 返回矩阵乘积得到的线性得分，\texttt{sigmoid} 仅在计算概率时单独调用。
+\begin{specbox}[C4 输入、输出与提示]
+\fspec{sigmoid(z)}
+{\texttt{z}（\texttt{torch.Tensor}）：任意形状的线性得分。}
+{\texttt{torch.Tensor}：与 \texttt{z} 形状相同的概率，取值在 0 与 1 之间。}
+{公式为 $1/(1+e^{-z})$，实现时调用 \texttt{torch.sigmoid(z)} 以避免极端值溢出。}
+\fspec{LogisticRegression(input\_dim)}
+{\texttt{input\_dim}（\texttt{int}）：增广后的特征数 $d+1$，主实验中为 29。}
+{无返回值；注册形状为 \texttt{(input\_dim, 1)} 的参数 \texttt{self.theta}。}
+{\texttt{nn.Parameter(torch.zeros((input\_dim, 1)))}；只有注册为 Parameter 的张量才会被优化器更新。}
+\fspec{forward(X)}
+{\texttt{X}（\texttt{torch.Tensor}）：形状 $(B,d+1)$ 的 \texttt{float32} 增广特征。}
+{\texttt{torch.Tensor}：形状 $(B,1)$ 的线性得分（logits），尚未经过 sigmoid。}
+{使用矩阵乘法 \texttt{@}，不要使用逐元素乘法 \texttt{*}。}
+\textbf{自检：}$z=-2,0,2$ 时概率约为 0.119203、0.5、0.880797；参数为 $(1,2,-1)^\top$、增广输入为 $(1,3,2)^\top$ 时，\texttt{forward} 返回得分 5，对应概率约为 0.993307。
+\end{specbox}
 \begin{lstlisting}[language=Python]
 model = student.LogisticRegression(train[0].shape[1])
 logits = model(train[0][:3])
 probabilities = student.sigmoid(logits)
 print(logits.shape, probabilities)
 \end{lstlisting}
-运行 \texttt{python checkpoints.py C4}。参数 $(1,2,-1)^\top$、增广输入 $(1,3,2)^\top$ 的得分是 5，概率约 0.993307；不能把概率作为前向得分返回。
-\begin{questionbox}[报告中记录]
-C3 记录成对取样与末批；C4 记录输入、参数、得分、概率和形状。说明 \texttt{@} 与逐元素乘法 \texttt{*} 的区别。
+运行 \texttt{python checkpoints.py C4}。注意 \texttt{forward} 应返回得分而非概率。
+\begin{questionbox}[报告记录要求]
+C3 部分记录样本配对与末批处理的结果；C4 部分记录输入、参数、得分、概率与张量形状，并说明矩阵乘法 \texttt{@} 与逐元素乘法 \texttt{*} 的区别。
 \end{questionbox}
 \clearpage
-\section{C5--C6：目标与一次更新}
-\subsection{C5：二元交叉熵和权重惩罚}
-补 \texttt{data\_loss} 和 \texttt{penalty}。采用二元交叉熵 BCE（Binary Cross-Entropy），由 \texttt{BCEWith\allowbreak{}LogitsLoss} 接收原始得分并稳定计算损失。
+\section{C5--C6：训练目标与一次更新}
+\subsection{C5：二元交叉熵与权重惩罚}
+补全 \texttt{data\_loss} 与 \texttt{penalty}。数据损失采用二元交叉熵 BCE（Binary Cross-Entropy），由 \texttt{BCEWith\allowbreak{}LogitsLoss} 直接接收原始得分，并以数值稳定的方式计算损失。
 
-L1（L1 Norm，一范数）惩罚为特征权重绝对值和；L2（L2 Norm，二范数）惩罚为二范数平方的一半。两者只用 \texttt{theta[1:]}，不惩罚截距。
-
-运行 \texttt{python checkpoints.py C5}。零得分时平均交叉熵约 0.693147；参数 $(10,3,-4)$ 的两种惩罚分别为 7、12.5；L2 惩罚对截距的梯度是零。
-\subsection{C6：补五步训练循环}
-补 \texttt{train\_epoch}：清梯度、前向、构造数据损失加惩罚的总目标、反向传播、更新参数。SGD（Stochastic Gradient Descent，随机梯度下降）的自动微分与参数更新器已提供，学生补全连接步骤。
+L1（L1 Norm，一范数）惩罚为特征权重绝对值之和；L2（L2 Norm，二范数）惩罚为权重二范数平方的一半。两种惩罚均只作用于 \texttt{theta[1:]}，截距不受惩罚。
+\begin{specbox}[C5 输入、输出与提示]
+\fspec{data\_loss(logits, y)}
+{\texttt{logits}（\texttt{torch.Tensor}）：形状 $(B,1)$ 的原始得分；\texttt{y}（\texttt{torch.Tensor}）：形状 $(B,1)$ 的 \texttt{float32} 0/1 标签。}
+{\texttt{torch.Tensor}：0 维标量张量，为本批平均二元交叉熵，保留计算图。}
+{使用 \texttt{nn.BCEWithLogitsLoss()}，默认 \texttt{reduction="mean"}；不要先调用 sigmoid，也不要调用 \texttt{item()}。}
+\fspec{penalty(kind)}
+{\texttt{kind}（\texttt{str}）：正则化类型，取 \texttt{"none"}、\texttt{"l1"} 或 \texttt{"l2"}。}
+{\texttt{torch.Tensor}：可反向传播的 0 维标量张量。}
+{先取 \texttt{w = self.theta[1:]}；L1 为 \texttt{w.abs().sum()}，L2 为 \texttt{0.5 * (w ** 2).sum()}，\texttt{"none"} 可返回 \texttt{self.theta.sum() * 0.0}。}
+\textbf{自检：}得分全为 0 时平均交叉熵为 $\log 2\approx0.693147$，得分为 $\pm1000$ 的极端值仍为有限数；参数为 $(10,3,-4)$ 时 L1 与 L2 惩罚分别为 7 和 12.5，L2 惩罚对截距的梯度为 0。
+\end{specbox}
+运行 \texttt{python checkpoints.py C5} 核对上述结果。
+\subsection{C6：补全训练循环}
+补全 \texttt{train\_epoch}。每个批次依次执行五个步骤：清除梯度、前向计算、构造“数据损失加正则惩罚”的总目标、反向传播、更新参数；随后累计本批的数据损失，用于计算返回值。SGD（Stochastic Gradient Descent，随机梯度下降）的自动微分与参数更新器已经提供，学生只需按顺序连接上述步骤。
 \begin{lstlisting}[language=Python]
 optimizer.zero_grad()
 logits = model(X)
@@ -178,127 +275,272 @@ loss = data_loss(logits, y)
 objective = loss + strength * model.penalty(kind)
 objective.backward()
 optimizer.step()
+total += loss.detach().item() * len(y)
+count += len(y)
 \end{lstlisting}
-训练时保留计算图，不能在反向前调用 \texttt{item()} 或 \texttt{detach()}。每个批次都清梯度；本函数返回的是各批更新前数据损失的加权平均，绘图另用每轮结束的完整数据损失。
-\begin{examplebox}[手算再运行]
-两所假设学校的增广行是 $(1,1,0)$、$(1,0,1)$，标签 1、0。零参数时概率均为 0.5，平均梯度为 $(0,-0.25,0.25)^\top$。学习率 0.4、无正则，更新为 $(0,0.1,-0.1)^\top$。详见前置讲义第 8 节。
+训练过程中必须保留计算图，反向传播之前不能对损失调用 \texttt{item()} 或 \texttt{detach()}。每个批次都需清除梯度。本函数的返回值是各批更新前的数据损失；绘图使用的则是每轮结束后在完整数据上重新计算的数据损失。
+\begin{specbox}[C6 输入、输出与提示]
+\fspec{train\_epoch(model, loader, optimizer, kind, strength)}
+{\texttt{model}（\texttt{LogisticRegression}）；\texttt{loader}（\texttt{DataLoader}），每次给出形状 $(B,d+1)$ 与 $(B,1)$ 的 \texttt{(X, y)}；\texttt{optimizer}（\texttt{torch.optim.Optimizer}），如 \texttt{torch.optim.SGD}；\texttt{kind}（\texttt{str}），取 \texttt{"none"}、\texttt{"l1"} 或 \texttt{"l2"}；\texttt{strength}（\texttt{float}），正则化系数 $\lambda$，如 0.01。}
+{\texttt{float}：本轮各批更新前数据损失按样本数加权的平均值，不含正则项；同时原地更新 \texttt{model.theta}。}
+{按上方代码的顺序执行；记录损失时使用 \texttt{loss.detach().item()}，并累加 \texttt{total} 与 \texttt{count}，否则函数返回 \texttt{None}。}
+\textbf{自检：}使用下方手算例题的两条样本、学习率 0.4 训练一轮，参数应变为 $(0,0.1,-0.1)^\top$；再训练一轮，结果应与独立计算的第二次更新一致。
+\end{specbox}
+\begin{examplebox}[手算后再运行]
+两所假设学校的增广输入分别为 $(1,1,0)$ 与 $(1,0,1)$，标签分别为 1 与 0。参数为零时两者的概率均为 0.5，平均梯度为 $(0,-0.25,0.25)^\top$。取学习率 0.4、不加正则时，更新后的参数为 $(0,0.1,-0.1)^\top$。推导过程见前置讲义第 8 节。
 \end{examplebox}
-运行 \texttt{python checkpoints.py C6}。自检还核对第二次更新，用来发现忘记清梯度的问题。
-\begin{questionbox}[报告中记录]
-C5 记录损失与两种惩罚的数值；C6 记录一次手算的输入、概率、梯度、更新及代码对照。只贴“损失下降”不足以证明更新正确。
+运行 \texttt{python checkpoints.py C6}。自检还会核对第二次更新的结果，用于发现遗漏清除梯度的问题。
+\begin{questionbox}[报告记录要求]
+C5 部分记录损失及两种惩罚的数值；C6 部分记录一次手算的输入、概率、梯度与更新结果，并与程序输出对照。仅给出“损失下降”不足以证明更新正确。
 \end{questionbox}
 \clearpage
-\section{C7：选择、解释与最终测试}
-\subsection{先在验证集选模型}
-补 \texttt{binary\_metrics}，运行小样例和全部自检，然后训练：
+\section{C7：模型选择、解释与最终测试}
+\subsection{补全评价指标函数}
+补全 \texttt{binary\_metrics}。以前 500 名为正类，TP（True Positive，真正例）、FP（False Positive，假正例）、FN（False Negative，假负例）与 TN（True Negative，真负例）分别统计四种预测结果。分母为零时，相应指标按 0 处理。
+\begin{specbox}[C7 输入、输出与提示]
+\fspec{binary\_metrics(y, probabilities, threshold=0.5)}
+{\texttt{y}（\texttt{torch.Tensor}）：形状 $(N,1)$ 的真实标签，元素为 0.0 或 1.0；\texttt{probabilities}（\texttt{torch.Tensor}）：形状 $(N,1)$ 的预测概率；\texttt{threshold}（\texttt{float}）：决策阈值，默认 0.5。}
+{\texttt{dict}：键 \texttt{tn}、\texttt{fp}、\texttt{fn}、\texttt{tp} 对应 \texttt{int} 计数，键 \texttt{accuracy}、\texttt{precision}、\texttt{recall}、\texttt{f1} 对应 \texttt{float} 指标。}
+{先用 \texttt{reshape(-1)} 转为一维；预测类别为 \texttt{probabilities >= threshold}，恰好等于阈值时判为正类；用布尔运算 \texttt{\&} 与 \texttt{\textasciitilde} 统计四种情况，不能直接比较概率与标签。}
+\textbf{自检：}标签 $[1,0,1,0]$、概率 $[0.9,0.8,0.4,0.1]$ 在阈值 0.5 下四种计数均为 1，四项指标均为 0.5；阈值为 1.0 时没有预测正类，精确率记为 0。
+\end{specbox}
+\subsection{在验证集上选择模型}
+运行小样例与全部自检后，执行完整训练：
 \begin{lstlisting}[language=bash]
 python checkpoints.py all
 python run_lab.py
 \end{lstlisting}
-默认输出 \file{code/outputs-qs/}。零初始化、训练种子 42、批量 64、学习率 0.05、最多 60 轮；比较无正则、L2 系数 0.01、L1 系数 0.01。每组取验证数据损失最低轮，再从三组中选择最低者，阈值预先固定为 0.5。
+默认输出目录为 \file{code/outputs-qs/}。训练采用零初始化、训练种子 42、批量大小 64、学习率 0.05，最多训练 60 轮，比较无正则、L2 系数 0.01 与 L1 系数 0.01 三种方案。每种方案取验证数据损失最低的一轮作为该方案的结果，再从三种方案中选择验证损失最低者；决策阈值预先固定为 0.5。程序输出以下文件：
 \begin{itemize}
-\item \file{candidates.csv}：三方案的设置与验证结果。
-\item \file{none_loss.png}、\file{l2_loss.png}、\file{l1_loss.png}：同一参数下的训练/验证数据损失，不包含惩罚项。
-\item \file{selection.json}、\file{preprocessing.json}、\file{selected.pt}：冻结方案、训练预处理和模型权重。
-\item \file{validation_thresholds.csv}：阈值 0.3/0.5/0.7 的验证计数与指标，只用于权衡讨论。
-\item \file{weights.csv}：对应特征名的参数。L1 不保证精确零权重。
+\item \file{candidates.csv}：三种方案的设置与验证结果。
+\item \file{none_loss.png}、\file{l2_loss.png}、\file{l1_loss.png}：同一组参数下的训练与验证数据损失曲线，不包含惩罚项。
+\item \file{selection.json}、\file{preprocessing.json}、\file{selected.pt}：冻结的方案、训练集预处理状态与模型权重。
+\item \file{validation_thresholds.csv}：阈值为 0.3、0.5、0.7 时的验证集计数与指标，仅用于讨论阈值的权衡。
+\item \file{weights.csv}：各特征名对应的参数值。在本实验的更新方式下，L1 正则不保证产生精确为零的权重。
 \end{itemize}
-\subsection{记录选择后再测试}
+\subsection{记录选择后进行最终测试}
+在报告中记录冻结方案后，执行：
 \begin{lstlisting}[language=bash]
 python run_lab.py --final-test
 \end{lstlisting}
-恢复冻结方案，只使用保存的均值、尺度和类别表，输出 \file{test_metrics.json} 与 \file{test_predictions.csv}。训练多数类基线总预测负类。
-
-TP（True Positive，真正例）、FP（False Positive，假正例）、FN（False Negative，假负例）、TN（True Negative，真负例）以前 500 名为正类。报告准确率、精确率、召回率、F1 分数（F1 Score）和混淆矩阵；分母为零按 0 处理。矩阵行是真实类别，列是预测类别。
-\begin{questionbox}[报告中记录]
-四条小例子标签 $[1,0,1,0]$、概率 $[0.9,0.8,0.4,0.1]$ 在阈值 0.5 时四种计数各 1；解释降低阈值后的变化。综合实验记录选定方案、一张曲线、一张混淆矩阵，不用单一准确率下结论。
+程序恢复冻结的模型，仅使用保存的训练均值、尺度与类别表处理测试集，并输出 \file{test_metrics.json} 与 \file{test_predictions.csv}。多数类基线将全部测试样本预测为训练集中的多数类，即负类。报告中应给出准确率、精确率、召回率、F1 分数（F1 Score）与混淆矩阵；混淆矩阵的行表示真实类别，列表示预测类别。
+\begin{questionbox}[报告记录要求]
+记录上述四条小例子在阈值 0.5 下的计数，并解释阈值降低后计数的变化。综合实验部分需记录所选方案、一张损失曲线和混淆矩阵，不能仅凭准确率得出结论。
 \end{questionbox}
-\clearpage
 \section{选做：特征选择对照}
-\subsection{改变一个因素}
-在查看测试结果之前，可执行：
+\subsection{实验设计}
+在查看测试结果之前，可执行以下命令进行特征选择对照：
 \begin{lstlisting}[language=bash]
 python run_lab.py --feature-study
 \end{lstlisting}
-完整组使用三个数值与五个类别字段；精简组只删除 focus、research。保留同一数据划分，固定 L2 系数 0.01、学习率 0.05、批量 64、训练种子 42、最多 60 轮，每组按验证损失取最佳轮。维数由 28 降为 18，增广后分别 29、19。
+完整组使用三个数值字段与五个类别字段；精简组仅删除 focus 与 research 两个字段。两组使用相同的数据划分，并固定 L2 系数 0.01、学习率 0.05、批量大小 64、训练种子 42 与最大轮数 60，各组均取验证损失最低的一轮。特征维数由 28 降为 18，增广后分别为 29 和 19。
 
-输出在 \file{outputs-qs/feature_study/comparison.csv}。选做不读取测试集、不改变主实验冻结模型，不把测试结果反复用于字段选择。它检验的是整组字段的作用，不是逐一证明每个字段都重要。
-\subsection{报告怎样解释}
-列出保留/删除字段、维数、验证损失、准确率、精确率、召回率与 F1 分数（F1 Score）。如果精简后变差，说明当前规则删去了有用信息；如果相近，可讨论复杂度与可解释性的取舍。不要声称“特征越少越好”或“正则化一定提高准确率”。
+结果保存在 \file{outputs-qs/feature_study/comparison.csv}。选做实验不读取测试集，不改变主实验的冻结模型，也不得反复使用测试结果进行字段选择。该对照检验的是整组字段的作用，并不能逐一证明每个字段都重要。
+\subsection{结果解释}
+报告中应列出保留与删除的字段、特征维数、验证损失、准确率、精确率、召回率与 F1 分数。若精简组表现变差，说明被删除的字段提供了有用信息；若两组表现相近，可讨论模型复杂度与可解释性之间的取舍。不应得出“特征越少越好”或“正则化一定提高准确率”之类的结论。
 \begin{pitfallbox}[两个常见混淆]
-删除泄漏字段是建模前必须做的筛选，不能当成可自由调节的性能技巧。L1 惩罚鼓励稀疏，但当前普通梯度更新不保证精确零权重；不能直接把小权重视为完整字段已经被删除。
+删除泄漏字段是建模前必须完成的筛选，不能当作可自由调节的性能技巧。L1 惩罚鼓励稀疏，但普通梯度更新不保证得到精确为零的权重，因此不能把较小的权重直接视为对应字段已被删除。
 \end{pitfallbox}
-\subsection{课堂追问与答案要点}
+\subsection{课堂讨论问题与参考答案}
 \begin{enumerate}
-\item 为什么学校规模不直接设为 1、2、3、4？这样会假定相邻档位对得分的作用等距；独热编码放松该假设。
-\item 为什么不按全部数据收集类别？模型表示也属于训练过程，应预先处理验证/测试中的未知类别。
-\item 两个方案准确率相同，能否认为完全等价？不能，概率损失和四种计数可能不同。
-\item 为什么不直接用总分？当前目标由排名构造，总分近乎直接提供目标信息。
+\item 为什么不把学校规模直接编码为 1、2、3、4？\\
+参考答案：这样会隐含相邻档位作用等距的假设，独热编码不作此假设。
+\item 为什么不按全部数据收集类别？\\
+参考答案：编码表同样属于从训练数据中学习的内容，验证集与测试集中的未知类别应按预先约定的规则处理。
+\item 两个方案的准确率相同，能否认为二者完全等价？\\
+参考答案：不能。二者的概率损失和四种计数都可能不同。
+\item 为什么不直接使用总分作为输入？\\
+参考答案：本任务的标签由排名构造，总分几乎直接提供了标签信息，会造成泄漏。
 \end{enumerate}
 \clearpage
-\section{实验报告与提交}
-\subsection{四部分正文}
-提交 \texttt{report.pdf}，PDF（Portable Document Format，可移植文档格式）首页列实验名称、学号、姓名。参照模板写四部分：
+\section{理论与代码的对应关系}\label{sec:theory-code}
+C0--C7 与选做部分按程序的执行顺序展开，本节则按逻辑回归的理论主线回顾各个公式在代码中的实现位置，便于检查“写出的代码是否就是推导出的算法”。本节用于课后复习，不占用 135 分钟的课堂时间；撰写报告的“实验原理”部分时，可按本节的顺序组织内容。完整推导见前置讲义第 3--9 节，这里只列出关键结论及其代码对应。
+
+本节沿用前置讲义的记号：$N$ 为样本数，$B$ 为一个批次的样本数，$d=28$ 为编码后的特征数；括号上标 $(n)$ 表示样本编号，方括号上标 $[t]$ 表示迭代次数。样本按行排列，因此代码中张量的第一维始终是样本维。
+\subsection{从原始字段到增广设计矩阵}
+对第 $j$ 个数值特征，先用训练集均值 $\mu_j$ 填补缺失得到 $\bar x_j^{(n)}$，再用训练集总体标准差 $s_j$ 标准化：
+\begin{equation}
+u_j^{(n)}=\frac{\bar x_j^{(n)}-\mu_j}{s_j}.
+\end{equation}
+其中 $\mu_j$ 与 $s_j$ 由 \texttt{fit\_statistics} 在训练集上计算一次，\texttt{apply\_statistics} 在训练、验证与测试集上复用，二者分别对应“估计参数”和“应用变换”两个步骤。类别字段由 \texttt{fit\_categories} 确定类别表，再由 \texttt{encode\_categories} 转换为 0/1 指示列。
+
+三个标准化数值与 25 个独热列拼成处理后的特征向量 $\mathbf x^{(n)}\in\mathbb R^{d}$。在其前面增加常数 1 即得到增广向量，所有样本按行堆叠为设计矩阵：
+\begin{equation}
+\tilde{\mathbf x}^{(n)}=\bigl(1,(\mathbf x^{(n)})^\top\bigr)^\top\in\mathbb R^{d+1},\qquad
+\mathbf X=\begin{bmatrix}(\tilde{\mathbf x}^{(1)})^\top\\\vdots\\(\tilde{\mathbf x}^{(N)})^\top\end{bmatrix}\in\mathbb R^{N\times(d+1)}.
+\end{equation}
+这一步由 \texttt{to\_tensors} 完成：\texttt{torch.ones((N, 1))} 就是 $\mathbf X$ 的第一列，返回的 \texttt{X} 形状为 $(902,29)$，\texttt{y} 形状为 $(902,1)$，分别对应 $\mathbf X$ 与标签列向量 $\mathbf y$。\texttt{UniversityDataset} 的第 $n$ 个元素即 $(\tilde{\mathbf x}^{(n)},y^{(n)})$，\texttt{make\_loader} 每次取出 $B$ 行组成小批量 $\mathbf X_B\in\mathbb R^{B\times(d+1)}$。
+\subsection{模型：得分、概率与类别}
+参数向量 $\boldsymbol\theta=(\theta_0,\theta_1,\ldots,\theta_d)^\top$ 在代码中是形状为 $(d+1,1)$ 的 \texttt{self.theta}，其中 \texttt{theta[0]} 是截距 $\theta_0$，与 $\mathbf X$ 的常数列相乘。一个批次的线性得分、概率与预测类别为
+\begin{equation}
+\mathbf z=\mathbf X_B\boldsymbol\theta,\qquad
+\mathbf p=\sigma(\mathbf z),\qquad
+\hat y^{(n)}=\mathbf 1\bigl[p^{(n)}\ge\tau\bigr],
+\end{equation}
+其中 $\sigma(z)=1/(1+e^{-z})$ 逐元素作用，$\tau$ 为决策阈值，$\mathbf 1[\cdot]$ 在条件成立时取 1。三个量分别对应 \texttt{forward} 中的 \texttt{X @ self.theta}、\texttt{sigmoid(logits)}，以及 \texttt{binary\_metrics} 中的 \texttt{probabilities >= threshold}。代码把三者放在不同函数中，正是为了区分“得分”“概率”和“类别”这三种输出：\texttt{forward} 不调用 sigmoid，损失函数直接接收得分。
+\subsection{目标函数：交叉熵与正则化}
+由伯努利似然取负对数并对批次平均，得到批次经验风险（平均二元交叉熵）：
+\begin{equation}
+R_B(\boldsymbol\theta)=-\frac1B\sum_{n=1}^{B}\Bigl[y^{(n)}\log p^{(n)}+(1-y^{(n)})\log\bigl(1-p^{(n)}\bigr)\Bigr].
+\end{equation}
+\texttt{data\_loss} 中的 \texttt{nn.BCEWithLogitsLoss()} 计算的正是该式：其默认 \texttt{reduction="mean"} 对应式中的 $1/B$。它接收得分 $z$ 而非概率 $p$，内部采用等价的稳定形式 $\max(z,0)-yz+\log(1+e^{-|z|})$，从而避免计算 $\log 0$ 或过大的指数。
+
+训练时实际最小化的总目标为
+\begin{equation}
+J_B(\boldsymbol\theta)=R_B(\boldsymbol\theta)+\lambda\,\Omega(\boldsymbol\theta),\qquad
+\Omega_{\mathrm{L1}}=\sum_{j=1}^{d}|\theta_j|,\qquad
+\Omega_{\mathrm{L2}}=\frac12\sum_{j=1}^{d}\theta_j^2.
+\end{equation}
+求和从 $j=1$ 开始，即不惩罚截距，对应 \texttt{penalty} 中的 \texttt{theta[1:]}；$\lambda$ 对应参数 \texttt{strength}；总目标对应 \texttt{train\_epoch} 中的 \texttt{objective = loss + strength * model.penalty(kind)}。注意 \texttt{loss} 只是 $R_B$，因此训练曲线与模型选择使用的都是不含惩罚项的数据损失。
+\subsection{梯度与参数更新}
+对单样本有 $\partial\mathcal L^{(n)}/\partial z^{(n)}=p^{(n)}-y^{(n)}$，再由 $\mathbf z=\mathbf X_B\boldsymbol\theta$ 得到批次梯度；L2 惩罚的梯度只在特征权重上非零：
+\begin{equation}
+\nabla_{\boldsymbol\theta}R_B=\frac1B\mathbf X_B^\top(\mathbf p-\mathbf y_B),\qquad
+\nabla_{\boldsymbol\theta}\Omega_{\mathrm{L2}}=(0,\theta_1,\ldots,\theta_d)^\top.
+\end{equation}
+一次小批量随机梯度下降的更新为
+\begin{equation}
+\boldsymbol\theta^{[t+1]}=\boldsymbol\theta^{[t]}-\eta\,\nabla_{\boldsymbol\theta}J_B\bigl(\boldsymbol\theta^{[t]}\bigr),
+\end{equation}
+其中 $\eta$ 为学习率，对应创建 \texttt{torch.optim.SGD} 时传入的 \texttt{lr=0.05}。代码中并不手写梯度公式，三个调用分别承担以下职责：
+\begin{itemize}
+\item \texttt{objective.backward()}：按链式法则自动计算 $\nabla_{\boldsymbol\theta}J_B$，结果存入 \texttt{model.theta.grad}；
+\item \texttt{optimizer.step()}：执行式中的参数更新；
+\item \texttt{optimizer.zero\_grad()}：在每个批次开始时清除旧梯度。PyTorch 默认把新梯度累加到 \texttt{.grad} 上，若不清除，实际使用的将是多个批次梯度之和。
+\end{itemize}
+
+下面的代码用 C6 手算例题中一次更新后的参数 $(0,0.1,-0.1)^\top$，核对自动微分结果与公式是否一致（需先完成 C4 与 C5）：
+\begin{lstlisting}[language=Python]
+import torch
+import student
+X = torch.tensor([[1., 1., 0.], [1., 0., 1.]])
+y = torch.tensor([[1.], [0.]])
+model = student.LogisticRegression(3)
+with torch.no_grad():
+    model.theta.copy_(torch.tensor([[0.], [0.1], [-0.1]]))
+logits = model(X)
+loss = student.data_loss(logits, y)
+loss.backward()                             # 自动微分
+p = student.sigmoid(logits.detach())
+formula = X.T @ (p - y) / len(y)            # 公式 X^T(p-y)/B
+print(model.theta.grad.reshape(-1))
+print(formula.reshape(-1))
+\end{lstlisting}
+\begin{examplebox}[预期输出与解释]
+两行输出相同，均为
+\par{\centering\texttt{tensor([-1.4901e-08, -2.3751e-01, 2.3751e-01])}\par}
+\noindent 即约 $(0,-0.23751,0.23751)$；首项的 $-1.49\times10^{-8}$ 是浮点舍入误差，理论值为 0。此时概率为 $(0.524979,0.475021)$，数据损失为 0.644397，与前置讲义第 8 节的手算一致。若改用 \texttt{loss + 0.5 * model.penalty("l2")} 再反向传播，梯度变为约 $(0,-0.18751,0.18751)$：两个特征分量分别加上 $\lambda\theta_1=0.05$ 与 $\lambda\theta_2=-0.05$，截距分量不变。这里取 $\lambda=0.5$ 只是为了便于观察，主实验使用 0.01。
+\end{examplebox}
+\begin{pitfallbox}[公式与代码的常见错位]
+在 \texttt{forward} 中提前调用 sigmoid，会使 \texttt{BCEWithLogitsLoss} 把概率再当作得分处理，相当于计算 $\sigma(\sigma(z))$；用 \texttt{theta} 代替 \texttt{theta[1:]} 会把截距也纳入惩罚；把 \texttt{reduction} 改为 \texttt{"sum"} 会使梯度放大 $B$ 倍，相当于改变了学习率；对 L1 惩罚，$|\theta_j|$ 在 0 处不可导，PyTorch 取该处的导数为 0，因此普通梯度更新不保证权重恰好为零。
+\end{pitfallbox}
+\begin{questionbox}[对照检查与参考答案]
 \begin{enumerate}
-\item \textbf{实验概况。}任务与适用范围，C0--C7 完成状态，未解决问题。
-\item \textbf{逐检查点实现与验证。}对应函数、思路和关键代码、小例子输入与预期/实际输出、结果解释。每项通常摘录 3--10 行关键代码，不贴整份文件；C2 同时覆盖数值与类别，C6 包含手算。
-\item \textbf{综合实验结果。}来源、划分、类别比例、缺失与编码维数、训练设置、三方案验证表、测试前选择理由、一张损失曲线、最终指标和混淆矩阵。选做对照单独列验证结果。
-\item \textbf{结果分析与总结。}解释误报/漏判、基线、至少两个验证阈值、正则化是否改善；说明同年分类、镜像来源、非因果与跨年泛化局限，写收获或建议。
+\item 自动微分得到的 \texttt{theta.grad} 与 $\frac1B\mathbf X_B^\top(\mathbf p-\mathbf y_B)$ 一致，依赖于损失的哪一项设置？\\
+参考答案：依赖 \texttt{reduction="mean"}，它对应公式中的 $1/B$；若用求和，梯度为公式的 $B$ 倍。
+\item 为什么程序中看不到梯度公式，却仍然实现了式中的更新？\\
+参考答案：\texttt{backward()} 按链式法则自动计算 $\nabla J_B$，\texttt{SGD} 的 \texttt{step()} 执行 $\boldsymbol\theta\leftarrow\boldsymbol\theta-\eta\nabla J_B$，二者合起来就是该更新式。
+\item 损失曲线与训练总目标 $J_B$ 为什么数值不同？\\
+参考答案：曲线绘制的是不含惩罚项的数据损失 $R$；对带正则的方案，$J_B$ 还包含 $\lambda\Omega$。
 \end{enumerate}
-\subsection{每一检查点至少记录什么}
+\end{questionbox}
+\subsection{选择、评价与对应关系总表}
+模型选择与评价同样有明确的代码对应。\texttt{workflow.fit\_candidate} 在每轮结束后计算验证集数据损失 $R(\boldsymbol\theta)$，保存其最小值所在轮次的参数；\texttt{train\_candidates} 再从三种正则化方案中选择验证损失最低者并冻结。\texttt{final\_test} 只在冻结后读取测试集一次。\texttt{binary\_metrics} 由四种计数计算
+\begin{equation}
+\mathrm{Precision}=\frac{TP}{TP+FP},\qquad
+\mathrm{Recall}=\frac{TP}{TP+FN},\qquad
+F1=\frac{2\,\mathrm{Precision}\cdot\mathrm{Recall}}{\mathrm{Precision}+\mathrm{Recall}},
+\end{equation}
+分母为零时代码约定返回 0。下表汇总本节的对应关系。
+\begin{xltabular}{\linewidth}{L{2.6cm}L{4.4cm}Y}\toprule
+理论对象 & 数学表达 & 代码位置与形状\\\midrule
+\endfirsthead
+\toprule
+理论对象 & 数学表达 & 代码位置与形状\\\midrule
+\endhead
+填补与标准化 & $u_j^{(n)}=(\bar x_j^{(n)}-\mu_j)/s_j$ & \texttt{fit\_statistics} 估计 $\mu_j,s_j$；\texttt{apply\_statistics} 应用\\
+独热编码 & 每个类别一列 0/1 指示 & \texttt{fit\_categories}、\texttt{encode\_categories}，共 25 列\\
+增广设计矩阵 & $\mathbf X\in\mathbb R^{N\times(d+1)}$，首列为 1 & \texttt{to\_tensors} 返回 \texttt{X}：$(902,29)$\\
+参数 & $\boldsymbol\theta\in\mathbb R^{d+1}$，$\theta_0$ 为截距 & \texttt{self.theta}：$(29,1)$，\texttt{theta[0]} 为截距\\
+线性得分 & $\mathbf z=\mathbf X_B\boldsymbol\theta$ & \texttt{forward}：\texttt{X @ self.theta}，$(B,1)$\\
+概率 & $\mathbf p=\sigma(\mathbf z)$ & \texttt{sigmoid(logits)}，$(B,1)$\\
+预测类别 & $\hat y=\mathbf 1[p\ge\tau]$ & \texttt{probabilities >= threshold}\\
+经验风险 & $R_B=\frac1B\sum_n\mathcal L^{(n)}$ & \texttt{data\_loss}：\texttt{BCEWithLogitsLoss}，标量\\
+正则项 & $\lambda\Omega$，不含 $\theta_0$ & \texttt{strength * model.penalty(kind)}，使用 \texttt{theta[1:]}\\
+总目标 & $J_B=R_B+\lambda\Omega$ & \texttt{objective}\\
+梯度 & $\nabla_{\boldsymbol\theta}J_B$ & \texttt{objective.backward()} 后的 \texttt{model.theta.grad}：$(29,1)$\\
+参数更新 & $\boldsymbol\theta^{[t+1]}=\boldsymbol\theta^{[t]}-\eta\nabla J_B$ & \texttt{optimizer.step()}；每批先 \texttt{zero\_grad()}\\
+模型选择 & 验证集 $R$ 最小 & \texttt{fit\_candidate}、\texttt{train\_candidates}\\
+评价指标 & 四种计数与四项指标 & \texttt{binary\_metrics}；测试由 \texttt{final\_test} 执行一次\\\bottomrule
+\end{xltabular}
+\clearpage
+\section{实验报告要求与提交}
+\subsection{报告结构}
+报告以 \texttt{report.pdf} 提交，即 PDF（Portable Document Format，可移植文档格式）文件，首页应注明实验名称、学号与姓名。报告参照模板按以下七个部分撰写：
+\begin{enumerate}
+\item \textbf{实验目的。}说明本实验需要理解和掌握的内容。
+\item \textbf{实验环境与数据。}软件版本与运行设备；数据来源、划分、类别比例与缺失情况；被排除的字段与编码后的维数。
+\item \textbf{实验原理。}简述模型、损失函数、正则化、优化方法与评价指标，篇幅建议不超过一页；可参照第~\ref{sec:theory-code} 节的顺序组织，并写明各公式对应的代码位置。
+\item \textbf{实验内容与步骤。}C0--C7 的完成情况；逐检查点给出对应函数、实现思路与关键代码、小例子的输入与预期/实际输出及分析。每处通常摘录 3--10 行关键代码，不粘贴整份文件；C2 须同时覆盖数值与类别处理，C6 须包含手算过程。
+\item \textbf{实验结果。}训练设置、三种方案的验证结果表、测试前的选择理由、一张损失曲线、最终测试指标与混淆矩阵；选做对照单独列出验证结果。
+\item \textbf{结果分析与讨论。}分析误报与漏判、与多数类基线的比较、至少两个验证阈值的权衡以及正则化是否改善表现；讨论同年分类、数据来源、非因果解释与跨年泛化等局限。
+\item \textbf{实验总结。}概括主要结论、收获与建议。
+\end{enumerate}
+报告采用客观、规范的书面语叙述；图、表应编号并配标题，正文须引用并解释。
+\subsection{各检查点的最低证据}
 \par\noindent\begin{tabularx}{\linewidth}{L{1.3cm}Y}\toprule
-阶段 & 一项可复核证据\\\midrule
-C0 & 原例与修改权重后的矩阵乘法；说明形状\\
-C1 & 含缺失标签的三行例子及清洗数值字符串结果\\
-C2 & 均值/尺度/验证值；已知、缺失、未知类别的独热行\\
-C3 & 第 3 条样本与标签配对，五条数据得到 $2,2,1$\\
-C4 & 给定参数与输入的得分、概率、维度\\
-C5 & 零得分损失，两种惩罚与截距处理\\
-C6 & 概率、梯度、一次更新及手算/程序对照\\
-C7 & 四种计数的小例子；综合部分引用实际完整运行\\\bottomrule
+阶段 & 至少一项可复核的证据\\\midrule
+C0 & 原权重与修改权重后的矩阵乘法结果，并说明张量形状\\
+C1 & 含缺失标签的三行样例，以及数值字符串的清洗结果\\
+C2 & 均值、尺度与验证值的标准化结果；已知、缺失与未知类别的独热编码行\\
+C3 & 第 3 条样本与标签的配对，以及五条样本得到的批次 $2,2,1$\\
+C4 & 给定参数与输入下的得分、概率与张量维度\\
+C5 & 零得分时的损失、两种惩罚值与截距的处理\\
+C6 & 概率、梯度、一次更新的结果，以及手算与程序输出的对照\\
+C7 & 四种计数的小例子；综合部分引用完整运行的实际结果\\\bottomrule
 \end{tabularx}
-同一综合图表只放一次，逐检查点处可以引用。所有数值来自自己的提交代码；未完成项如实标注，不能用教师参考数值冒充个人运行。
+同一张综合图表在报告中只需出现一次，各检查点处可直接引用。报告中的全部数值须来自本人提交的代码；未完成的内容应如实标注，不得以教师参考数值代替本人的运行结果。
 \clearpage
 \subsection{提交结构与评分建议}
-提交 \texttt{学号\_姓名\_lab03.zip}，含 \texttt{report.pdf} 与 \file{code/}：学生实现、运行入口、support、workflow、checkpoints、依赖文件，以及 \file{data/classroom/} 三份数据和划分说明。使用 Notebook 时同时保留 \file{logic.ipynb} 和 \file{student.py}。
+提交文件为 \texttt{学号\_姓名\_lab03.zip}，其中包含 \texttt{report.pdf} 与 \file{code/} 目录。\file{code/} 中应保留学生实现、运行入口、support、workflow、checkpoints、依赖文件，以及 \file{data/classroom/} 下的三份数据与划分说明。使用 Notebook 时，需同时保留 \file{logic.ipynb} 与 \file{student.py}。
 
-无需打包环境、缓存、原始大表、教师答案或课程讲义；输出图表放入报告，模型权重与预测明细可自行保留。截止时间和提交平台以课程通知为准。
+压缩包中无需包含运行环境、缓存、原始数据表、教师答案或课程讲义；输出图表应放入报告，模型权重与预测明细可自行保留。截止时间与提交平台以课程通知为准。
 \par\noindent\begin{tabularx}{\linewidth}{L{1.8cm}Y}\toprule
 建议比例 & 核对内容\\\midrule
-数据准备 30\% & 数值清洗、训练统计量、独热编码、未知值与列顺序\\
-模型实现 40\% & 参数与前向、概率接口、数据损失和两种惩罚\\
-训练评价 30\% & 梯度更新、验证选择、最终测试及解释与反馈\\\bottomrule
+数据准备 30\% & 数值清洗、训练统计量、独热编码、未知类别与列顺序\\
+模型实现 40\% & 参数与前向计算、概率接口、数据损失与两种惩罚\\
+训练评价 30\% & 梯度更新、验证选择、最终测试，以及结果解释与反馈\\\bottomrule
 \end{tabularx}
-这是对原指导书评分结构的教学适配，课程另行通知优先。选做对照用于拓展展示，不设必达准确率，不按截图数量或篇幅评分。
-\subsection{提交前自查与排错}
+上述比例是对原实验指导书评分结构的教学适配，如课程另有通知，以通知为准。选做对照用于拓展展示，不设必达准确率，也不按截图数量或篇幅评分。
+\subsection{提交前自查与常见问题}
 \begin{itemize}
-\item 全部 checkpoint 通过，报告中的小例子能复算。解压到其他位置后 C0 可直接运行。
-\item 两个运行命令使用同一数据目录和输出目录；更换数据时使用新输出目录。
-\item 维数不一致：检查未知类别是否新增列、拼接顺序是否变化、首列常数是否遗漏。
-\item 损失异常：检查数值缺失、尺度、重复 sigmoid、学习率以及反向前切断计算图。
-\item 第二次手算不一致：检查每批是否清梯度。
-\item 训练总目标与曲线不同：曲线是无正则数据损失，不是带惩罚的目标。
-\item 测试很高不代表任务正确：先核对是否混入排名、总分或排序行号。
+\item 全部检查点均已通过，报告中的小例子可以复算；将压缩包解压到其他位置后，C0 可以直接运行。
+\item 两条运行命令使用相同的数据目录与输出目录；更换数据时应使用新的输出目录。
+\item 若出现维数不一致，应检查未知类别是否新增了列、拼接顺序是否改变、首列常数是否遗漏。
+\item 若损失异常，应检查数值缺失、特征尺度、是否重复调用 sigmoid、学习率大小，以及是否在反向传播前切断了计算图。
+\item 若第二次更新与手算不一致，应检查每个批次是否清除了梯度。
+\item 训练总目标与曲线数值不同属于正常现象：曲线是不含正则项的数据损失，而非带惩罚的总目标。
+\item 测试结果很高并不代表任务设置正确，应首先核对输入中是否混入了排名、总分或按排名排序的行号。
 \end{itemize}
-\subsection{参考运行与解释}
-本环境固定划分与设置下，三组均在第 60 轮取得各自最低验证损失，无正则约 0.371792，L2 约 0.379552，L1 约 0.392744，三组验证准确率均 0.83。故主实验选择无正则，而非预设正则化一定更好。
+\subsection{参考验证结果}
+在本环境、固定划分与上述设置下，教师参考实现的三种方案均在第 60 轮取得各自最低的验证损失：无正则约为 0.371792，L2 约为 0.379552，L1 约为 0.392744；三者的验证准确率均为 0.83。因此主实验选择无正则方案，这也说明正则化并不必然改善验证表现。若本人的验证结果与上述数值明显不同，应先检查预处理与训练设置是否一致。
 
-冻结后一次测试：准确率 84.11\%、精确率 81.18\%、召回率 68.32\%、F1 约 0.7419；混淆矩阵为真负例 185、假正例 16、假负例 32、真正例 69。多数类基线为 66.56\%。这是本次数据的实际运行，不是教材结果或未来年份效果。
+本手册不提供测试集的参考结果。学生应在报告中记录冻结方案后运行一次最终测试，并以本人的测试结果为准；测试结果只用于最终评价，不用于与参考值对照后回调模型。
 \clearpage
 \section{资料与改编说明}
-\subsection{相较原指导书保留和改变的部分}
-保留第一章逻辑回归的概率、损失、正则化、训练与评价主线；贷款数据改为 QS 大学数据，去掉日期和就业年限编码，加入数值缺失与独热编码、Unknown 和列对齐。增广首列表示截距，前向返回得分，\texttt{BCEWith\allowbreak{}LogitsLoss} 接收得分。
+\subsection{与原实验指导书的关系}
+本实验沿用原实验指导书第一章逻辑回归的概率、损失、正则化、训练与评价主线，采用 QS 大学数据，并加入数值缺失处理、独热编码、Unknown 类别与列对齐等内容。增广首列用于表示截距，前向计算返回得分，由 \texttt{BCEWith\allowbreak{}LogitsLoss} 接收得分计算损失。
 
-本次有 1504 所学校、8 个原始输入字段，分层划分为 902/300/302。不得继续使用旧版 8000/1000/1000、贷款类别比例或召回率。此前贷款方案保留用于追溯，不在当前学生包内。
+本次数据共 1504 所学校、8 个原始输入字段，分层划分为 902/300/302。报告中的划分、类别比例与各项指标均应以本数据的实际运行结果为准。
 \subsection{实际引用资料}
 \begin{itemize}
-\item 项目上级目录《人工智能数学原理与算法：实验指导书（最终）.pdf》第 1 章，第 1.4 节对应清洗、第 1.5 节对应模型与训练、第 1.6 节对应评分结构。
-\item 同级实验 01 的实验手册和报告模板：提交组织；实验 02 的代码：检查点风格。
+\item 项目上级目录《人工智能数学原理与算法：实验指导书（最终）.pdf》第 1 章：第 1.4 节对应数据清洗，第 1.5 节对应模型与训练，第 1.6 节对应评分结构。
+\item 同级实验 01 的实验手册与报告模板：提交组织方式；实验 02 的代码：检查点风格。
 \item 前置讲义列出的课程总表、逻辑回归课件及数学记号说明。
-\item \file{code/data/README.md}、原表和划分摘要：下载来源、字段映射、标签与真实缺失；\file{teacher/prepare_classroom_data.py}：可复现的课堂划分。
-\item \href{https://support.qs.com/hc/en-gb/articles/360021876820-QS-Institution-Classifications}{QS 官方学校分类说明}；\href{https://www.qs.com/insights/world-university-rankings-methodology}{QS 排名方法说明}，核对日期 2026-10-08。
+\item \file{code/data/README.md}、原始数据表与划分摘要：下载来源、字段映射、标签与真实缺失；\file{teacher/prepare_classroom_data.py}：可复现的课堂数据划分。
+\item \href{https://support.qs.com/hc/en-gb/articles/360021876820-QS-Institution-Classifications}{QS 官方学校分类说明}；\href{https://www.qs.com/insights/world-university-rankings-methodology}{QS 排名方法说明}，核对日期为 2026-10-08。
 \end{itemize}
-报告的逐任务组织沿用此前用户提供的《数据科学基础》HW1 个人成稿中“任务、代码、输出、结论”的思路；不沿用其题目、结果、截止日期或提交渠道。教师参考和验收记录见 \file{teacher/README.md}，学生包不含答案。
-\subsection{结束时应能独立回答}
-为什么编码表也是需要拟合的状态？为什么排名行号不能输入模型？为什么正则化比较要用同一种验证损失？为什么一次划分表现良好不意味着能够预测下一年的大学排名？把这四个问题的答案写成各一句话，作为实验退出卡。
+教师参考实现与验收记录见 \file{teacher/README.md}，学生材料包中不含参考答案。
+\subsection{实验退出卡}
+实验结束时，请用一句话分别回答以下四个问题：编码表为什么也是需要拟合的状态？排名行号为什么不能输入模型？比较不同正则化方案时为什么要使用同一种验证损失？为什么一次划分上的良好表现并不意味着能够预测下一年的大学排名？
 \end{document}

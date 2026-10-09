@@ -14,13 +14,16 @@ def fit_candidate(implementation, train, val, kind, strength):
     """固定训练设置，保存验证数据损失最低的一轮。
 
     Args:
-        implementation (module): student 或 reference。
-        train (tuple): 训练张量对。
-        val (tuple): 验证张量对。
-        kind (str): none、l1 或 l2。
-        strength (float): 正则化系数。
+        implementation (module): student 或 reference 模块。
+        train (tuple): 训练集 (X, y) 张量对。
+        val (tuple): 验证集 (X, y) 张量对。
+        kind (str): 正则化类型，取 "none"、"l1" 或 "l2"。
+        strength (float): 正则化系数，例如 0.01。
+
     Returns:
-        tuple: 候选记录、最佳模型、损失历史、验证概率。
+        tuple: (row, model, history, probabilities)。row 为候选设置与验证指标（dict），
+            model 为最佳轮的模型，history 为每轮损失（list of dict），
+            probabilities 为形状 (N_val, 1) 的验证概率。
     """
     torch.manual_seed(42)
     model = implementation.LogisticRegression(train[0].shape[1])
@@ -50,9 +53,9 @@ def train_candidates(implementation, data_dir, output):
     """比较三个正则化方案，冻结主实验模型、预处理和0.5阈值。
 
     Args:
-        implementation (module): student 或 reference。
-        data_dir (str or Path): 数据目录。
-        output (Path): 主实验结果目录。
+        implementation (module): student 或 reference 模块。
+        data_dir (str or pathlib.Path): 课堂数据目录。
+        output (pathlib.Path): 主实验结果目录，例如 outputs-qs/。
     """
     output.mkdir(parents=True, exist_ok=True)
     train, val, state = support.prepare_train_val(implementation, data_dir)
@@ -96,9 +99,9 @@ def feature_study(implementation, data_dir, output):
     """仅在验证集上比较完整/精简特征，固定L2系数，不改主实验选择。
 
     Args:
-        implementation (module): student 或 reference。
-        data_dir (str or Path): 数据目录。
-        output (Path): 主实验目录，选做记录保存在其 feature_study 子目录。
+        implementation (module): student 或 reference 模块。
+        data_dir (str or pathlib.Path): 课堂数据目录。
+        output (pathlib.Path): 主实验目录，选做记录保存在其 feature_study 子目录。
     """
     folder = output / "feature_study"
     folder.mkdir(parents=True, exist_ok=True)
@@ -118,9 +121,9 @@ def final_test(implementation, data_dir, output):
     """恢复已冻结模型与训练预处理状态，报告一次测试结果。
 
     Args:
-        implementation (module): student 或 reference。
-        data_dir (str or Path): 同一份课堂数据。
-        output (Path): 主实验训练结果目录。
+        implementation (module): student 或 reference 模块。
+        data_dir (str or pathlib.Path): 与训练时相同的课堂数据目录。
+        output (pathlib.Path): 保存 selection.json、preprocessing.json 与 selected.pt 的目录。
     """
     selected = json.loads((output / "selection.json").read_text())
     saved = json.loads((output / "preprocessing.json").read_text())
@@ -146,7 +149,7 @@ def main(implementation):
     """调度主实验、选做特征对照或最终测试。
 
     Args:
-        implementation (module): student 或 reference。
+        implementation (module): student 或 reference 模块。
     """
     parser = argparse.ArgumentParser(description="实验03：逻辑回归与大学排名分类")
     parser.add_argument("--data-dir", type=Path, default=support.DATA_DIR)
