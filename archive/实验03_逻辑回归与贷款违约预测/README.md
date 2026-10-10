@@ -15,7 +15,7 @@
 - [实验手册（PDF）](实验03_实验手册.pdf) · [可编辑 LaTeX](实验03_实验手册.tex)：时间安排、每阶段操作、验收与排错。
 - [代码说明](code/README.md) · [学生骨架](code/student.py) · [Notebook](code/logic.ipynb)。两个入口共用 student.py。
 - [报告模板](report-template.md) · [数据说明](code/data/README.md)。
-- [历史参考材料包](../downloads/archive/lab03-loan-2026-10-08.zip)：讲义、手册、代码和真实贷款课堂子集，不含教师目录。
+- [历史参考材料包](../../downloads/archive/lab03-loan-2026-10-08.zip)：讲义、手册、代码和真实贷款课堂子集，不含教师目录。
 
 ## 最短运行路线
 
