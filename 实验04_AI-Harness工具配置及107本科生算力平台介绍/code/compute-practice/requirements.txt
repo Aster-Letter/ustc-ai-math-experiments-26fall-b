@@ -1,0 +1,6 @@
+# Reference pair; choose CPU/cu126/cu128 wheels before installing this file.
+# Platform driver compatibility still needs a rehearsal.
+torch==2.7.1
+torchvision==0.22.1
+numpy>=1.26,<3
+matplotlib>=3.8,<4

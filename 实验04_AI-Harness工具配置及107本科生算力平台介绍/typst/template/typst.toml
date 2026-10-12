@@ -1,0 +1,10 @@
+[package]
+name = "personal-typst-kit"
+version = "0.2.3"
+entrypoint = "lib.typ"
+authors = ["Aster-Letter"]
+license = "MIT"
+description = "A themeable Chinese-first Typst document kit for papers, books, manuals, and handouts."
+repository = "https://github.com/Aster-Letter/personal-typst-kit"
+keywords = ["chinese", "document", "template", "paper", "manual"]
+compiler = "0.15.0"

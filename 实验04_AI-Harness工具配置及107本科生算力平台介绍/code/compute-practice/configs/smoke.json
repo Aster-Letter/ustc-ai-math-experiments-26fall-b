@@ -1,0 +1,12 @@
+{
+  "seed": 20261011,
+  "train_samples": 256,
+  "eval_samples": 128,
+  "batch_size": 32,
+  "epochs": 1,
+  "max_steps": 8,
+  "num_workers": 0,
+  "cpu_threads": 2,
+  "learning_rate": 0.01,
+  "log_every": 1
+}
