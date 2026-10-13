@@ -36,7 +36,7 @@ CPU 小任务跑通后，再按讲义2.2章在平台终端创建独立 GPU 项�
 - `configs/train.json`：45000 训练/5000 验证样本，batch 128，10 epoch；平台负载和时长待实测。
 - `scripts/setup-env.sh`：新建 Linux 项目环境，接受 cpu/cu126/cu128 构建。
 - `scripts/submit.sh`：从项目根目录提交，预先创建日志目录；另有正常和路径错误演示脚本。
-- [数据来源](data-sources.md)：包、校验值和数据划分。
+- [数据来源](data-sources.md)：下载来源、数据准备和划分。
 - [AGENTS.md](AGENTS.md)：供本地 agent 阅读的项目约定。
 
 脚本内 `Students`、`qos_stu_default`、GPU 及资源字段是候选配置，按自己的平台权限调整。项目参考 Python 3.11、torch 2.7.1、torchvision 0.22.1；安装时按实际 CPU/GPU 和驱动选择构建。

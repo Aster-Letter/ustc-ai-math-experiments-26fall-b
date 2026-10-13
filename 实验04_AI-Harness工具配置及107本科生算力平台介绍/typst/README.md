@@ -12,8 +12,8 @@ Typst 是一种文档排版语言，用 `.typ` 纯文本文件编写正文、数
 
 推荐使用 **[Tinymist Typst](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist)** 扩展，扩展 ID 为 `myriad-dreamin.tinymist`。它提供 Typst 语法支持和实时排版预览。
 
-1. 完整解压材料包，用 VS Code 打开包含 assets/、code/、typst/ 的实验根目录，再在扩展面板搜索并安装 Tinymist Typst。
-2. 在当前工作区设置中搜索 **Tinymist Root Path**，填入这个实验根目录的绝对路径，即 assets/ 所在的目录；设置后重载窗口。本讲义的图片路径从这个根目录解析。
+1. 完整解压材料包，用 VS Code 打开包含 assets/、code/、typst/ 的实验根目录，或打开整个课程仓库；再在扩展面板搜索并安装 Tinymist Typst。
+2. **Tinymist Root Path** 通常保持默认即可。配图使用相对于 main.typ 的 `../assets/` 路径，这两种打开方式都可解析。若曾手动设置其他目录，清除旧值，或设为同时包含 typst/ 和 assets/ 的实验根目录，再重载窗口；单独打开 typst/ 子目录会让图片超出项目范围。
 3. 打开 `typst/main.typ`，按 `Ctrl+Shift+P` 打开命令面板，执行 **Typst Pin Main** 固定主文件，再搜索 **Typst Preview** 打开预览；也可使用快捷键 `Ctrl+K V`。
 4. 编辑正文或 course.typ 时，观察主讲义预览和错误提示。需要导出时执行 **Typst Export PDF**，或使用下方命令指定输出文件。
 
@@ -31,6 +31,8 @@ typst compile --root . typst/main.typ 实验04_实验讲义.pdf
 
 ## 调整字体与正文
 
-编辑 course.typ 中的 course-fonts、course-type-scale、course-prose-tracking，以及主题 spacing 中的 leading / paragraph-gap。当前正文用 Noto Serif SC，标题用 Noto Sans SC，代码用 DejaVu Sans Mono；中文字体带宋体/微软雅黑回退。用 typst fonts 查看可用家族，换机器后字体差异可能影响分页；图中文字来自 PNG，不随正文字体修改。
+编辑 course.typ 中的 course-fonts、course-type-scale、course-prose-tracking，以及主题 spacing 中的 leading / paragraph-gap；list-block-gap 控制列表与正文的间距，course-footnote-size 控制脚注字号。当前正文用 Noto Serif SC，标题用 Noto Sans SC，代码用 DejaVu Sans Mono；中文字体带宋体/微软雅黑回退。用 typst fonts 查看可用家族，换机器后字体差异可能影响分页；图中文字来自 PNG，不随正文字体修改。
+
+正文中的补充说明使用页下注。Markdown 用 `[^名称]` 引用，在文末用 `[^名称]: 说明` 定义；对应 Typst 源使用 `#footnote[说明]`，编译时自动排到引用所在页的底部。
 
 讲义 Markdown 保存正文，main.typ 是对应的排版导出源。维护正文时优先改 Markdown；直接改 main.typ 可以编译 PDF，但不会回写 Markdown。生成更新稿时应重新导出 main.typ，避免两份正文分叉。

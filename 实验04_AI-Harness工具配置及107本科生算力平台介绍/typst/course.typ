@@ -9,6 +9,7 @@
 )
 #let course-type-scale = (body: 11.5pt, code: 9.2pt, h1: 17pt, h2: 14pt)
 #let course-prose-tracking = 0.02em
+#let course-footnote-size = 9.5pt
 
 #let course-code(value, language: "text") = {
   let label = if language == "bash" { [Bash · 平台终端] }
@@ -32,6 +33,9 @@
   set table(inset: (x: 0.7em, y: 0.75em), stroke: themes.teal.spacing.line-width + themes.teal.colors.line)
   show table.cell.where(y: 0): set text(weight: "semibold")
   show table: set text(size: 10pt)
+  show footnote.entry: set text(size: course-footnote-size, tracking: 0em)
+  show footnote.entry: set par(leading: 0.65em)
+  set footnote.entry(clearance: 1.3em, gap: 0.6em)
   body
 }
 
@@ -51,6 +55,7 @@
       heading-2-above: 1.1em,
       heading-2-below: 0.55em,
       list-gap: 0.4em,
+      list-block-gap: 1.1em,
     ),
   )
   let meta = (
@@ -77,7 +82,7 @@
         #block(above: 0.9em, below: 1em)[
           #set text(size: 10pt)
           #set par(first-line-indent: 0em, leading: 0.65em)
-          #outline(title: [阅读导航], depth: 2)
+          #outline(title: [目录], depth: 2)
         ]
         #pagebreak()
       ]
