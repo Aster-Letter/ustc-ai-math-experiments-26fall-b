@@ -1,0 +1,6 @@
+# 沿用实验04参考版本。GPU环境先按驱动选择兼容的PyTorch wheel。
+torch==2.7.1
+torchvision==0.22.1
+numpy>=1.26,<3
+Pillow>=10,<14
+matplotlib>=3.8,<4

@@ -17,3 +17,9 @@ __pycache__/
 
 # Teacher solutions are local only.
 /实验02_信息熵与决策树/teacher_only/
+
+# Lab05 student release: local answers, experiments and generated files.
+/实验05_宠物主体分割与小型UNet/teacher/
+/实验05_宠物主体分割与小型UNet/code/data/
+/实验05_宠物主体分割与小型UNet/code/outputs/
+/实验05_宠物主体分割与小型UNet/code/logs/
