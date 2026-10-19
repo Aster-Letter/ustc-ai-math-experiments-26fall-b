@@ -24,7 +24,7 @@
 
 ## 快速开始
 
-在解压后的 `code/` 目录运行。使用实验04已核对的PyTorch环境；安装说明与平台操作见讲义。
+在本地PyTorch环境中进入解压后的 `code/` 目录。基础运算与网络检查使用CPU（Central Processing Unit，中央处理器）；安装说明与平台操作见讲义。
 
 先运行基础运算示例，再补全两个学生文件，并查看各阶段的尺寸与更新结果：
 
@@ -36,7 +36,7 @@ python checks.py basic
 python checks.py improved
 ```
 
-检查输出与手算结果、网络尺寸表一起记入报告。
+`checks.py` 默认使用CPU，网络检查使用程序生成的两个128×128输入张量。检查输出与手算结果、网络尺寸表一起记入报告。
 
 ## 数据准备
 
@@ -53,7 +53,7 @@ python preview_data.py --data-dir data
 
 ## 107平台
 
-在平台登录/提交终端进入 `code/`。`LAB05_PYTHON` 填实验04已核对的环境解释器绝对路径：
+在平台登录/提交终端进入 `code/`。`LAB05_PYTHON` 填平台环境解释器的绝对路径，以下为实验04的路径示例：
 
 ```bash
 export LAB05_PYTHON="$HOME/.conda/envs/compute-resnet/bin/python"
@@ -62,7 +62,9 @@ bash scripts/submit.sh basic
 bash scripts/submit.sh improved
 ```
 
-脚本默认请求单张图形处理器GPU（Graphics Processing Unit）、4个CPU（Central Processing Unit，中央处理器）核心、8GB主内存、1小时。脚本的默认分区为Students，服务质量QOS（Quality of Service）为qos_stu_default，资源配置按账号可用参数设置。可在命令末追加sbatch资源选项，1小时为默认作业时限。可用 `LAB05_EPOCHS`、`LAB05_BATCH_SIZE`、`LAB05_LR`、`LAB05_SEED` 设置实验预算，比较模型时保持一致。
+基础版与改进版作业先在CPU上运行对应的模型检查，再由脚本以 `--device cuda` 启动GPU（Graphics Processing Unit，图形处理器）训练；最终评估也使用GPU。本地与平台使用同一份模型代码，检查输出和训练记录写入Slurm的 `.out` 日志。
+
+脚本默认请求1张GPU、4个CPU核心、8GB主内存、1小时。默认分区为Students，服务质量QOS（Quality of Service）为qos_stu_default，资源配置按账号可用参数设置。可在命令末追加sbatch资源选项，1小时为默认作业时限。可用 `LAB05_EPOCHS`、`LAB05_BATCH_SIZE`、`LAB05_LR`、`LAB05_SEED` 设置实验预算，比较模型时保持一致。
 
 在验证集上选定模型后，填写对应路径并提交测试任务：
 

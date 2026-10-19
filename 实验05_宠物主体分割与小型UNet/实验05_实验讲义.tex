@@ -132,7 +132,7 @@ window = image[row:row+kh, col:col+kw]
 # Hint: multiply corresponding entries, then sum.
 \end{lstlisting}
 \begin{questionbox}[修改一个值]
-把$\mathbf X$中心的5改为10。四个输出是否都会改变？先看中心像素在各窗口中对应哪个核元素，再运行程序检查。
+把$\mathbf X$中心的5改为10。计算四个输出，并说明中心像素在各窗口中对应的核权重如何影响结果。
 \end{questionbox}
 \begin{keybox}[局部连接与权重共享]
 每个输出位置由局部窗口内的输入计算得到；同一输出通道在不同空间位置使用同一组核权重。窗口与卷积核逐元素相乘后求和，形成该位置的响应。
@@ -171,7 +171,7 @@ P=C_{\mathrm{out}}(C_{\mathrm{in}}k^2+1).
 
 \section{T3：自己搭建编码器}
 \subsection{读懂四维张量}
-张量是多维数组。PyTorch图像批量采用\shape{[B,C,H,W]}顺序：$B$为本批图片数，$C$为通道数，$H,W$为高、宽。样本位于第0维，原图的三个通道对应红绿蓝；中间特征的通道由网络学习，不再直接等于颜色。
+张量是多维数组。PyTorch图像批量采用\shape{[B,C,H,W]}顺序：$B$为本批图片数，$C$为通道数，$H,W$为高、宽。样本位于第0维。原图的三个通道对应红绿蓝，中间特征的各通道表示网络学习到的不同响应。
 
 \file{PetEncoder}继承\file{nn.Module}。在\file{__init__}中创建并注册层，在\file{forward}中按顺序调用这些层。训练时，多次前向传播使用同一组可学习参数。
 \subsection{三阶段固定接口}
@@ -195,7 +195,7 @@ nn.MaxPool2d(kernel_size=2, stride=2)
 python checks.py encoder
 python checks.py basic
 \end{lstlisting}
-程序输出三个阶段的张量尺寸，以及梯度计算和一次参数更新的结果。将这些结果与逐层尺寸表一同记入报告。
+检查程序在本地CPU（Central Processing Unit，中央处理器）上运行，使用两个程序生成的\shape{[3,128,128]}输入张量。程序输出各阶段的尺寸，并检查梯度计算和一次参数更新。将输出结果与逐层尺寸表一同记入报告。
 \begin{keybox}[层间连接关系]
 后一层的输入通道数等于前一层的输出通道数。每个阶段通过一次池化将高、宽各缩小一半，并保留批量、通道与二维空间结构，供解码器继续处理。
 \end{keybox}
@@ -285,11 +285,11 @@ IoU（Intersection over Union）为交并比；$\cap$取共有像素，$\cup$取
 
 \section{运行环境与数据准备}
 \subsection{环境配置}
-沿用实验04的Python环境。参考依赖为Python 3.11、PyTorch 2.7.1、Torchvision 0.22.1。完整训练和评估在107平台的GPU（Graphics Processing Unit，图形处理器）计算节点执行。进入\file{code/}后，使用该环境的解释器安装依赖：
+参考环境为Python 3.11、PyTorch 2.7.1、Torchvision 0.22.1。本地CPU环境用于基础运算、网络尺寸、梯度和参数更新检查；完整训练与评估在107平台的GPU（Graphics Processing Unit，图形处理器）计算节点执行。进入\file{code/}后安装依赖：
 \begin{lstlisting}[language=bash]
 python -m pip install -r requirements.txt
 \end{lstlisting}
-已配置相同依赖的环境可直接使用。平台环境解释器路径通过\file{LAB05_PYTHON}传入作业脚本。
+已配置相同依赖的环境可直接使用。\file{checks.py}默认使用CPU；平台脚本通过设备参数\texttt{--device cuda}启动训练和评估。两处使用同一份模型代码，平台环境解释器路径由\file{LAB05_PYTHON}指定。
 \subsection{数据下载与样本预览}
 在联网机器上下载数据，生成划分文件并查看标注：
 \begin{lstlisting}[language=bash]
@@ -337,7 +337,7 @@ export LAB05_SEED=42
 bash scripts/submit.sh basic
 bash scripts/submit.sh improved
 \end{lstlisting}
-提交脚本依次执行模型检查与训练。默认申请1张GPU、4个CPU（Central Processing Unit，中央处理器）核心、8GB主内存，作业时限为1小时。可在\file{submit.sh}末尾追加平台允许的\file{sbatch}资源选项，例如\file{--time=02:00:00}。
+基础版与改进版作业先在CPU上执行对应的模型检查，再在GPU上训练。检查输出和训练记录写入同一份Slurm标准输出日志（\file{.out}）。默认申请1张GPU、4个CPU核心、8GB主内存，作业时限为1小时。可在提交命令末尾追加\file{sbatch}资源选项，例如\file{--time=02:00:00}。
 
 输出位于\textrm{outputs/模型名-作业号/}，日志位于\file{logs/}。用\textrm{tail -f logs/实际日志名.out}观察进度，使用\textrm{scancel 作业号}取消作业。训练由调度系统分配至GPU计算节点执行；\texttt{squeue -u "\$USER"}可查看作业状态。
 \subsection{训练程序的关键顺序}
@@ -444,7 +444,7 @@ x = x.permute(0, 3, 1, 2)    # [B,C,H,W]
 \subsection{至少两组实验}
 基础要求为一个基线和一个改进编码器，使用同一提供的解码器。进阶选做U-Net，由学生自行编写。默认训练预算为20轮、批量16、学习率0.001；各对照组使用相同预算，配置与实际耗时记录在报告中。
 
-在验证样例中选至少3个成功和3个失败案例，观察耳朵、腿、毛发边缘、相似背景和小目标。既看分数，也看网络把什么当成了宠物。报告记录各组结果，并结合曲线和预测图分析性能变化。评估器还保存\file{best_worst_examples.png}，前三行是IoU最低、后三行是最高的样例，可用于观察不同图像上的表现差异。
+在验证样例中选至少3个成功和3个失败案例，分析耳朵、腿、毛发边缘、相似背景和小目标上的预测表现。报告记录各组指标，并结合曲线和预测掩码解释性能变化。评估器保存\file{best_worst_examples.png}，前三行是IoU最低、后三行是最高的样例，展示模型在不同图像上的表现差异。
 \subsection{评分办法}
 \par\noindent\begin{tabularx}{\linewidth}{L{1.4cm}L{3.6cm}Y}\toprule
 分值 & 项目 & 评分依据\\\midrule
@@ -463,8 +463,8 @@ bash scripts/submit.sh evaluate
 \end{lstlisting}
 评估脚本使用对应训练输出的\file{source/}代码快照与\file{best.pt}权重恢复模型。提交以下内容：
 \begin{enumerate}
-\item 学生代码与报告，报告包括逐层尺寸表、对比表和结果图片。
-\item 基础与改进训练的\file{run.json}、\file{history.csv}、曲线及平台日志。
+\item 学生代码与报告，报告包括基础运算结果、逐层尺寸表、对比表和结果图片。
+\item 基础与改进训练的\file{run.json}、\file{history.csv}、曲线及平台日志；日志中包含模型尺寸与参数更新的检查结果。
 \item 最终选定模型的\file{best.pt}及对应\file{source/}代码快照。
 \item 最终测试的\file{metrics.json}、\file{per_image.csv}和\file{examples.png}。
 \end{enumerate}
@@ -478,7 +478,7 @@ bash scripts/submit.sh evaluate
 \begin{enumerate}
 \item 池化保留什么、丢失什么？上采样能否完整恢复原信息？
 \item \shape{[B,64,32,32]}与\shape{[B,32,32,32]}拼接后有多少通道？
-\item 为什么模型最后不做sigmoid，预测时却要解释概率？
+\item 原始得分、sigmoid概率与二值预测掩码如何对应？训练损失接收哪一种量？
 \item BN和LN的统计范围分别是什么？如何用对照实验评价它们的作用？
 \end{enumerate}
 参考要点：池化保留局部响应摘要并丢失部分位置细节；插值不能唯一找回原信息。拼接为96通道。训练损失接收原始得分并内部稳定处理；预测概率由sigmoid得到。BN按通道汇总批量和空间位置，LN按单个样本的指定维度计算；其效果通过相同划分和预算下的验证结果比较。
@@ -500,16 +500,16 @@ bash scripts/submit.sh evaluate
 本实验配合第5次理论课的卷积网络、残差连接与归一化内容。以下路径相对于课程仓库。
 \begin{itemize}
 \item \textrm{教案/人工智能数学原理与算法\_12次课程与助教分工\_最终版.xlsx}：“课程执行总表”“教学深度与时间”，对齐10月19日卷积、残差与BN内容。
-\item \file{source/pdf/nndl-v2.pdf}：邱锡鹏《神经网络与深度学习》，第5.1--5.2节卷积与汇聚、第5.4.5节残差网络；重点核对第125、137页（文件第138、150页）。
+\item \file{source/pdf/nndl-v2.pdf}：邱锡鹏《神经网络与深度学习》，第5.1--5.2节卷积与汇聚、第5.4.5节残差网络；相关内容见书中第125、137页（文件第138、150页）。
 \item \textrm{教案/第五次教学\_卷积神经网络与残差网络/第五次教学\_卷积神经网络与残差网络.tex}：通道、尺寸、参数量和残差连接的课程记号与知识边界。
 \item 实验04讲义及\file{code/compute-practice/scripts/}：107平台的提交终端、资源参数、环境解释器与日志工作流。
 \end{itemize}
 \subsection{数据、模型与接口资料}
 \begin{itemize}
-\item \href{https://www.robots.ox.ac.uk/~vgg/data/pets/}{Oxford-IIIT Pet 官方数据页}及下载包\file{annotations/README}：三值掩码与官方划分。图片版权属于原权利人，使用时遵循数据发布方及原始图片条款。
+\item \href{https://www.robots.ox.ac.uk/~vgg/data/pets/}{Oxford-IIIT Pet 官方数据页}及下载包\file{annotations/README}：宠物图片、三值掩码与官方划分。
 \item \href{https://arxiv.org/abs/1505.04597}{Ronneberger等，U-Net（2015）}：编码路径、解码路径和拼接连接。本实验采用两条跳跃连接的教学简化版。
 \item \href{https://arxiv.org/abs/1512.03385}{He等，Deep Residual Learning（2015）}：残差学习与快捷连接。
-\item PyTorch官方文档：\href{https://docs.pytorch.org/vision/stable/generated/torchvision.datasets.OxfordIIITPet.html}{OxfordIIITPet}、\href{https://docs.pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html}{BatchNorm2d}、\href{https://docs.pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html}{LayerNorm}。正文的归一化范围按接口定义说明，实际代码参考版本固定在依赖文件中。
+\item PyTorch官方文档：\href{https://docs.pytorch.org/vision/stable/generated/torchvision.datasets.OxfordIIITPet.html}{OxfordIIITPet}、\href{https://docs.pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html}{BatchNorm2d}、\href{https://docs.pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html}{LayerNorm}：数据集接口、归一化维度与参数说明；依赖版本见\file{requirements.txt}。
 \end{itemize}
 \subsection{把实验放回完整工作流}
 任务与代价是“找出主体，兼顾漏分与误分”；数据阶段核对标注并固定划分；表示阶段由学生编码器学习特征；模型阶段连接解码器；目标阶段使用忽略边界的交叉熵；优化阶段执行梯度更新；选择阶段看验证集；最后测试并分析错误。在真实产品中，还需检查不同拍摄条件、多主体图像、时延及上线后的数据变化。
