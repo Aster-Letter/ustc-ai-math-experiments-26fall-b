@@ -85,7 +85,7 @@ def run_training(args, model=None):
     torch.manual_seed(args.seed)
     torch.set_num_threads(2)
     if args.device == "cuda":
-        assert torch.cuda.is_available(), "No CUDA device: submit a GPU job and check the PyTorch environment."
+        assert torch.cuda.is_available(), "CUDA is unavailable in this Python environment. Use a CUDA-enabled environment on a local NVIDIA GPU or a 107 GPU node."
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True

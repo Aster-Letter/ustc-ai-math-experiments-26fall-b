@@ -1,4 +1,4 @@
-"""分阶段自检；未完成骨架应给出明确失败，不能当作通过。"""
+"""分阶段检查基础运算、编解码器尺寸、梯度与参数更新。"""
 import argparse
 import torch
 from PIL import Image
@@ -9,6 +9,7 @@ from data import convert_trimap
 from metrics import masked_loss, foreground_scores
 from models import build_model
 from student_encoder import PetEncoder, ImprovedEncoder
+from student_decoder import PetDecoder
 
 
 def check_operators():
@@ -70,6 +71,34 @@ def check_encoder(improved=False):
     assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in encoder.parameters()), "T3: no encoder gradient"
 
 
+def check_decoder():
+    """检查三个卷积块、输出头和从输出回到输入的梯度。"""
+    decoder = PetDecoder()
+    shapes = {}
+    handles = []
+    def remember(name):
+        """记录当前卷积块的输出形状。"""
+        def hook(module, inputs, output):
+            shapes[name] = tuple(output.shape)
+        return hook
+    for name in ["block2", "block1", "block0", "output"]:
+        handles.append(getattr(decoder, name).register_forward_hook(remember(name)))
+    features = torch.rand(2, 64, 16, 16, requires_grad=True)
+    logits = decoder(features, (128, 128))
+    for handle in handles:
+        handle.remove()
+    expected = {"block2": (2,32,32,32), "block1": (2,16,64,64),
+                "block0": (2,16,128,128), "output": (2,1,128,128)}
+    for name, shape in expected.items():
+        print(name, shapes.get(name))
+        assert shapes.get(name) == shape, f"T4: {name} should output {shape}"
+    assert tuple(logits.shape) == expected["output"]
+    assert torch.isfinite(logits).all()
+    logits.square().mean().backward()
+    assert features.grad is not None and features.grad.abs().sum() > 0
+    assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in decoder.parameters())
+
+
 def check_model(name):
     """检查全模型能否输出并完成一次参数更新。
 
@@ -98,7 +127,7 @@ def check_model(name):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=["core", "operators", "encoder", "basic", "improved", "demo"])
+    parser.add_argument("stage", choices=["core", "operators", "encoder", "decoder", "basic", "improved", "demo"])
     args = parser.parse_args()
     torch.manual_seed(7)
     torch.set_num_threads(2)
@@ -108,8 +137,11 @@ if __name__ == "__main__":
         check_operators()
     elif args.stage == "encoder":
         check_encoder()
+    elif args.stage == "decoder":
+        check_decoder()
     else:
         if args.stage in ["basic", "improved"]:
             check_encoder(args.stage == "improved")
+            check_decoder()
         check_model(args.stage)
     print("PASS:", args.stage)

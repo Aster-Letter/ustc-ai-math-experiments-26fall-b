@@ -1,6 +1,6 @@
 \documentclass[UTF8,a4paper,11pt,fontset=fandol]{ctexart}
 \newcommand{\DocTitle}{实验05：宠物主体分割与小型U-Net}
-\newcommand{\DocSubject}{135分钟；PyTorch卷积编码器、语义分割、跳跃连接与107平台训练评估}
+\newcommand{\DocSubject}{135分钟；PyTorch卷积编码器、语义分割、跳跃连接、本地与107平台训练评估}
 \newcommand{\DocShortTitle}{实验05：宠物主体分割}
 \newcommand{\DocType}{学生讲义与实验手册}
 \input{assets/experiment-style.tex}
@@ -42,11 +42,11 @@
 \end{tabular}
 \vspace{1cm}
 \begin{keybox}[本次实验要完成的作品]
-输入一张宠物照片，输出主体区域。自己搭建卷积编码器，接入提供的解码器，在学校107平台训练和评估。进阶任务通过跳跃连接探索细节恢复。
+输入一张宠物照片，输出主体区域。自己搭建卷积编码器和解码器，在本地NVIDIA显卡或学校107平台训练和评估。进阶任务通过跳跃连接探索细节恢复。
 \end{keybox}
 \vfill
 2026年秋季\quad 3学时（135分钟），完整训练与对比可课后完成。\\
-框架：PyTorch\quad 数据：Oxford-IIIT Pet\quad 训练与评估：107平台。
+框架：PyTorch\quad 数据：Oxford-IIIT Pet\quad 训练与评估：本地NVIDIA显卡或107平台。
 \end{titlepage}
 \hypersetup{pageanchor=true}
 \pagenumbering{roman}
@@ -65,7 +65,8 @@
 文件或目录 & 作用与完成要求\\\midrule
 \file{operator_exercises.py} & 学生补全小矩阵卷积、激活、池化三个函数\\
 \file{student_encoder.py} & 学生补全基础版与改进版编码器\\
-\file{models.py} & 已提供解码器，并将学生编码器接入完整网络\\
+\file{student_decoder.py} & 学生补全解码器的卷积块、上采样与输出头\\
+\file{models.py} & 已提供编解码器连接与模型选择入口\\
 \file{data.py}、\file{prepare_data.py} & 读取与变换数据；提供划分生成函数，数据包已含固定划分\\
 \file{check_data.py} & 检测数据文件、固定划分、图片与掩码\\
 \file{preview_data.py} & 生成训练样本及掩码预览图\\
@@ -73,14 +74,14 @@
 \file{train.py} & 训练、逐轮验证、保存最优模型与训练记录\\
 \file{evaluate.py} & 读取选定权重，计算测试指标并保存预测图\\
 \file{metrics.py}、\file{visuals.py} & 已提供损失、指标、训练曲线与预测图绘制\\
-\file{scripts/} & \file{submit.sh}提交作业，\file{job.sbatch}声明资源，\file{run-job.sh}执行训练或评估\\
-\file{requirements.txt} & Python依赖及版本\\\bottomrule
+\file{run_local.py}、\file{scripts/} & 本地运行入口与107平台Slurm脚本，均保存日志\\
+\bottomrule
 \end{tabularx}\par
 
 \subsection{数据怎样经过这些模块}
-\file{train.py}从\file{data.py}读取图片与掩码，通过\file{models.py}建立网络。图片依次经过学生编码器和已提供的解码器，得到逐像素原始得分；\file{metrics.py}据此计算损失和指标。每轮结束后记录验证结果，并由\file{visuals.py}绘制曲线和预测图。\file{evaluate.py}读取选定模型，在测试集上生成最终结果。
+\file{train.py}从\file{data.py}读取图片与掩码，通过\file{models.py}建立网络。图片依次经过学生编码器和解码器，得到逐像素原始得分；\file{metrics.py}据此计算损失和指标。每轮结束后记录验证结果，并由\file{visuals.py}绘制曲线和预测图。\file{evaluate.py}读取选定模型，在测试集上生成最终结果。
 
-基础任务补全两个学生文件，分别训练基础版与改进版。小型U-Net为独立选做，学生依据后文结构示意自行实现。每组训练产出配置、逐轮指标、曲线、模型权重和代码快照。
+基础任务补全三个学生文件，分别训练基础版与改进版。小型U-Net为独立选做，学生依据后文结构示意自行实现。每组训练产出配置、逐轮指标、曲线、模型权重和代码快照。
 
 \subsection{进入代码目录与准备环境}
 参考环境为Python 3.11、PyTorch 2.7.1、Torchvision 0.22.1。在解压后的实验目录打开终端，进入\file{code/}并安装依赖；后续命令均在此目录执行：
@@ -88,7 +89,7 @@
 cd code
 python -m pip install -r requirements.txt
 \end{lstlisting}
-已配置相同依赖的环境可直接使用。本地CPU（Central Processing Unit，中央处理器）用于基础运算和网络检查；107平台GPU（Graphics Processing Unit，图形处理器）用于完整训练与评估。两处使用同一份模型代码，平台脚本通过\texttt{--device cuda}指定训练设备。
+已配置相同依赖的环境可直接使用。本地CPU（Central Processing Unit，中央处理器）用于基础运算和编解码器检查。完整训练使用GPU（Graphics Processing Unit，图形处理器）：有本地NVIDIA GPU的同学按第8.1节运行；其余同学完成本地CPU检查后，转到第8.2节使用107平台Slurm。两条路径共用代码、数据划分和评分标准。
 \clearpage
 
 \subsection{从科大网盘获取数据包并解压}
@@ -130,11 +131,11 @@ code/
   outputs/
     data_preview.png
 \end{lstlisting}
-训练读取解压后的图片、掩码与\file{splits.json}，数据压缩包可另存。将完整\file{code/}及其中的\file{data/}上传到107平台；若数据另放在共享目录，\file{LAB05_DATA_DIR}填写包含\file{splits.json}的那一级目录。使用上述目录布局时，在平台\file{code/}中设置：
+训练读取解压后的图片、掩码与\file{splits.json}，数据压缩包可另存。选择107平台路径时，将完整\file{code/}及其中的\file{data/}上传到平台；若数据另放在共享目录，\file{LAB05_DATA_DIR}填写包含\file{splits.json}的那一级目录。使用上述目录布局时，在平台\file{code/}中设置：
 \begin{lstlisting}[language=bash]
 export LAB05_DATA_DIR="$PWD/data"
 \end{lstlisting}
-\file{LAB05_PYTHON}用于指定平台Python解释器，作业提交与日志读取见第8节。
+\file{LAB05_PYTHON}用于指定平台Python解释器，Slurm作业提交与日志读取见第8.2节。
 \clearpage
 
 \section{实验目标与课堂安排}
@@ -146,9 +147,9 @@ export LAB05_DATA_DIR="$PWD/data"
 \par\noindent\begin{tabularx}{\linewidth}{L{2.4cm}YY}\toprule
 部分 & 学生完成 & 已提供\\\midrule
 基础运算 & 小矩阵卷积、激活、池化 & 可运行示例与自检\\
-网络 & 基础和改进编码器 & 基础解码器、训练程序\\
+网络 & 基础和改进编码器、基础解码器 & 网络连接、训练程序\\
 数据与评价 & 观察样本、解释指标 & 数据划分、掩码转换、指标实现\\
-平台与分析 & 提交作业、对比、报告 & 提交脚本、日志和报告模板\\
+运行与分析 & 选择运行路径、对比、报告 & 本地入口、Slurm脚本和报告模板\\
 进阶（选做） & 自行实现小型 U-Net 并接入训练 & 结构示意和维度提示\\\bottomrule
 \end{tabularx}\par
 \subsection{135分钟课堂流程}
@@ -158,8 +159,8 @@ export LAB05_DATA_DIR="$PWD/data"
 15--35 & T2 & 演示一次滑窗计算 & 完成手算与三个小函数\\
 35--55 & T3前半 & 解释通道与尺寸 & 搭建阶段1，核对输出\\
 55--70 & T3后半 & 指导阶段连接 & 完成三阶段尺寸表\\
-70--90 & T4 & 解释损失与更新 & 检查完整网络和一次更新\\
-90--115 & T5 & 演示107作业提交 & 提交训练作业，读取记录\\
+70--90 & T4 & 解释上采样和输出头 & 完成解码器与一次更新\\
+90--115 & T5 & 演示本地与Slurm入口 & 启动训练，读取记录\\
 115--135 & T6/进阶 & 讲解结果分析与拼接 & 完成对比计划和退出卡\\\bottomrule
 \end{tabularx}\par
 课堂时间合计135分钟。环境与数据在课前准备；课堂完成基础网络和训练提交，完整训练与对照分析可在课后完成。
@@ -273,7 +274,6 @@ nn.MaxPool2d(kernel_size=2, stride=2)
 \end{lstlisting}
 \begin{lstlisting}[language=bash]
 python checks.py encoder
-python checks.py basic
 \end{lstlisting}
 检查程序在本地CPU上运行，使用两个程序生成的\shape{[3,128,128]}输入张量。程序输出各阶段的尺寸，并检查梯度计算和一次参数更新。将输出结果与逐层尺寸表一同记入报告。
 \begin{keybox}[层间连接关系]
@@ -281,31 +281,62 @@ python checks.py basic
 \end{keybox}
 \clearpage
 
-\section{T4：连接提供的解码器}
-\subsection{编码器和解码器分别负责什么}
-编码器把局部像素变成更抽象、分辨率更低的特征；解码器把这些特征转成逐像素输出。这里的backbone指承担主要特征提取的编码器。基础模型的解码器以最深层特征作为输入。
+\section{T4：自己搭建解码器}
+\subsection{从最深层特征恢复逐像素输出}
+编码器把局部像素变成分辨率更低的特征；解码器把这些特征转成逐像素输出。这里的backbone指承担主要特征提取的编码器。修改\file{student_decoder.py}中的\file{PetDecoder}，基础模型只接收最深层特征\file{z}。
 \begin{center}
-\begin{tikzpicture}[node distance=6mm,every node/.style={font=\small},box/.style={draw=Blue,fill=PaleBlue,rounded corners,minimum width=11cm,minimum height=9mm,align=center},arr/.style={-Latex,thick,Navy}]
+\begin{tikzpicture}[node distance=5mm,every node/.style={font=\small},box/.style={draw=Blue,fill=PaleBlue,rounded corners,minimum width=11cm,minimum height=8mm,align=center},arr/.style={-Latex,thick,Navy}]
 \node[box] (a) {图片：$B\times3\times128\times128$};
-\node[box,below=of a] (b) {学生编码器：$128\rightarrow64\rightarrow32\rightarrow16$};
+\node[box,below=of a] (b) {学生编码器：空间尺寸$128\rightarrow64\rightarrow32\rightarrow16$};
 \node[box,below=of b] (c) {最深层特征：$B\times64\times16\times16$};
-\node[box,below=of c,fill=PaleCyan,draw=Cyan] (d) {提供的解码器：$16\rightarrow32\rightarrow64\rightarrow128$};
+\node[box,below=of c,fill=PaleCyan,draw=Cyan] (d) {学生解码器：空间尺寸$16\rightarrow32\rightarrow64\rightarrow128$};
 \node[box,below=of d,fill=PaleCyan,draw=Cyan] (e) {像素得分：$B\times1\times128\times128$};
 \draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);\draw[arr] (d)--(e);
 \end{tikzpicture}
 \end{center}
-蓝色框表示学生负责的编码路径，青色框表示提供的解码路径；箭头表示数据流。图中的尺寸序列描述空间分辨率；编码路径的通道数为16、32、64，解码路径逐步变为32、16、16，输出头将其映射为1通道。
-\subsection{上采样与输出头}
-\file{ProvidedDecoder}使用双线性上采样加卷积，每次扩大空间尺寸后学习特征组合。最后一个1$\times$1卷积把16个通道组合成1个像素得分。
+蓝色表示编码路径，青色表示解码路径，箭头表示数据流。两部分均由学生实现，\file{models.py}提供完整网络的连接。
+\subsection{逐步形状与层配置}
+以下为128$\times$128输入下的固定接口。$B$表示批量大小；所有3$\times$3卷积使用步长1、填充1，后接ReLU。表中的上采样使用双线性插值，保持通道数。
+\par\noindent\begin{tabularx}{\linewidth}{L{2.8cm}L{3.5cm}Y}\toprule
+变量或层 & 输出形状 & 本步操作\\\midrule
+\file{features} & \shape{[B,64,16,16]} & 编码器输出\file{z}\\
+\file{up2} & \shape{[B,64,32,32]} & 上采样，高、宽各乘2\\
+\file{block2}/\file{d2} & \shape{[B,32,32,32]} & 64到32通道的卷积与激活\\
+\file{up1} & \shape{[B,32,64,64]} & 上采样，高、宽各乘2\\
+\file{block1}/\file{d1} & \shape{[B,16,64,64]} & 32到16通道的卷积与激活\\
+\file{up0} & \shape{[B,16,128,128]} & 上采样至\file{output_size}\\
+\file{block0}/\file{d0} & \shape{[B,16,128,128]} & 16到16通道的卷积与激活\\
+\file{logits} & \shape{[B,1,128,128]} & \file{output}：1$\times$1卷积，16到1通道\\\bottomrule
+\end{tabularx}\par
+最后一层返回原始得分，训练损失在内部处理sigmoid；概率与二值掩码在预测阶段计算。基础版和改进版共用同一解码器结构，以比较编码器改动的影响。
+\clearpage
+\subsection{需要修改的位置与Hint}
+\par\noindent\begin{tabularx}{\linewidth}{L{2cm}L{4cm}Y}\toprule
+任务 & 修改位置 & Hint\\\midrule
+T4.1 & \file{__init__}中的三个\file{block} & 使用\file{nn.Sequential}组织卷积和激活，通道数按上一页填写\\
+T4.2 & \file{__init__}中的\file{output} & 1$\times$1卷积用于组合通道，输出通道数为1\\
+T4.3 & \file{forward}中的\file{up2/up1/up0} & 前两次指定\file{scale_factor=2}，最后一次指定\file{size=output_size}\\
+T4.4 & \file{forward}中的\file{d2/d1/d0/logits} & 按数据流调用对应层，每一层接收上一步结果\\\bottomrule
+\end{tabularx}\par
+在文件开头已导入\file{nn}和\file{F}。下面展示一次上采样与卷积块调用的写法，其余步骤按形状表完成：
 \begin{lstlisting}
 x = F.interpolate(features, scale_factor=2,
                   mode="bilinear", align_corners=False)
 x = self.block2(x)
 \end{lstlisting}
-插值根据邻近位置计算新值，以扩大特征图的空间尺寸。后续卷积从标注数据中学习逐像素预测所需的特征组合；U-Net的跳跃连接进一步提供浅层空间细节。
+\file{__init__}负责创建可学习层，\file{forward}负责调用层。插值扩大空间尺寸，卷积学习特征组合。\file{output_size}由\file{models.py}从原图高、宽传入。
+
+补全后在CPU上分别检查解码器、基础模型和改进模型：
+\begin{lstlisting}[language=bash]
+python checks.py decoder
+python checks.py basic
+python checks.py improved
+\end{lstlisting}
+解码器检查打印三个卷积块和输出头的尺寸，并计算输入与参数的梯度。完整模型检查连接关系及一次参数更新。把结果与形状表记入报告。
 \begin{questionbox}[检查点]
-本实验用一个得分经sigmoid得到“属于宠物”的概率，背景概率等于1减去该概率。若某像素的宠物概率为0.8，其背景概率和阈值0.5下的预测类别分别是什么？
+一次上采样把\shape{[B,64,16,16]}变为\shape{[B,64,32,32]}，为什么通道数保持64？若希望输出变为32通道，应修改哪一步？
 \end{questionbox}
+参考要点：插值独立作用于每个通道的空间网格；通道数由后续卷积的输出通道参数决定。
 \clearpage
 
 \section{损失、梯度与分割指标}
@@ -363,16 +394,34 @@ IoU（Intersection over Union）为交并比；$\cap$取共有像素，$\cup$取
 训练集用于反向传播；每轮在验证集上计算指标，保存验证IoU最高的轮次（并列保留较早轮次）。网络结构和超参数由验证结果确定；测试集用于报告选定模型的最终表现。
 \clearpage
 
-\section{T5：在107平台训练与记录}
-\subsection{平台环境与作业资源}
-上传完整\file{code/}和数据目录，在107平台登录／提交终端进入\file{code/}。将环境解释器路径与数据路径写入环境变量；以下使用实验04的环境路径示例：
+\section{T5：本地GPU与107平台两种运行方式}
+\subsection{方案A：本地NVIDIA GPU}
+本地具有NVIDIA GPU并配置CUDA（Compute Unified Device Architecture，统一计算设备架构）版PyTorch时，可在本地完成全部训练与评估。安装版本沿用第1节；CUDA安装包按\href{https://pytorch.org/get-started/previous-versions/}{PyTorch官方历史版本说明}选择与设备和驱动匹配的版本。在当前Python环境运行：
+\begin{lstlisting}[language=bash]
+python -c "import torch; print(torch.cuda.is_available())"
+\end{lstlisting}
+输出\file{True}表示当前环境可调用CUDA设备。没有本地NVIDIA GPU的同学在CPU上完成T2--T4，随后按第8.2节使用107平台。
+
+已提供\file{run_local.py}，Windows与Linux使用相同命令。在\file{code/}中运行基础版与改进版：
+\begin{lstlisting}[language=bash]
+python run_local.py basic --output outputs/basic-local-01
+python run_local.py improved --output outputs/improved-local-01
+\end{lstlisting}
+入口先在CPU上运行编解码器和完整模型检查，再调用\file{train.py}在CUDA设备上训练。默认20轮、批量16、学习率0.001、种子42，与Slurm路径一致。可通过\texttt{--epochs}、\texttt{--batch-size}、\texttt{--lr}和\texttt{--seed}设置训练预算，各对照组保持一致。
+
+\file{--output}指定训练输出目录，每次实验使用新的目录名；省略时按模型名和时间生成。\file{logs/}自动保存\file{.log}文件，同时显示终端输出，包含命令、模型检查、设备和训练记录。
+
+根据验证集选择模型后运行最终测试。以下示例假定选择改进版，按实际选择替换权重路径：
+\begin{lstlisting}[language=bash]
+python run_local.py evaluate --checkpoint outputs/improved-local-01/best.pt
+\end{lstlisting}
+评估入口调用权重旁\file{source/evaluate.py}恢复模型，结果写入\textrm{outputs/evaluate-local-时间/}。本地日志与\file{run.json}、曲线、代码快照一并提交；本地运行记录中的\file{slurm_job_id}为空。
+\clearpage
+\subsection{方案B：107平台Slurm}
+将完整\file{code/}和数据目录上传至107平台，在登录／提交终端进入\file{code/}。环境解释器使用实验04的路径示例：
 \begin{lstlisting}[language=bash]
 export LAB05_PYTHON="$HOME/.conda/envs/compute-resnet/bin/python"
 export LAB05_DATA_DIR="$PWD/data"
-\end{lstlisting}
-作业通过CUDA（Compute Unified Device Architecture，统一计算设备架构）调用GPU。脚本默认分区为\file{Students}，QOS（Quality of Service，服务质量）为\file{qos_stu_default}；资源参数按账号可用配置设置。
-\subsection{提交基础与改进实验}
-\begin{lstlisting}[language=bash]
 export LAB05_EPOCHS=20
 export LAB05_BATCH_SIZE=16
 export LAB05_LR=0.001
@@ -380,9 +429,16 @@ export LAB05_SEED=42
 bash scripts/submit.sh basic
 bash scripts/submit.sh improved
 \end{lstlisting}
-基础版与改进版作业先在CPU上执行对应的模型检查，再在GPU上训练。检查输出和训练记录写入同一份Slurm标准输出日志（\file{.out}）。默认申请1张GPU、4个CPU核心、8GB主内存，作业时限为1小时。可在提交命令末尾追加\file{sbatch}资源选项，例如\file{--time=02:00:00}。
+基础版与改进版作业先在CPU上执行模型检查，再在GPU计算节点训练。检查输出和训练记录写入Slurm标准输出日志\file{.out}，错误输出写入\file{.err}。输出位于\textrm{outputs/模型名-作业号/}，日志位于\file{logs/}。
 
-输出位于\textrm{outputs/模型名-作业号/}，日志位于\file{logs/}。用\textrm{tail -f logs/实际日志名.out}观察进度，使用\textrm{scancel 作业号}取消作业。训练由调度系统分配至GPU计算节点执行；\texttt{squeue -u "\$USER"}可查看作业状态。
+默认分区为\file{Students}，QOS（Quality of Service，服务质量）为\file{qos_stu_default}；申请1张GPU、4个CPU核心、8GB主内存，时限1小时。资源参数按账号配置设置，可在提交命令末尾追加\file{sbatch}选项，例如\file{--time=02:00:00}。
+
+用\texttt{squeue -u "\$USER"}查看作业状态，\textrm{tail -f logs/实际日志名.out}观察进度，\textrm{scancel 作业号}取消作业。根据验证集选择模型后，将对应权重传入测试作业：
+\begin{lstlisting}[language=bash]
+export LAB05_CHECKPOINT="$PWD/outputs/improved-实际作业号/best.pt"
+bash scripts/submit.sh evaluate
+\end{lstlisting}
+两条路径使用相同的数据、损失、指标和默认训练预算。评分中的运行记录可采用本地\file{.log}或Slurm\file{.out/.err}，报告注明所用设备与运行方式。
 \subsection{训练程序的关键顺序}
 \begin{lstlisting}
 model.train()
@@ -392,7 +448,7 @@ loss = masked_loss(logits, targets, valid)
 loss.backward()
 optimizer.step()
 \end{lstlisting}
-验证使用\file{model.eval()}与\file{torch.no_grad()}。前者切换模块行为，后者停止构建梯度图。每轮记录训练损失、验证损失、IoU和Dice；最终测试通过单独的评估作业执行。
+验证时切换到\file{eval()}和\file{torch.no_grad()}，根据验证结果选择模型。记录\file{run.json}、\file{history.csv}和曲线，用于分析损失与分割指标的变化。
 \clearpage
 
 \section{进阶选做：自行实现小型U-Net}
@@ -422,7 +478,7 @@ optimizer.step()
 4 & 第二处融合 & 空间对齐后拼接\file{up1}与\file{e1}\\\bottomrule
 \end{tabularx}\par
 \file{F.interpolate(...,size=skip.shape[-2:])}明确对齐高和宽；\file{dim=1}沿通道拼接。保持最终输出为\shape{[B,1,128,128]}，继续使用同一损失与指标。
-另建模型文件，并扩展\file{models.py}的\file{build_model}、\file{train.py}的模型选项、\file{checks.py}的模型检查入口和平台脚本的训练分支。记录各融合阶段的形状和参数量，沿用基础实验的数据划分与训练预算，完成训练、验证和结果分析。
+另建模型文件，并扩展\file{models.py}的\file{build_model}、\file{train.py}的模型选项、\file{checks.py}的模型检查入口和所选运行入口的训练分支。记录各融合阶段的形状和参数量，沿用基础实验的数据划分与训练预算，完成训练、验证和结果分析。
 \clearpage
 
 \section{联系ResNet：跳跃连接怎样组合特征}
@@ -485,35 +541,31 @@ x = x.permute(0, 3, 1, 2)    # [B,C,H,W]
 
 \section{T6：对比、评分与最终提交}
 \subsection{至少两组实验}
-基础要求为一个基线和一个改进编码器，使用同一提供的解码器。进阶选做U-Net，由学生自行编写。默认训练预算为20轮、批量16、学习率0.001；各对照组使用相同预算，配置与实际耗时记录在报告中。
+基础要求为一个基线和一个改进编码器，使用本人实现的同一解码器结构。进阶选做U-Net，由学生自行编写。默认训练预算为20轮、批量16、学习率0.001；各对照组使用相同预算，配置与实际耗时记录在报告中。
 
 在验证样例中选至少3个成功和3个失败案例，分析耳朵、腿、毛发边缘、相似背景和小目标上的预测表现。报告记录各组指标，并结合曲线和预测掩码解释性能变化。评估器保存\file{best_worst_examples.png}，前三行是IoU最低、后三行是最高的样例，展示模型在不同图像上的表现差异。
 \subsection{评分办法}
 \par\noindent\begin{tabularx}{\linewidth}{L{1.4cm}L{3.6cm}Y}\toprule
 分值 & 项目 & 评分依据\\\midrule
 20 & 基础运算与尺寸解释 & 手算过程8，数据和标注解释4，尺寸与参数表8\\
-30 & 编码器与连接 & 三阶段实现15，前向连接和输出10，梯度更新检查5\\
-20 & 平台训练与复现 & 有效作业日志8，配置/种子/划分记录6，权重与代码快照6\\
+30 & 编解码器与连接 & 编码器10，解码器10，连接与输出5，梯度更新检查5\\
+20 & 训练与复现 & 有效运行日志8，配置/种子/划分记录6，权重与代码快照6\\
 20 & 对比与错误分析 & 控制变量8，曲线与选择依据6，样例分析6\\
 10 & 最终分割效果 & 完整真实测试集上平均前景IoU乘10\\\bottomrule
 \end{tabularx}\par
 效果分使用0--1的小数值，例如IoU为0.65则得6.5分，保留一位小数。进阶最多加20分：连接和维度正确8分、有效对照8分、与残差思想的理论比较4分；总分封顶100分。
 \subsection{最终测试与提交文件}
-选定模型后，在平台提交：
-\begin{lstlisting}[language=bash]
-export LAB05_CHECKPOINT="$PWD/outputs/basic-实际作业号/best.pt"
-bash scripts/submit.sh evaluate
-\end{lstlisting}
+选定模型后，按第8.1节的本地入口或第8.2节的Slurm入口运行一次最终测试。
 评估脚本使用对应训练输出的\file{source/}代码快照与\file{best.pt}权重恢复模型。提交以下内容：
 \begin{enumerate}
 \item 学生代码与报告，报告包括基础运算结果、逐层尺寸表、对比表和结果图片。
-\item 基础与改进训练的\file{run.json}、\file{history.csv}、曲线及平台日志；日志中包含模型尺寸与参数更新的检查结果。
+\item 基础与改进训练的\file{run.json}、\file{history.csv}、曲线及运行日志；日志中包含模型尺寸与参数更新的检查结果。
 \item 最终选定模型的\file{best.pt}及对应\file{source/}代码快照。
 \item 最终测试的\file{metrics.json}、\file{per_image.csv}和\file{examples.png}。
 \end{enumerate}
 最终压缩包命名为\textrm{学号\_姓名\_lab05.zip}，报告导出为\file{report.pdf}。完整目录、复现命令和打包检查见同目录《提交与打包说明.md》，报告从\file{report-template.md}开始填写。
 
-提交包包含本人代码、报告与实验记录，数据来源和环境配置写入复现说明。收件渠道与截止时间按课程通知执行；训练和评价在107平台完成。
+提交包包含本人代码、报告与实验记录，数据来源和环境配置写入复现说明。收件渠道与截止时间按课程通知执行；训练与评估可在本地NVIDIA GPU或107平台完成。
 \clearpage
 
 \section{复习与符号索引}
