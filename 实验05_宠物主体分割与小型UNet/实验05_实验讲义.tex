@@ -92,13 +92,20 @@ python -m pip install -r requirements.txt
 \clearpage
 
 \subsection{从科大网盘获取数据包并解压}
-从课程提供的科大网盘下载\file{lab05-pet-data.tar.gz}，放入解压后的学生包\file{code/}目录。数据包已包含宠物照片、三值掩码和本实验的固定划分。在\file{code/}目录执行：
+从课程提供的科大网盘下载\file{lab05-pet-data.zip}。数据包已包含宠物照片、三值掩码和本实验的固定划分。
+
+\textbf{Windows：}右键单击压缩包，选择“全部解压”，将解压得到的\file{data}文件夹放入学生包的\file{code/}目录。最终划分文件的路径为\file{code/data/splits.json}。
+
+\textbf{Linux、macOS或107平台：}将压缩包放入\file{code/}，在该目录执行：
 \begin{lstlisting}[language=bash]
-tar -xzf lab05-pet-data.tar.gz
+unzip lab05-pet-data.zip
+\end{lstlisting}
+解压完成后，各系统均在\file{code/}目录运行数据检测和预览：
+\begin{lstlisting}[language=bash]
 python check_data.py --data-dir data
 python preview_data.py --data-dir data
 \end{lstlisting}
-\texttt{tar -xzf}表示解开\file{.tar.gz}压缩包。包内最外层是\file{data/}，执行后得到\file{code/data/}；\file{splits.json}已随数据包提供，直接用于训练与评估。
+固定划分\file{splits.json}已随数据包提供，直接用于训练与评估。
 
 \subsection{数据集检测脚本检查什么}
 \file{check_data.py}在CPU上读取固定划分及其对应的全部数据，检查以下内容：

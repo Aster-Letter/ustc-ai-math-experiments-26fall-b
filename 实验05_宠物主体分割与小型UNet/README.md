@@ -40,10 +40,19 @@ python checks.py improved
 
 ## 数据准备
 
-从课程提供的科大网盘下载 `lab05-pet-data.tar.gz`，放入学生包的 `code/` 目录。数据包已包含图片、三值掩码与本实验固定划分。在 `code/` 中执行：
+从课程提供的科大网盘下载 `lab05-pet-data.zip`。数据包已包含图片、三值掩码与本实验固定划分。
+
+**Windows：**右键单击压缩包，选择“全部解压”，将解压得到的 `data` 文件夹放入学生包的 `code/` 中。最终划分文件的路径为 `code/data/splits.json`。
+
+**Linux、macOS或107平台：**将压缩包放入 `code/`，在该目录执行：
 
 ```bash
-tar -xzf lab05-pet-data.tar.gz
+unzip lab05-pet-data.zip
+```
+
+解压完成后，各系统均在 `code/` 目录运行：
+
+```bash
 python check_data.py --data-dir data
 python preview_data.py --data-dir data
 ```
