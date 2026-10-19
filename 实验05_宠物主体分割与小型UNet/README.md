@@ -40,14 +40,33 @@ python checks.py improved
 
 ## 数据准备
 
-联网机器运行一次，约755MB图片与19MB标注压缩包，解压需额外磁盘空间：
+从课程提供的科大网盘下载 `lab05-pet-data.tar.gz`，放入学生包的 `code/` 目录。数据包已包含图片、三值掩码与本实验固定划分。在 `code/` 中执行：
 
 ```bash
-python prepare_data.py --data-dir data --download
+tar -xzf lab05-pet-data.tar.gz
+python check_data.py --data-dir data
 python preview_data.py --data-dir data
 ```
 
-数据源为 [Oxford-IIIT Pet 官方页面](https://www.robots.ox.ac.uk/~vgg/data/pets/)，通过Torchvision下载。数据放在 `data/oxford-iiit-pet/`，划分写入 `data/splits.json`。将整个 `data/` 上传到107平台，训练作业直接读取该目录中的数据。也可从官网手动下载两个归档，分别解压到 `data/oxford-iiit-pet/`，再去掉 `--download` 运行准备程序。
+压缩包最外层是 `data/`，解压后目录如下：
+
+```text
+code/
+  data/
+    splits.json
+    oxford-iiit-pet/
+      images/
+      annotations/
+        trainval.txt
+        test.txt
+        trimaps/
+  outputs/
+    data_preview.png
+```
+
+`check_data.py` 使用CPU，检测目录与固定划分、全部7349对图片和掩码的存在性与可读性、图像尺寸是否对应、掩码像素值是否属于1/2/3。正常结束时显示“数据集检测通过”；发现问题时列出对应文件并返回非零退出码。固定划分为训练2941张、验证739张、测试3669张，已保存在 `data/splits.json`。`preview_data.py` 生成 `outputs/data_preview.png`。
+
+训练读取解压后的数据，压缩包可另存。将完整 `code/` 及其中的 `data/` 上传到107平台；也可在平台 `code/` 中解压同一数据包。若数据放在共享目录，`LAB05_DATA_DIR` 指向包含 `splits.json` 的那一级目录。
 
 标注1=宠物、2=背景、3=不确定；目标转换为1/0，3在损失与指标中忽略。固定划分使用官方trainval和test名单；仅在trainval内按品种用种子2026划分80%训练、20%验证。指标在统一缩放后的128×128网格上计算；每张图先计算前景指标，再对全部图片取平均。
 

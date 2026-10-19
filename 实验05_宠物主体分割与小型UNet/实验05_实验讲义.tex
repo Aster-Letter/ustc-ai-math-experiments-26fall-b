@@ -53,9 +53,82 @@
 \tableofcontents
 \vfill
 \begin{teacherbox}[阅读顺序]
-先完成第1--8节的基础任务；第9--11节为进阶与改进提示。各节依次说明输入、计算过程、输出与实验要求。源代码中的 TODO 表示待补全位置，Hint 表示提示。
+先按第1节准备代码和数据，再完成第2--8节的基础任务；第9--11节为进阶与改进提示。各节依次说明输入、计算过程、输出与实验要求。源代码中的 TODO 表示待补全位置，Hint 表示提示。
 \end{teacherbox}
 \clearpage\pagenumbering{arabic}
+
+\section{代码结构与数据准备}
+\subsection{从哪些文件开始}
+解压学生包后，\file{code/}存放实验代码，\file{slides/}存放课堂课件；\file{report-template.md}是报告模板，提交材料的目录与打包命令见《提交与打包说明》。下表中的路径均相对于\file{code/}。
+
+\par\noindent\begin{tabularx}{\linewidth}{L{5.2cm}Y}\toprule
+文件或目录 & 作用与完成要求\\\midrule
+\file{operator_exercises.py} & 学生补全小矩阵卷积、激活、池化三个函数\\
+\file{student_encoder.py} & 学生补全基础版与改进版编码器\\
+\file{models.py} & 已提供解码器，并将学生编码器接入完整网络\\
+\file{data.py}、\file{prepare_data.py} & 读取与变换数据；提供划分生成函数，数据包已含固定划分\\
+\file{check_data.py} & 检测数据文件、固定划分、图片与掩码\\
+\file{preview_data.py} & 生成训练样本及掩码预览图\\
+\file{checks.py} & 检查基础运算、各层尺寸、梯度与参数更新\\
+\file{train.py} & 训练、逐轮验证、保存最优模型与训练记录\\
+\file{evaluate.py} & 读取选定权重，计算测试指标并保存预测图\\
+\file{metrics.py}、\file{visuals.py} & 已提供损失、指标、训练曲线与预测图绘制\\
+\file{scripts/} & \file{submit.sh}提交作业，\file{job.sbatch}声明资源，\file{run-job.sh}执行训练或评估\\
+\file{requirements.txt} & Python依赖及版本\\\bottomrule
+\end{tabularx}\par
+
+\subsection{数据怎样经过这些模块}
+\file{train.py}从\file{data.py}读取图片与掩码，通过\file{models.py}建立网络。图片依次经过学生编码器和已提供的解码器，得到逐像素原始得分；\file{metrics.py}据此计算损失和指标。每轮结束后记录验证结果，并由\file{visuals.py}绘制曲线和预测图。\file{evaluate.py}读取选定模型，在测试集上生成最终结果。
+
+基础任务补全两个学生文件，分别训练基础版与改进版。小型U-Net为独立选做，学生依据后文结构示意自行实现。每组训练产出配置、逐轮指标、曲线、模型权重和代码快照。
+
+\subsection{进入代码目录与准备环境}
+参考环境为Python 3.11、PyTorch 2.7.1、Torchvision 0.22.1。在解压后的实验目录打开终端，进入\file{code/}并安装依赖；后续命令均在此目录执行：
+\begin{lstlisting}[language=bash]
+cd code
+python -m pip install -r requirements.txt
+\end{lstlisting}
+已配置相同依赖的环境可直接使用。本地CPU（Central Processing Unit，中央处理器）用于基础运算和网络检查；107平台GPU（Graphics Processing Unit，图形处理器）用于完整训练与评估。两处使用同一份模型代码，平台脚本通过\texttt{--device cuda}指定训练设备。
+\clearpage
+
+\subsection{从科大网盘获取数据包并解压}
+从课程提供的科大网盘下载\file{lab05-pet-data.tar.gz}，放入解压后的学生包\file{code/}目录。数据包已包含宠物照片、三值掩码和本实验的固定划分。在\file{code/}目录执行：
+\begin{lstlisting}[language=bash]
+tar -xzf lab05-pet-data.tar.gz
+python check_data.py --data-dir data
+python preview_data.py --data-dir data
+\end{lstlisting}
+\texttt{tar -xzf}表示解开\file{.tar.gz}压缩包。包内最外层是\file{data/}，执行后得到\file{code/data/}；\file{splits.json}已随数据包提供，直接用于训练与评估。
+
+\subsection{数据集检测脚本检查什么}
+\file{check_data.py}在CPU上读取固定划分及其对应的全部数据，检查以下内容：
+\begin{itemize}
+\item 目录中具有\file{splits.json}与官方训练、测试名单；划分内容与课程固定版本一致。
+\item 训练2941张、验证739张、测试3669张对应的图片和掩码均存在且可读取。
+\item 每张原图与其掩码的空间尺寸相同，掩码像素值属于1、2、3。
+\end{itemize}
+检测结束后显示“数据集检测通过：7349对图片与掩码”。随后运行的\file{preview_data.py}将训练样本及掩码预览保存为\file{outputs/data_preview.png}，用于观察数据内容。
+
+\subsection{准备后的目录与平台路径}
+\begin{lstlisting}[language={}]
+code/
+  data/
+    splits.json
+    oxford-iiit-pet/
+      images/                 # *.jpg
+      annotations/
+        trainval.txt
+        test.txt
+        trimaps/              # *.png
+  outputs/
+    data_preview.png
+\end{lstlisting}
+训练读取解压后的图片、掩码与\file{splits.json}，数据压缩包可另存。将完整\file{code/}及其中的\file{data/}上传到107平台；若数据另放在共享目录，\file{LAB05_DATA_DIR}填写包含\file{splits.json}的那一级目录。使用上述目录布局时，在平台\file{code/}中设置：
+\begin{lstlisting}[language=bash]
+export LAB05_DATA_DIR="$PWD/data"
+\end{lstlisting}
+\file{LAB05_PYTHON}用于指定平台Python解释器，作业提交与日志读取见第8节。
+\clearpage
 
 \section{实验目标与课堂安排}
 \subsection{从分类走向逐像素预测}
@@ -182,7 +255,7 @@ P=C_{\mathrm{out}}(C_{\mathrm{in}}k^2+1).
 \file{e2} & \shape{[B,32,32,32]} & 输入通道匹配上一阶段\\
 \file{z} & \shape{[B,64,16,16]} & 最深层特征仍为四维\\\bottomrule
 \end{tabularx}\par
-代码变量\file{z}表示编码器的最深层特征；第6节的数学记号$z_u^{(n)}$表示最终输出头在某个像素上的激活前得分。
+代码变量\file{z}表示编码器的最深层特征；第7节的数学记号$z_u^{(n)}$表示最终输出头在某个像素上的激活前得分。
 
 \task{T3.1--T3.3：}在\file{student_encoder.py}中用\file{nn.Sequential}组织卷积、ReLU、池化。\task{T3.4：}依次计算并返回\file{e1,e2,z}。下列语法中的\file{in_channels}和\file{out_channels}分别填入各阶段的输入、输出通道数：
 \begin{lstlisting}
@@ -195,7 +268,7 @@ nn.MaxPool2d(kernel_size=2, stride=2)
 python checks.py encoder
 python checks.py basic
 \end{lstlisting}
-检查程序在本地CPU（Central Processing Unit，中央处理器）上运行，使用两个程序生成的\shape{[3,128,128]}输入张量。程序输出各阶段的尺寸，并检查梯度计算和一次参数更新。将输出结果与逐层尺寸表一同记入报告。
+检查程序在本地CPU上运行，使用两个程序生成的\shape{[3,128,128]}输入张量。程序输出各阶段的尺寸，并检查梯度计算和一次参数更新。将输出结果与逐层尺寸表一同记入报告。
 \begin{keybox}[层间连接关系]
 后一层的输入通道数等于前一层的输出通道数。每个阶段通过一次池化将高、宽各缩小一半，并保留批量、通道与二维空间结构，供解码器继续处理。
 \end{keybox}
@@ -281,43 +354,6 @@ IoU（Intersection over Union）为交并比；$\cap$取共有像素，$\cup$取
 \end{itemize}
 \subsection{训练、验证和测试的职责}
 训练集用于反向传播；每轮在验证集上计算指标，保存验证IoU最高的轮次（并列保留较早轮次）。网络结构和超参数由验证结果确定；测试集用于报告选定模型的最终表现。
-\clearpage
-
-\section{运行环境与数据准备}
-\subsection{环境配置}
-参考环境为Python 3.11、PyTorch 2.7.1、Torchvision 0.22.1。本地CPU环境用于基础运算、网络尺寸、梯度和参数更新检查；完整训练与评估在107平台的GPU（Graphics Processing Unit，图形处理器）计算节点执行。进入\file{code/}后安装依赖：
-\begin{lstlisting}[language=bash]
-python -m pip install -r requirements.txt
-\end{lstlisting}
-已配置相同依赖的环境可直接使用。\file{checks.py}默认使用CPU；平台脚本通过设备参数\texttt{--device cuda}启动训练和评估。两处使用同一份模型代码，平台环境解释器路径由\file{LAB05_PYTHON}指定。
-\subsection{数据下载与样本预览}
-在联网机器上下载数据，生成划分文件并查看标注：
-\begin{lstlisting}[language=bash]
-python prepare_data.py --data-dir data --download
-python preview_data.py --data-dir data
-\end{lstlisting}
-将下列\file{data/}目录上传至107平台，训练与评估读取其中的数据及划分文件。
-\begin{lstlisting}
-data/
-  splits.json
-  oxford-iiit-pet/
-    images/
-    annotations/
-      trainval.txt
-      test.txt
-      trimaps/
-\end{lstlisting}
-\subsection{代码文件与实验产出}
-\par\noindent\begin{tabularx}{\linewidth}{L{5.1cm}Y}\toprule
-文件 & 作用\\\midrule
-\file{operator_exercises.py} & 学生完成卷积、激活、池化三个函数\\
-\file{student_encoder.py} & 学生完成基础与改进编码器\\
-\file{models.py} & 提供解码器与完整模型的连接\\
-\file{train.py} & 训练、验证和模型保存\\
-\file{evaluate.py} & 计算最终测试指标并保存预测图\\
-\file{scripts/} & 107平台作业提交\\\bottomrule
-\end{tabularx}\par
-基础版与改进版分别生成训练记录。每组记录包含配置、逐轮指标、训练曲线、模型权重和代码快照，用于后续对照分析与复现。
 \clearpage
 
 \section{T5：在107平台训练与记录}
@@ -485,13 +521,13 @@ bash scripts/submit.sh evaluate
 \subsection{符号索引}
 \par\noindent\begin{tabularx}{\linewidth}{L{2.1cm}L{4.5cm}Y}\toprule
 类别 & 记号 & 含义与首次说明\\\midrule
-数据与模型 & $B,C,H,W$ & 批量、通道、高、宽；第4.1节\\
-数据与模型 & $y_u^{(n)},m_u^{(n)}$ & 像素标签、有效掩码；第6.1节\\
-概率与目标 & $z_u^{(n)},p_u^{(n)}$ & 原始得分、宠物概率；第6.1节\\
-概率与目标 & $\mathcal L^{(n)},\mathcal L_B$ & 单图损失、批量平均损失；第6.1节\\
-函数与算子 & $\sigma,\exp,\log$ & sigmoid、指数、自然对数；第6.1节\\
-函数与算子 & $\lfloor\cdot\rfloor$ & 向下取整；第3.4节\\
-集合与评价 & $P,G,|\cdot|,\cap,\cup$ & 前景集合、个数、交并运算；第6.3节\\\bottomrule
+数据与模型 & $B,C,H,W$ & 批量、通道、高、宽；第5.1节\\
+数据与模型 & $y_u^{(n)},m_u^{(n)}$ & 像素标签、有效掩码；第7.1节\\
+概率与目标 & $z_u^{(n)},p_u^{(n)}$ & 原始得分、宠物概率；第7.1节\\
+概率与目标 & $\mathcal L^{(n)},\mathcal L_B$ & 单图损失、批量平均损失；第7.1节\\
+函数与算子 & $\sigma,\exp,\log$ & sigmoid、指数、自然对数；第7.1节\\
+函数与算子 & $\lfloor\cdot\rfloor$ & 向下取整；第4.4节\\
+集合与评价 & $P,G,|\cdot|,\cap,\cup$ & 前景集合、个数、交并运算；第7.3节\\\bottomrule
 \end{tabularx}\par
 \clearpage
 
