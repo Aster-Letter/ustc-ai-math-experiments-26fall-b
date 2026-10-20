@@ -2,7 +2,7 @@
 
 使用 PyTorch，可在本地NVIDIA GPU（Graphics Processing Unit，图形处理器）或107平台训练与评估。基础任务手搭卷积编码器和解码器，完成基础版与改进版的对照。学生包提供编码器–解码器框架；小型 U-Net 为独立选做，由学生自行实现。
 
-先读[实验讲义](实验05_实验讲义.pdf)，再进入 `code/` 操作。完整材料可从[学生包](../downloads/lab05-pet-segmentation-26fall-B.zip)下载。
+先读[实验讲义](实验05_实验讲义.pdf)，再进入 `code/` 操作。完整材料可从[学生包](https://raw.githubusercontent.com/Aster-Letter/ustc-ai-math-experiments-26fall-b/main/downloads/lab05-pet-segmentation-26fall-B.zip)下载。
 
 | 材料 | 用途 |
 | --- | --- |

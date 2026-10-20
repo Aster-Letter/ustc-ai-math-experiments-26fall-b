@@ -26,6 +26,14 @@ def check_operators():
     assert torch.equal(student.relu(x), torch.tensor([[0., 1.], [0., 3.]])), "T2.2: negative values"
     expected = F.max_pool2d(image[None, None], 2)[0, 0]
     assert torch.equal(student.max_pool2d(image), expected), "T2.3: window origin/stride"
+    # 四个窗口的最大值位于不同角；负值窗口与高值边缘检查实际取最大及舍去边缘。
+    image = torch.tensor([[9., 1., -8., -1., 999.],
+                          [2., 0., -9., -2., 999.],
+                          [1., 2., -1., 2., 999.],
+                          [7., 0., 0., 6., 999.],
+                          [999., 999., 999., 999., 999.]])
+    expected = F.max_pool2d(image[None, None], 2)[0, 0]
+    assert torch.equal(student.max_pool2d(image), expected), "T2.3: maxima in different corners/negative window/odd edges"
 
 
 def check_core():
@@ -62,6 +70,7 @@ def check_encoder(improved=False):
     encoder = ImprovedEncoder() if improved else PetEncoder()
     images = torch.rand(2, 3, 128, 128)
     features = encoder(images)
+    assert isinstance(features, (tuple, list)) and len(features) == 3, "T3: return (e1, e2, z)"
     for name, value, shape in zip(["e1", "e2", "z"], features,
                                   [(2,16,64,64), (2,32,32,32), (2,64,16,16)]):
         print(name, tuple(value.shape))
@@ -76,6 +85,7 @@ def check_decoder():
     decoder = PetDecoder()
     shapes = {}
     handles = []
+    raw_logits = []
     def remember(name):
         """记录当前卷积块的输出形状。"""
         def hook(module, inputs, output):
@@ -83,6 +93,12 @@ def check_decoder():
         return hook
     for name in ["block2", "block1", "block0", "output"]:
         handles.append(getattr(decoder, name).register_forward_hook(remember(name)))
+    heads = [module for module in decoder.output.modules() if isinstance(module, torch.nn.Conv2d)]
+    assert len(heads) == 1 and heads[0].in_channels == 16 and heads[0].out_channels == 1 and heads[0].kernel_size == (1, 1), "T4.2: output head should be a 16 -> 1, 1x1 convolution"
+    def remember_logits(module, inputs, output):
+        # 保存卷积原始得分，避免原地激活修改 hook 持有的张量后误通过。
+        raw_logits.append(output.detach().clone())
+    handles.append(heads[0].register_forward_hook(remember_logits))
     features = torch.rand(2, 64, 16, 16, requires_grad=True)
     logits = decoder(features, (128, 128))
     for handle in handles:
@@ -94,6 +110,7 @@ def check_decoder():
         assert shapes.get(name) == shape, f"T4: {name} should output {shape}"
     assert tuple(logits.shape) == expected["output"]
     assert torch.isfinite(logits).all()
+    assert len(raw_logits) == 1 and torch.equal(logits.detach(), raw_logits[0]), "T4: return raw output-head logits directly; do not apply sigmoid"
     logits.square().mean().backward()
     assert features.grad is not None and features.grad.abs().sum() > 0
     assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in decoder.parameters())

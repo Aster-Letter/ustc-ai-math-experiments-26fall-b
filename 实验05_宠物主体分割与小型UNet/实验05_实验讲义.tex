@@ -275,7 +275,7 @@ nn.MaxPool2d(kernel_size=2, stride=2)
 \begin{lstlisting}[language=bash]
 python checks.py encoder
 \end{lstlisting}
-检查程序在本地CPU上运行，使用两个程序生成的\shape{[3,128,128]}输入张量。程序输出各阶段的尺寸，并检查梯度计算和一次参数更新。将输出结果与逐层尺寸表一同记入报告。
+检查程序在本地CPU上运行，使用两个程序生成的\shape{[3,128,128]}输入张量。程序输出各阶段尺寸并检查梯度；一次参数更新由第6节的完整模型检查（\texttt{checks.py basic}或\texttt{checks.py improved}）验证。将输出结果与逐层尺寸表一同记入报告。
 \begin{keybox}[层间连接关系]
 后一层的输入通道数等于前一层的输出通道数。每个阶段通过一次池化将高、宽各缩小一半，并保留批量、通道与二维空间结构，供解码器继续处理。
 \end{keybox}
@@ -590,23 +590,20 @@ x = x.permute(0, 3, 1, 2)    # [B,C,H,W]
 \end{tabularx}\par
 \clearpage
 
-\section{参考资料与学习接口}
-\subsection{实际使用的本地资料}
-本实验配合第5次理论课的卷积网络、残差连接与归一化内容。以下路径相对于课程仓库。
+\section{参考资料}
+\subsection{课程资料}
 \begin{itemize}
-\item \textrm{教案/人工智能数学原理与算法\_12次课程与助教分工\_最终版.xlsx}：“课程执行总表”“教学深度与时间”，对齐10月19日卷积、残差与BN内容。
-\item \file{source/pdf/nndl-v2.pdf}：邱锡鹏《神经网络与深度学习》，第5.1--5.2节卷积与汇聚、第5.4.5节残差网络；相关内容见书中第125、137页（文件第138、150页）。
-\item \textrm{教案/第五次教学\_卷积神经网络与残差网络/第五次教学\_卷积神经网络与残差网络.tex}：通道、尺寸、参数量和残差连接的课程记号与知识边界。
-\item 实验04讲义及\file{code/compute-practice/scripts/}：107平台的提交终端、资源参数、环境解释器与日志工作流。
+\item \href{https://nndl.ai/nndl-v2/}{邱锡鹏《神经网络与深度学习》（第二版）}，第5章“卷积神经网络”。
+\item \href{https://github.com/Aster-Letter/ustc-ai-math-experiments-26fall-b/tree/main/\%E5\%AE\%9E\%E9\%AA\%8C04_AI-Harness\%E5\%B7\%A5\%E5\%85\%B7\%E9\%85\%8D\%E7\%BD\%AE\%E5\%8F\%8A107\%E6\%9C\%AC\%E7\%A7\%91\%E7\%94\%9F\%E7\%AE\%97\%E5\%8A\%9B\%E5\%B9\%B3\%E5\%8F\%B0\%E4\%BB\%8B\%E7\%BB\%8D}{本课程实验04讲义}：107平台的环境配置、作业提交与日志查看。
 \end{itemize}
-\subsection{数据、模型与接口资料}
+\subsection{论文、数据与文档}
 \begin{itemize}
 \item \href{https://www.robots.ox.ac.uk/~vgg/data/pets/}{Oxford-IIIT Pet 官方数据页}及下载包\file{annotations/README}：宠物图片、三值掩码与官方划分。
-\item \href{https://arxiv.org/abs/1505.04597}{Ronneberger等，U-Net（2015）}：编码路径、解码路径和拼接连接。本实验采用两条跳跃连接的教学简化版。
-\item \href{https://arxiv.org/abs/1512.03385}{He等，Deep Residual Learning（2015）}：残差学习与快捷连接。
-\item PyTorch官方文档：\href{https://docs.pytorch.org/vision/stable/generated/torchvision.datasets.OxfordIIITPet.html}{OxfordIIITPet}、\href{https://docs.pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html}{BatchNorm2d}、\href{https://docs.pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html}{LayerNorm}：数据集接口、归一化维度与参数说明；依赖版本见\file{requirements.txt}。
+\item \href{https://arxiv.org/abs/1505.04597}{Ronneberger等，U-Net: Convolutional Networks for Biomedical Image Segmentation（2015）}：编码路径、解码路径和拼接连接。本实验采用两条跳跃连接的教学简化版。
+\item \href{https://arxiv.org/abs/1512.03385}{He等，Deep Residual Learning for Image Recognition（2015）}：残差学习与快捷连接。
+\item PyTorch官方文档：\href{https://docs.pytorch.org/vision/0.22/generated/torchvision.datasets.OxfordIIITPet.html}{OxfordIIITPet}、\href{https://docs.pytorch.org/docs/2.7/generated/torch.nn.BatchNorm2d.html}{BatchNorm2d}、\href{https://docs.pytorch.org/docs/2.7/generated/torch.nn.LayerNorm.html}{LayerNorm}：数据集接口、归一化维度与参数说明；依赖版本见\file{requirements.txt}。
 \end{itemize}
-\subsection{把实验放回完整工作流}
+\subsection{进一步思考}
 任务与代价是“找出主体，兼顾漏分与误分”；数据阶段核对标注并固定划分；表示阶段由学生编码器学习特征；模型阶段连接解码器；目标阶段使用忽略边界的交叉熵；优化阶段执行梯度更新；选择阶段看验证集；最后测试并分析错误。在真实产品中，还需检查不同拍摄条件、多主体图像、时延及上线后的数据变化。
 
 下一步学习时，可以继续追问：不同尺度怎样融合？残差和归一化如何迁移到更深的网络？本实验保存的尺寸表、控制变量方法和代码快照可直接用于后续网络实验。
