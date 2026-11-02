@@ -1,1 +1,3 @@
 kaggle==2.2.5
+# Kaggle 2.2.5 upload helpers import six directly.
+six>=1.16,<2

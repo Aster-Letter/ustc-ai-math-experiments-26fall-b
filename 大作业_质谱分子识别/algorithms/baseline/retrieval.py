@@ -36,8 +36,11 @@ def predict(reference, queries, bin_width=1.0, power=0.5, ppm=20.0, merge="max")
             zero_queries += int(np.linalg.norm(vector) == 0)
             compatible = ((reference.adduct == row.adduct) &
                           (reference.ionization_mode == row.ionization_mode)).to_numpy()
-            error = np.abs(masses - row.precursor_mz) / max(abs(row.precursor_mz), 1e-12) * 1e6
-            chosen = np.flatnonzero(compatible & (error <= ppm))
+            # 与全量入口采用相同闭区间，避免浮点舍入使边界候选在B0和B2间不同。
+            tolerance = max(abs(row.precursor_mz), 1e-12) * ppm / 1e6
+            chosen = np.flatnonzero(compatible &
+                                   (masses >= row.precursor_mz - tolerance) &
+                                   (masses <= row.precursor_mz + tolerance))
             if len(chosen) == 0:
                 relaxed += 1
                 chosen = np.flatnonzero(compatible)

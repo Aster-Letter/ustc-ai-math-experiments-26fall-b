@@ -16,9 +16,11 @@ def main():
                         help="B2：直接读取Kaggle官方全量训练集，仅打包独立运行代码")
     parser.add_argument("--out", required=True)
     parser.add_argument("--username", default="YOUR_USERNAME")
-    parser.add_argument("--config", help="predict.py 记录的 config.json；只读取算法参数")
+    parser.add_argument("--config", help="小谱库模式使用predict.py记录的config.json；不适用于固定参数B2")
     parser.add_argument("--license", default="REVIEW_LICENSE_BEFORE_UPLOAD", help="核对来源条款后填写Kaggle接受的许可证标识")
     args = parser.parse_args()
+    if args.full_training and args.config:
+        parser.error("--config仅用于--reference小谱库模式；--full-training打包固定参数B2，不能同时指定。")
     root = Path(__file__).resolve().parents[1]
     out = Path(args.out)
     assert not out.exists(), "请选择新的构建目录，避免覆盖旧版本。"

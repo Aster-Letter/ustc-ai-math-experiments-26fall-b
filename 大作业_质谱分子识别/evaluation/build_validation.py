@@ -17,7 +17,9 @@ def spectrum_signature(row):
     Returns:
         str: 排序后的峰数组及前体信息摘要，不使用结构标签。
     """
-    peaks = sorted(zip(row.ms2_mzs, row.ms2_normalized_intensities))
+    # Parquet的float32列表会读成NumPy标量，转为Python数值再生成可序列化摘要。
+    peaks = sorted((float(mz), float(intensity))
+                   for mz, intensity in zip(row.ms2_mzs, row.ms2_normalized_intensities))
     text = json.dumps([peaks, float(row.precursor_mz), str(row.adduct), str(row.ionization_mode)])
     return hashlib.sha256(text.encode()).hexdigest()
 
