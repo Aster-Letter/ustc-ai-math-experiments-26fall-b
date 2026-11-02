@@ -1,0 +1,15 @@
+{
+  "loss": 0.25887074178345165,
+  "iou": 0.7312252520843497,
+  "dice": 0.8290535918986245,
+  "count": 3669,
+  "split": "test",
+  "checkpoint": "tmp/lab05-package-verify/PB24081512_\u5434\u70b3\u777f_lab05/selected/best.pt",
+  "model": "improved",
+  "selected_epoch": 16,
+  "size": 128,
+  "threshold": 0.5,
+  "data_kind": "Oxford-IIIT Pet",
+  "partial_training": false,
+  "aggregation": "mean of per-image foreground scores; ignore trimap=3; empty=1"
+}
