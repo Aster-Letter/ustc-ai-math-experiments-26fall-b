@@ -40,7 +40,7 @@ def run_commands(commands, log_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=["basic", "improved", "evaluate"])
+    parser.add_argument("stage", choices=["basic", "improved", "unet", "evaluate"])
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--output")
     parser.add_argument("--checkpoint")

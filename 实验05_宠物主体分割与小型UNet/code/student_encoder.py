@@ -43,9 +43,12 @@ class ImprovedEncoder(PetEncoder):
     def __init__(self):
         """继承基线后，替换需要改动的阶段。"""
         super().__init__()
-        # TODO T5.1: 至少做一项改动，保持三个阶段的输出接口不变。
-        # Hint A: Conv2d -> BatchNorm2d(输出通道数) -> ReLU -> Pool。
-        # Hint B: 在某个阶段多加一个保持尺寸的卷积。
-        # Hint C: LayerNorm([C,H,W]) 的尺寸应匹配它实际接收的张量；
-        # 不能把 LayerNorm(C) 直接用于 [B,C,H,W]。详见讲义。
-        # 一次只改变一个主要因素，并保留数据划分、训练轮数和种子。
+        # T5.1: 仅在第一阶段的卷积与 ReLU 之间加入 BN。
+        # BN 对 16 个输出通道分别归一化，不改变三个阶段的输出尺寸。
+        # 对照训练使用相同的数据划分、训练轮数和种子。
+        self.stage1 = nn.Sequential(
+            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(16),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )

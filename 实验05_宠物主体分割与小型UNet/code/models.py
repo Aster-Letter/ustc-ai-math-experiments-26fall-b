@@ -2,6 +2,7 @@
 from torch import nn
 from student_encoder import PetEncoder, ImprovedEncoder
 from student_decoder import PetDecoder
+from student_unet import SmallUNet
 
 
 class BasicSegmenter(nn.Module):
@@ -34,7 +35,7 @@ def build_model(name):
     """按命令行选择模型。
 
     Args:
-        name (str): demo、basic 或 improved。
+        name (str): demo、basic、improved 或 unet。
 
     Returns:
         nn.Module: 指定模型；demo 仅用于验证训练流程，不作为T3答案。
@@ -42,5 +43,7 @@ def build_model(name):
     if name == "demo":
         return nn.Sequential(nn.Conv2d(3, 8, 3, padding=1), nn.ReLU(),
                              nn.Conv2d(8, 1, 1))
+    if name == "unet":
+        return SmallUNet()
     encoders = {"basic": PetEncoder, "improved": ImprovedEncoder}
     return BasicSegmenter(encoders[name]())
