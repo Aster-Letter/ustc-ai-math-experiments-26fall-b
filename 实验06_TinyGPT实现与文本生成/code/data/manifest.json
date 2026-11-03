@@ -1,0 +1,56 @@
+{
+  "source": "https://github.com/THUNLP-AIPoet/Datasets/tree/master/CCPC",
+  "commit": "0a53d6a29c1dc5e3f69de446e8c94b28b3b2437b",
+  "license_note": "upstream: academic use only; cite Guo et al. 2019 Jiuge",
+  "selection": "four clauses of five basic CJK characters; keep source script, no traditional/simplified conversion",
+  "split_rule": "official splits; exact text deduplication with test > val > train priority; no reshuffle",
+  "raw_files": {
+    "train": {
+      "file": "ccpc_train_v1.0.json",
+      "url": "https://raw.githubusercontent.com/THUNLP-AIPoet/Datasets/0a53d6a29c1dc5e3f69de446e8c94b28b3b2437b/CCPC/ccpc_train_v1.0.json",
+      "bytes": 24221911,
+      "git_blob": "2857b3f5a3aa2001e1eb798b3bf1337e367ad9cc",
+      "sha256": "3618cbd5dd7fb8efce933c70e5df0c2917306920e01b0d0470971dd22924b90a"
+    },
+    "val": {
+      "file": "ccpc_valid_v1.0.json",
+      "url": "https://raw.githubusercontent.com/THUNLP-AIPoet/Datasets/0a53d6a29c1dc5e3f69de446e8c94b28b3b2437b/CCPC/ccpc_valid_v1.0.json",
+      "bytes": 1695188,
+      "git_blob": "f03e1b140fe9907da292d6d22300a86e6a959b7f",
+      "sha256": "8646442ceb5ad132c46626b8b2387c91f54a796192d9f6ee5477e0e3b5f94a2b"
+    },
+    "test": {
+      "file": "ccpc_test_v1.0.json",
+      "url": "https://raw.githubusercontent.com/THUNLP-AIPoet/Datasets/0a53d6a29c1dc5e3f69de446e8c94b28b3b2437b/CCPC/ccpc_test_v1.0.json",
+      "bytes": 2117734,
+      "git_blob": "687dc575f74f07ea3391cd0bfca7d1154dd210ff",
+      "sha256": "7cdc235874cc3ac659e457c20a121fc151f4ae4ee85fce1c8509c72d1225d5d0"
+    }
+  },
+  "splits": {
+    "test": {
+      "raw_records": 9976,
+      "rejected_format": 5065,
+      "duplicates_removed": 0,
+      "poems": 4911,
+      "characters": 142421,
+      "sha256": "e1ff8ba5256973635000bcf09736bd9c5da99570b6fd79394eb786645d0cae4d"
+    },
+    "val": {
+      "raw_records": 7979,
+      "rejected_format": 4044,
+      "duplicates_removed": 0,
+      "poems": 3935,
+      "characters": 114117,
+      "sha256": "5ff6836fb752b8a51d0c548be91b4a2b8acc68fad2b7cf0576dae9dc0ddd5bc9"
+    },
+    "train": {
+      "raw_records": 109727,
+      "rejected_format": 90190,
+      "duplicates_removed": 0,
+      "poems": 19537,
+      "characters": 566575,
+      "sha256": "00e3b09f1b973f25e1946b48b861df168dab63cc58171d0690fd37e94942bc6e"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+THU Chinese Classical Poetry Corpus (THU-CCPC)
+Source: https://github.com/THUNLP-AIPoet/Datasets/tree/master/CCPC
+Pinned commit: 0a53d6a29c1dc5e3f69de446e8c94b28b3b2437b
+Upstream declaration: academic use only. These data are not covered by the MIT software license in THIRD_PARTY_LICENSES.txt.
+Citation: Guo et al. (2019), Jiuge: A Human-Machine Collaborative Chinese Classical Poetry Generation System. ACL System Demonstrations.
+https://aclanthology.org/P19-3005/
+This course distributes a filtered five-character, four-clause subset for academic teaching. Preserve this source notice with copies. No claim of additional permissions is made.

@@ -26,3 +26,8 @@ __pycache__/
 
 # Lab05 dataset is distributed through the university cloud drive.
 /downloads/lab05-pet-data.*
+
+# Lab06 teacher materials remain local.
+/实验06_TinyGPT实现与文本生成/teacher/
+/实验06_TinyGPT实现与文本生成/交付/
+/实验06_TinyGPT实现与文本生成/tmp/
