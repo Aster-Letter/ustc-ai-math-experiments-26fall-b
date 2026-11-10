@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 : "${SLURM_JOB_ID:?Run this script inside a 107 Slurm job, submitted through the web form or submit.sh}"
-: "${LAB06_PYTHON:?Set LAB06_PYTHON to the environment path from conda env list plus /bin/python}"
 lab06_profile=$1
 lab06_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 cd -- "$lab06_root"
+LAB06_PYTHON=${LAB06_PYTHON:-"/home/scc/pb24081512/anaconda3/envs/ustc-ai-experiments-26fall-B"}
+if [[ ! -x "$LAB06_PYTHON" ]]; then
+    echo "Python interpreter is not executable: $LAB06_PYTHON" >&2
+    exit 2
+fi
 lab06_python=$LAB06_PYTHON
 lab06_data=${LAB06_DATA_DIR:-"$lab06_root/data"}
 lab06_output="$lab06_root/outputs/$lab06_profile-$SLURM_JOB_ID"
@@ -27,7 +31,6 @@ case "$lab06_profile" in
             --lr "${LAB06_LR:-0.0003}" --seed "${LAB06_SEED:-2026}"
         ;;
     sample|evaluate)
-        : "${LAB06_RUN:?Set LAB06_RUN to the absolute path of the selected training output}"
         lab06_checkpoint="$LAB06_RUN/best.pt"
         mkdir -p "$lab06_output"
         if [[ "$lab06_profile" == sample ]]; then
