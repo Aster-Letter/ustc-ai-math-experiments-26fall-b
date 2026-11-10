@@ -4,6 +4,7 @@ set -euo pipefail
 lab06_profile=$1
 lab06_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 cd -- "$lab06_root"
+export LAB06_RUN="$PWD/outputs/train-154528"
 lab06_python=$LAB06_PYTHON
 lab06_data=${LAB06_DATA_DIR:-"$lab06_root/data"}
 lab06_output="$lab06_root/outputs/$lab06_profile-$SLURM_JOB_ID"
