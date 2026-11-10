@@ -10,6 +10,7 @@ if [[ -n "${SLURM_JOB_ID:-}" ]]; then
     echo "Already inside a Slurm job. In the web job command, use: bash scripts/run-job.sh $lab06_profile" >&2
     exit 2
 fi
+export LAB06_PYTHON="/home/scc/pb24081512/anaconda3/envs/ustc-ai-experiments-26fall-B"
 : "${LAB06_PYTHON:?Set LAB06_PYTHON to the environment path from conda env list plus /bin/python}"
 lab06_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 cd -- "$lab06_root"
