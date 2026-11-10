@@ -79,13 +79,3 @@ python run_local.py unet --data-dir ../data --output outputs/unet-reproduce --ep
 ```
 
 原实验命令及实际解释器保存在logs/中。本次选用本地运行入口；scripts/保留课程原有Slurm脚本，其中未扩展unet选项。
-
-## 5. 代码与协作说明
-
-- operator_exercises.py：卷积、ReLU和最大池化练习。
-- student_encoder.py、student_decoder.py：基础编码器与解码器；改进版在首阶段加入BatchNorm2d(16)。
-- student_unet.py：独立SmallUNet，两条跳跃连接，融合输入为96和48通道。
-- models.py、train.py、run_local.py：注册unet并接入本地训练流程。
-- checks.py：核对各融合尺寸、拼接内容、两分支梯度及一次参数更新。
-
-参考课程实验05讲义、README、报告模板及提交说明。使用Codex解释任务、补全BN改进和U-Net、接入检查与训练、执行实验、整理报告及打包；基础运算和基础编解码器此前已填写。使用PyTorch训练与评估、Matplotlib绘图、ReportLab生成报告。所有指标来自真实本地实验，详细限制与案例分析见report.pdf。
