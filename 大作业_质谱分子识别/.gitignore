@@ -1,0 +1,17 @@
+tmp/
+**/__pycache__/
+*.pyc
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/external/*
+!data/external/.gitkeep
+outputs/*
+!outputs/.gitkeep
+submission/build/*
+!submission/build/.gitkeep
+.kaggle/
+access_token
+kaggle.json
+.env

@@ -1,0 +1,10 @@
+__pycache__/
+code/outputs/
+tmp/
+
+# Private teaching materials and training artifacts.
+teacher/
+交付/
+code/logs/
+*.pt
+*.pth

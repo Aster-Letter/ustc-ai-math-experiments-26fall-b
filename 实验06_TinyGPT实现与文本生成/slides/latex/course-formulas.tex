@@ -1,0 +1,75 @@
+% 公式与形状标注。编号由 build.mjs 放在各自公式右侧。
+% formula: autoregressive
+p_\theta(x_2,\ldots,x_{T+1}\mid x_1)=\prod_{i=1}^{T}p_\theta(x_{i+1}\mid x_{\le i})
+% formula: prefix_definitions
+x_i:\text{第}i\text{个字符},\quad x_{\le i}=(x_1,\ldots,x_i):\text{已知前缀},\quad T:\text{预测位置数}
+% formula: shape_bt
+[B,T]
+% formula: shape_btd
+[B,T,d]
+% formula: shape_1td
+[1,T,d]
+% formula: shape_btv
+[B,T,V]
+% formula: embedding_defaults
+B=64,\qquad T=32,\qquad d=128
+% formula: shifted_targets
+x_i=c_i,\qquad y_i=c_{i+1}
+% formula: head_settings
+B=2,\quad T=5,\quad d=128,\quad H=4,\qquad k=\frac dH=32
+% formula: shape_25128
+[2,5,128]
+% formula: shape_25432
+[2,5,4,32]
+% formula: shape_24532
+[2,4,5,32]
+% formula: attention_intro
+\mathbf Q,\mathbf K,\mathbf V:\text{查询、键、值}\qquad\mathbf S:\text{分数}\qquad\mathbf P:\text{按行归一化的注意力分布}
+% formula: attention_scores
+\mathbf S=\frac{\mathbf Q\mathbf K^{\mathsf T}}{\sqrt{k}}
+% formula: attention_weights
+\mathbf P=\operatorname{Softmax}(\mathbf S+\mathbf M)
+% formula: attention_output
+\mathbf O=\mathbf P\mathbf V
+% formula: attention_dimensions
+\mathbf Q,\mathbf K,\mathbf V,\mathbf O:\ T\times k\qquad\mathbf S,\mathbf P,\mathbf M:\ T\times T
+% formula: attention_mask
+M_{ij}=\begin{cases}0,&j\le i,\\-\infty,&j>i,\end{cases}\qquad P_{ij}\ge0,\quad\sum_jP_{ij}=1
+% formula: mask_scores_example
+(1,2,3)\xrightarrow{\text{屏蔽未来}}(1,2,-\infty)
+% formula: weighted_example
+\begin{aligned}\text{输出}&=2\frac{e^1}{e^1+e^2}+6\frac{e^2}{e^1+e^2}\\[5pt]&\approx4.924234\end{aligned}
+% formula: residual_first
+\mathbf U=\text{层输入}+\text{分支}
+% formula: residual_second
+\text{层输出}=\mathbf U+\text{分支}
+% formula: ffn_widths
+128\longrightarrow512\longrightarrow128
+% formula: loss_definitions
+\mathcal L:\text{损失}\qquad B:\text{批量数}\qquad T:\text{位置数}\qquad\text{对全部}B\times T\text{个目标取平均}
+% formula: batch_loss
+\mathcal L_B=-\frac1{BT}\sum_{n=1}^{B}\sum_{i=1}^{T}\log p_\theta\!\left(y_i^{(n)}\mid x_{\le i}^{(n)}\right)
+% formula: loss_example
+\begin{aligned}\mathcal L&=-\frac12(\log0.75+\log0.50)\\&\approx0.490415\end{aligned}
+% formula: perplexity_example
+\text{困惑度}=\exp(\mathcal L)\approx1.632993
+% formula: temperature_intro
+\tau>0:\text{采样温度。只调整生成分布，不改变固定权重的原始测试损失。}
+% formula: sampling_distribution
+p_v(\tau)=\frac{\exp(z_v/\tau)}{\sum_{r=0}^{V-1}\exp(z_r/\tau)}
+% formula: sampling_definitions
+z_v:\text{候选字}v\text{的原始得分}\qquad r:\text{遍历词表的编号}\qquad V:\text{词表大小}
+% formula: parameter_settings
+V=5{,}409,\quad d=128,\quad T=32,\quad L=2\qquad\text{输入嵌入与输出投影不共享}
+% formula: parameter_count
+2Vd+Td+L(12d^2+13d)+2d
+% formula: gradient_definitions
+\mathbf z\in\mathbb R^V:\text{一个位置的词表得分}\qquad y:\text{正确字符编号}\qquad p_v:\text{字符}v\text{的Softmax概率}
+% formula: position_loss
+\mathcal L_{\mathrm{pos}}=-\log p_y=-z_y+\log\sum_{r=0}^{V-1}\exp(z_r)
+% formula: position_gradient_expanded
+\frac{\partial\mathcal L_{\mathrm{pos}}}{\partial z_v}=-\mathbf1\{v=y\}+\frac{\exp(z_v)}{\sum_{r=0}^{V-1}\exp(z_r)}
+% formula: position_gradient
+\frac{\partial\mathcal L_{\mathrm{pos}}}{\partial z_v}=p_v-\mathbf1\{v=y\}
+% formula: gradient_reminder
+\mathbf1\{v=y\}:\text{相等时为1，否则为0。批量平均再除以}BT\text{，继续传回嵌入与注意力。}

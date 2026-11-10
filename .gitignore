@@ -26,4 +26,3 @@ __pycache__/
 
 # Lab05 dataset is distributed through the university cloud drive.
 /downloads/lab05-pet-data.*
-/实验05_宠物主体分割与小型UNet/code/data

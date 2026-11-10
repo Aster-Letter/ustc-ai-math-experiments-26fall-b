@@ -1,0 +1,380 @@
+{
+  "autoregressive": {
+    "width": 448.75,
+    "height": 89.5,
+    "latex": "p_\\theta(x_2,\\ldots,x_{T+1}\\mid x_1)=\\prod_{i=1}^{T}p_\\theta(x_{i+1}\\mid x_{\\le i})",
+    "source": "course-formulas.tex",
+    "sha256": "174cae6f1972b0d41498c6a3933f739f4fac1d42b4b9335821a5010d8f5a75fe",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "prefix_definitions": {
+    "width": 744.0,
+    "height": 38.25,
+    "latex": "x_i:\\text{第}i\\text{个字符},\\quad x_{\\le i}=(x_1,\\ldots,x_i):\\text{已知前缀},\\quad T:\\text{预测位置数}",
+    "source": "course-formulas.tex",
+    "sha256": "f3ee21579c2106ff1b98421601afb989d4b5b1ec2bfc1bd02f3578f070cdcf15",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shape_bt": {
+    "width": 72.0,
+    "height": 32.75,
+    "latex": "[B,T]",
+    "source": "course-formulas.tex",
+    "sha256": "3d9d84942c4103525482aad8d3d531d1a0fc08a4ff28c355dcdc7e40b9c2f200",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shape_btd": {
+    "width": 98.25,
+    "height": 32.75,
+    "latex": "[B,T,d]",
+    "source": "course-formulas.tex",
+    "sha256": "a2ed9925c1a728b8aacae504f922ffa7ec1a3389a70f952edb3badf9ece2a9f2",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shape_1td": {
+    "width": 95.0,
+    "height": 32.75,
+    "latex": "[1,T,d]",
+    "source": "course-formulas.tex",
+    "sha256": "4c724bd7185e3663d3bc1cf167ffa7a195d77a93b9e0cf98b66e510161abbaf6",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shape_btv": {
+    "width": 102.75,
+    "height": 32.75,
+    "latex": "[B,T,V]",
+    "source": "course-formulas.tex",
+    "sha256": "e53f5b0812465acdfc88bff26d013e0c422a5db6d1f72b69ded02103b169b543",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "embedding_defaults": {
+    "width": 379.75,
+    "height": 30.25,
+    "latex": "B=64,\\qquad T=32,\\qquad d=128",
+    "source": "course-formulas.tex",
+    "sha256": "b0fb8fde616dffe8673d2e075eeacee13fec3a172705b6e4c8868ca2cb1dcfe3",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shifted_targets": {
+    "width": 240.5,
+    "height": 27.25,
+    "latex": "x_i=c_i,\\qquad y_i=c_{i+1}",
+    "source": "course-formulas.tex",
+    "sha256": "d5779b468263dada0a486e1f0992728a853df2dd66ca48102652a7d7c63f1238",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "head_settings": {
+    "width": 603.0,
+    "height": 60.75,
+    "latex": "B=2,\\quad T=5,\\quad d=128,\\quad H=4,\\qquad k=\\frac dH=32",
+    "source": "course-formulas.tex",
+    "sha256": "c3424ca683600a9eb5ead1defe4e24e2aead2357aa6b7130da3b7c9005ff3986",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shape_25128": {
+    "width": 114.25,
+    "height": 32.75,
+    "latex": "[2,5,128]",
+    "source": "course-formulas.tex",
+    "sha256": "4d6416a48a9dd94a971dc49fb2bac3c0e6b91ed0169ccdb45be2542e4736b3ae",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shape_25432": {
+    "width": 125.25,
+    "height": 32.75,
+    "latex": "[2,5,4,32]",
+    "source": "course-formulas.tex",
+    "sha256": "f6c2503a8b195ee328facd5878cf52516640c969c5cb375c4f5ac7f224fe1634",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "shape_24532": {
+    "width": 125.25,
+    "height": 32.75,
+    "latex": "[2,4,5,32]",
+    "source": "course-formulas.tex",
+    "sha256": "4276cd2a4ae8a4dd9fb66112d3b951a6ff7baa1319a9cded601ebd0609ae219d",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "attention_intro": {
+    "width": 832.5,
+    "height": 35.75,
+    "latex": "\\mathbf Q,\\mathbf K,\\mathbf V:\\text{查询、键、值}\\qquad\\mathbf S:\\text{分数}\\qquad\\mathbf P:\\text{按行归一化的注意力分布}",
+    "source": "course-formulas.tex",
+    "sha256": "d3632ff9104b468c537f780405b1ed5b5a4e43d7209baa0b3c1232f335d05e2c",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "attention_scores": {
+    "width": 120.75,
+    "height": 78.75,
+    "latex": "\\mathbf S=\\frac{\\mathbf Q\\mathbf K^{\\mathsf T}}{\\sqrt{k}}",
+    "source": "course-formulas.tex",
+    "sha256": "c56529eae810941f611ff9a1ab95a6ddc56d4f81daf35b0d648c8e0d7a7453f1",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "attention_weights": {
+    "width": 245.25,
+    "height": 32.75,
+    "latex": "\\mathbf P=\\operatorname{Softmax}(\\mathbf S+\\mathbf M)",
+    "source": "course-formulas.tex",
+    "sha256": "f35f8af0fb8fd994d0ecd5b642b4c1ceaf4241a8acf244996ea7b697ada8cd7f",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "attention_output": {
+    "width": 107.5,
+    "height": 27.0,
+    "latex": "\\mathbf O=\\mathbf P\\mathbf V",
+    "source": "course-formulas.tex",
+    "sha256": "3a4deee69b6e28a75bf0e2c6d88083f9cb533bf69a7d09fe357ee4a977361b74",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "attention_dimensions": {
+    "width": 475.5,
+    "height": 32.0,
+    "latex": "\\mathbf Q,\\mathbf K,\\mathbf V,\\mathbf O:\\ T\\times k\\qquad\\mathbf S,\\mathbf P,\\mathbf M:\\ T\\times T",
+    "source": "course-formulas.tex",
+    "sha256": "b74ff0e84ed55b5af9d3433c88d1100110a2cad46fd2b02f636d2e379a75442d",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "attention_mask": {
+    "width": 503.0,
+    "height": 91.5,
+    "latex": "M_{ij}=\\begin{cases}0,&j\\le i,\\\\-\\infty,&j>i,\\end{cases}\\qquad P_{ij}\\ge0,\\quad\\sum_jP_{ij}=1",
+    "source": "course-formulas.tex",
+    "sha256": "a208f2b5873ff0ad10f25f5ea7f8026dd497fb937428b6af523f5465e23588b3",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "mask_scores_example": {
+    "width": 303.5,
+    "height": 53.0,
+    "latex": "(1,2,3)\\xrightarrow{\\text{屏蔽未来}}(1,2,-\\infty)",
+    "source": "course-formulas.tex",
+    "sha256": "2250b0b1fc5ea21799e6f899e8111bb23d40243f27c284ac85b8a492b12ce930",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "weighted_example": {
+    "width": 305.25,
+    "height": 109.75,
+    "latex": "\\begin{aligned}\\text{输出}&=2\\frac{e^1}{e^1+e^2}+6\\frac{e^2}{e^1+e^2}\\\\[5pt]&\\approx4.924234\\end{aligned}",
+    "source": "course-formulas.tex",
+    "sha256": "4b2de43bbaecdc5e7341fcc11da09d1ab18405386803a6425e782c448a30b65c",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "residual_first": {
+    "width": 228.75,
+    "height": 32.75,
+    "latex": "\\mathbf U=\\text{层输入}+\\text{分支}",
+    "source": "course-formulas.tex",
+    "sha256": "d8b35e63008c1c6af86170b907a0b045e05e23f0202afce61dc2ee0e6c12d44a",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "residual_second": {
+    "width": 228.75,
+    "height": 32.75,
+    "latex": "\\text{层输出}=\\mathbf U+\\text{分支}",
+    "source": "course-formulas.tex",
+    "sha256": "2a81bca9d634027f5f892124e41edf25c70789573d6dd3557cc5cd5686614e08",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "ffn_widths": {
+    "width": 241.75,
+    "height": 25.75,
+    "latex": "128\\longrightarrow512\\longrightarrow128",
+    "source": "course-formulas.tex",
+    "sha256": "f95fb2fa8a9ca3529bf608d5019399c8d728eeeab8be58d629b97545090bb178",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "loss_definitions": {
+    "width": 823.75,
+    "height": 33.0,
+    "latex": "\\mathcal L:\\text{损失}\\qquad B:\\text{批量数}\\qquad T:\\text{位置数}\\qquad\\text{对全部}B\\times T\\text{个目标取平均}",
+    "source": "course-formulas.tex",
+    "sha256": "bd8acc2ff2ad1b90dbe67932693e36d004e2a1ce95ad9108741257a8fd2aa21d",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "batch_loss": {
+    "width": 389.0,
+    "height": 89.5,
+    "latex": "\\mathcal L_B=-\\frac1{BT}\\sum_{n=1}^{B}\\sum_{i=1}^{T}\\log p_\\theta\\!\\left(y_i^{(n)}\\mid x_{\\le i}^{(n)}\\right)",
+    "source": "course-formulas.tex",
+    "sha256": "33cc1ee37b48591d6f5d0dcca09a827ad886e25aeabd21e158246f4f0a566b1e",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "loss_example": {
+    "width": 309.0,
+    "height": 97.5,
+    "latex": "\\begin{aligned}\\mathcal L&=-\\frac12(\\log0.75+\\log0.50)\\\\&\\approx0.490415\\end{aligned}",
+    "source": "course-formulas.tex",
+    "sha256": "132da7ab5d5dc12d65f64f4ef62b2130c4011c1296679c7cabe3fb1fd5fd4d18",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "perplexity_example": {
+    "width": 329.25,
+    "height": 35.75,
+    "latex": "\\text{困惑度}=\\exp(\\mathcal L)\\approx1.632993",
+    "source": "course-formulas.tex",
+    "sha256": "fc6c0891dcae4f52f7df15dc29c038c7de741568342949f8c67e70d3f592dd76",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "temperature_intro": {
+    "width": 840.0,
+    "height": 33.5,
+    "latex": "\\tau>0:\\text{采样温度。只调整生成分布，不改变固定权重的原始测试损失。}",
+    "source": "course-formulas.tex",
+    "sha256": "4cada408c3ebdfe0effde2c120863aa42e3734ce07b9b6badf01c551b4cbed65",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "sampling_distribution": {
+    "width": 269.0,
+    "height": 81.75,
+    "latex": "p_v(\\tau)=\\frac{\\exp(z_v/\\tau)}{\\sum_{r=0}^{V-1}\\exp(z_r/\\tau)}",
+    "source": "course-formulas.tex",
+    "sha256": "563f39c72facf700f29074c26e8b3f8bdf978bc956670805791da249ca5b4852",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "sampling_definitions": {
+    "width": 773.0,
+    "height": 36.25,
+    "latex": "z_v:\\text{候选字}v\\text{的原始得分}\\qquad r:\\text{遍历词表的编号}\\qquad V:\\text{词表大小}",
+    "source": "course-formulas.tex",
+    "sha256": "d115855cdf269b88482e4afca8a08eed05b823b2adbf7f8bebfca97b59d10285",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "parameter_settings": {
+    "width": 834.0,
+    "height": 34.0,
+    "latex": "V=5{,}409,\\quad d=128,\\quad T=32,\\quad L=2\\qquad\\text{输入嵌入与输出投影不共享}",
+    "source": "course-formulas.tex",
+    "sha256": "6429177c467d5cdfbfcc4ac14fc53c99d9a145ddfdb191c07ee3cb5f14ac2324",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "parameter_count": {
+    "width": 369.75,
+    "height": 34.75,
+    "latex": "2Vd+Td+L(12d^2+13d)+2d",
+    "source": "course-formulas.tex",
+    "sha256": "4499342a6383b85aaaa0e7f30fb9f18d5cb9ea8c53f00d20da1eea0c4a57cc6f",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "gradient_definitions": {
+    "width": 970.5,
+    "height": 36.5,
+    "latex": "\\mathbf z\\in\\mathbb R^V:\\text{一个位置的词表得分}\\qquad y:\\text{正确字符编号}\\qquad p_v:\\text{字符}v\\text{的Softmax概率}",
+    "source": "course-formulas.tex",
+    "sha256": "40d4aa0353be00620e4bf97ad733d78852749f229d7b52f26d6a17e5667ad1e1",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "position_loss": {
+    "width": 434.0,
+    "height": 89.5,
+    "latex": "\\mathcal L_{\\mathrm{pos}}=-\\log p_y=-z_y+\\log\\sum_{r=0}^{V-1}\\exp(z_r)",
+    "source": "course-formulas.tex",
+    "sha256": "4e3b5799093f6ee35d9bbcaa8b70cba8cb4a14c37fa0a2c696250b764037ee44",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "position_gradient_expanded": {
+    "width": 395.5,
+    "height": 84.5,
+    "latex": "\\frac{\\partial\\mathcal L_{\\mathrm{pos}}}{\\partial z_v}=-\\mathbf1\\{v=y\\}+\\frac{\\exp(z_v)}{\\sum_{r=0}^{V-1}\\exp(z_r)}",
+    "source": "course-formulas.tex",
+    "sha256": "8c87a17eab067b689e7f1621bef10dfce2d9f45399b16f5d01f4f9d8f4ff75e9",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "position_gradient": {
+    "width": 255.25,
+    "height": 70.75,
+    "latex": "\\frac{\\partial\\mathcal L_{\\mathrm{pos}}}{\\partial z_v}=p_v-\\mathbf1\\{v=y\\}",
+    "source": "course-formulas.tex",
+    "sha256": "552d1953112c49af9a39b31c10bbf819f6803188691158f3bf2e1087978d3e07",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "gradient_reminder": {
+    "width": 949.5,
+    "height": 36.5,
+    "latex": "\\mathbf1\\{v=y\\}:\\text{相等时为1，否则为0。批量平均再除以}BT\\text{，继续传回嵌入与注意力。}",
+    "source": "course-formulas.tex",
+    "sha256": "30f881171438a014c18f1c1488b7528b8a3153666d107fb702a932925f053f5b",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "cnn": {
+    "width": 182.75,
+    "height": 36.25,
+    "latex": "p_\\theta(\\text{类别}\\mid\\text{图像})",
+    "source": "task-formulas.tex",
+    "sha256": "ec0ec1dc0117c8ff7547bbb2e3db51e567fdcca1e78a237e9f866f315c7f8d1b",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "bert": {
+    "width": 209.25,
+    "height": 36.5,
+    "latex": "p_\\theta(\\text{缺字}\\mid\\text{左右文})",
+    "source": "task-formulas.tex",
+    "sha256": "e2424b239fd21296db96174dc5e47ebd4e75013897d7ab5e76d07f63e5102498",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "gpt": {
+    "width": 209.25,
+    "height": 36.5,
+    "latex": "p_\\theta(\\text{下一字}\\mid\\text{前缀})",
+    "source": "task-formulas.tex",
+    "sha256": "0d6b68913338ee6c952a59f06b1b32c0fe26cdd0f45d003df9fe5a3a0de2dc0f",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "gan": {
+    "width": 197.5,
+    "height": 36.25,
+    "latex": "\\text{图像}=G_\\theta(\\text{噪声})",
+    "source": "task-formulas.tex",
+    "sha256": "c9edf779b77ec533f4f27bca7a40ebe9774aa984a1a7ba2e98145da7da12dfd0",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  },
+  "diffusion": {
+    "width": 218.0,
+    "height": 50.25,
+    "latex": "\\text{噪声}\\xrightarrow{\\text{逐步去噪}}\\text{图像}",
+    "source": "task-formulas.tex",
+    "sha256": "dbfb51518d99578f91e57629e1801e4f681fe76193ebf56dde6a584b02275fed",
+    "fontPx": 26.567040265670403,
+    "dpi": 384
+  }
+}
