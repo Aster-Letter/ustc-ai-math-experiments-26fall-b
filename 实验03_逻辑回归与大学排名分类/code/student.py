@@ -18,7 +18,7 @@ def filter_labels(frame):
     # TODO C1：保留标签已知的样本。
     # Hint：dropna(subset=["top500"]) 只检查标签列，接着 reset_index(drop=True)。
     #       自检：标签 [1, NaN, 0] 的三行应剩两行，标签为 [1, 0]。
-    return None
+    return frame.dropna(subset = ["top500"]).reset_index(drop = True)
 
 
 def clean_numeric(series):
@@ -35,7 +35,7 @@ def clean_numeric(series):
     # TODO C1：替换空白和横线，再用 pd.to_numeric 转换。
     # Hint：errors="coerce" 把无法解析的文本变成 NaN，不要填 0。
     #       自检：["12.5", "-", "", None] → [12.5, NaN, NaN, NaN]；"0" → 0.0。
-    return None
+    return pd.to_numeric(series, errors = "coerce")
 
 
 def fit_categories(frame):
@@ -51,7 +51,13 @@ def fit_categories(frame):
     # TODO C2：逐列收集非缺失类别，排序并添加 Unknown。
     # Hint：for column in frame.columns 遍历字段；dropna().unique()、sorted()。
     #       自检：["Asia", "Europe", NaN] → {"Region": ["Asia", "Europe", "Unknown"]}。
-    return None
+    categories = {}
+    for column in frame.columns:
+        values = frame[column].dropna().unique().tolist()
+        levels = sorted(str(value) for value in values)
+        levels.append("Unknown")
+        categories[column] = levels
+    return categories
 
 
 def encode_categories(frame, categories):
@@ -69,7 +75,13 @@ def encode_categories(frame, categories):
     # TODO C2：逐字段、逐类别生成 (values == category).astype(float)。
     # Hint：先 fillna("Unknown")，再用 where(values.isin(levels), "Unknown") 处理未见值。
     #       自检：类别表 Asia/Europe/Unknown 下，"Europe" → (0,1,0)，"Atlantis" → (0,0,1)。
-    return None
+    columns = {}
+    for column, levels in categories.items():
+        values = frame[column].fillna("Unknown")
+        values = values.where(values.isin(levels), "Unknown")
+        for level in levels:
+            columns[column + "=" + level] = (values == level).astype(float)
+    return pd.DataFrame(columns, index = frame.index)
 
 
 def fit_statistics(features):
@@ -87,7 +99,9 @@ def fit_statistics(features):
     # TODO C2：逐列求均值，填补后算总体标准差（ddof=0）。
     # Hint：mean() 自动跳过 NaN；全空列均值约定为 0；标准差为 0 的列改为 1。
     #       自检：[1, 3, NaN] → 均值 2，标准差 sqrt(2/3)≈0.816497。
-    return None
+    means = features.mean().fillna(0.0)
+    scales = features.fillna(means).std(ddof = 0).replace(0.0, 1.0).fillna(1.0)
+    return means, scales
 
 
 def apply_statistics(features, means, scales):
@@ -104,7 +118,7 @@ def apply_statistics(features, means, scales):
     # TODO C2：先 fillna，再逐列减 means、除 scales。
     # Hint：pandas 按列名自动对齐；验证值 100，训练均值 2、标准差 1，应转换为 98；
     #       缺失值填补后标准化结果为 0。
-    return None
+    return (features.fillna(means) - means) / scales
 
 
 def to_tensors(features, labels):
@@ -121,7 +135,11 @@ def to_tensors(features, labels):
     # TODO C2：用 torch.tensor、torch.ones 和 torch.cat 添加截距特征。
     # Hint：features.to_numpy() 取数组，dtype=torch.float32；cat(..., dim=1) 按列拼接；
     #       标签用 reshape(-1, 1)。自检：2 行 3 列特征 → X 形状 (2, 4)，y 形状 (2, 1)。
-    return None
+    X = torch.tensor(features.to_numpy(), dtype = torch.float32)
+    ones = torch.ones((X.shape[0], 1), dtype = torch.float32)
+    X = torch.cat([ones, X], dim = 1)
+    y = torch.tensor(labels.to_numpy(), dtype = torch.float32).reshape(-1, 1)
+    return X, y
 
 
 class UniversityDataset(Dataset):
@@ -143,9 +161,7 @@ class UniversityDataset(Dataset):
         Returns:
             int: 样本数 N，即 X 的第一维大小。
         """
-        # TODO C3：读取 X 的第一维。
-        # Hint：len(self.X) 就是行数；自检中 5 行数据应返回 5。
-        return None
+        return len(self.X)
 
     def __getitem__(self, index):
         """按相同索引取出一对特征和标签。
@@ -158,7 +174,7 @@ class UniversityDataset(Dataset):
         """
         # TODO C3：返回一对张量。
         # Hint：用同一个 index 取 self.X 和 self.y；不能分别随机打乱 X 和 y。
-        return None
+        return (self.X[index], self.y[index])
 
 
 def make_loader(dataset, batch_size, training):
@@ -176,7 +192,13 @@ def make_loader(dataset, batch_size, training):
     # TODO C3：创建 DataLoader，shuffle=training，drop_last=False。
     # Hint：本次 num_workers=0；随机种子在每次实验开始时设置。
     #       自检：5 条样本、batch_size=2 → 批次大小 [2, 2, 1]。
-    return None
+    return DataLoader(
+        dataset,
+        batch_size = batch_size,
+        shuffle = training,
+        drop_last = False,
+        num_workers = 0,
+    )
 
 
 def sigmoid(z):
@@ -191,7 +213,7 @@ def sigmoid(z):
     # TODO C4：返回 torch.sigmoid(z)。
     # Hint：公式为 1/(1+exp(-z))；训练使用库函数以避免极端值溢出。
     #       自检：z = -2, 0, 2 → 约 0.119203, 0.5, 0.880797。
-    return None
+    return 1/(1 + torch.exp(-z))
 
 
 class LogisticRegression(nn.Module):
@@ -206,6 +228,7 @@ class LogisticRegression(nn.Module):
         super().__init__()
         # TODO C4：零初始化 (input_dim,1) 的 nn.Parameter，保存为 self.theta。
         # Hint：torch.zeros((input_dim, 1))；张量要注册为 Parameter 才会被优化。
+        self.theta = nn.Parameter(torch.zeros((input_dim, 1)))
         return None
 
     def forward(self, X):
@@ -220,7 +243,7 @@ class LogisticRegression(nn.Module):
         # TODO C4：矩阵乘法。
         # Hint：@ 表示矩阵乘法；* 是逐元素乘法。
         #       自检：输入 (1,3,2)、theta (1,2,-1) → 得分 1+6-2=5。
-        return None
+        return X @ self.theta
 
     def penalty(self, kind):
         """只惩罚特征权重，不惩罚首项截距。
@@ -235,7 +258,13 @@ class LogisticRegression(nn.Module):
         # TODO C5：取 theta[1:]，按 kind 计算惩罚项。
         # Hint：L1 用 abs().sum()；L2 用 0.5*(w**2).sum()；none 可返回 self.theta.sum()*0.0。
         #       自检：theta=(10,3,-4) → L1=7，L2=12.5。
-        return None
+        w = self.theta[1:]
+        if kind == 'none':
+            return self.theta.sum()* 0.0
+        if kind == "l1":
+            return w.abs().sum()
+        if kind == "l2":
+            return 0.5 * (w ** 2).sum()
 
 
 def data_loss(logits, y):
@@ -251,8 +280,7 @@ def data_loss(logits, y):
     # TODO C5：使用 nn.BCEWithLogitsLoss()，默认 reduction='mean'。
     # Hint：输入是 logits，不要先调用 sigmoid，不要对损失调用 item()。
     #       自检：得分全为 0 → 损失 log 2≈0.693147。
-    return None
-
+    return nn.BCEWithLogitsLoss()(logits, y)
 
 def train_epoch(model, loader, optimizer, kind, strength):
     """训练一轮，按样本数累计每批更新前的数据损失。
@@ -276,7 +304,14 @@ def train_epoch(model, loader, optimizer, kind, strength):
         # Hint：zero_grad() → model(X) → data_loss + strength*penalty
         #       → backward() → step()；最后把 loss.detach().item()*len(y)
         #       加到 total、把 len(y) 加到 count，否则函数会返回 None。
-        return None
+        optimizer.zero_grad()
+        logits = model(X)
+        loss = data_loss(logits, y)
+        objective = loss + strength * model.penalty(kind)
+        objective.backward()
+        optimizer.step()
+        total += loss.detach().item() * len(y)
+        count += len(y)
     if count == 0:
         return None  # 学生尚未补全时不伪造损失值。
     return total / count
@@ -297,4 +332,31 @@ def binary_metrics(y, probabilities, threshold=0.5):
     # TODO C7：转成一维，用布尔条件统计四种情况。
     # Hint：truth = y.reshape(-1).bool()，prediction = probabilities.reshape(-1) >= threshold；
     #       预测为 1 且真值为 0 是 fp。自检：y=[1,0,1,0]、p=[.9,.8,.4,.1] → 四种计数各 1。
-    return None
+    truth = y.reshape(-1).bool()
+    prediction = probabilities.reshape(-1) >= threshold
+
+    tp = int((truth & prediction).sum().item())
+    tn = int((~truth & ~prediction).sum().item())
+    fp = int((~truth & prediction).sum().item())
+    fn = int((truth & ~prediction).sum().item())
+
+    total = tp + tn + fp + fn
+    accuracy = (tp + tn) / total if total else 0.0
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if precision + recall
+        else 0.0
+    )
+
+    return {
+        "tn": tn,
+        "fp": fp,
+        "fn": fn,
+        "tp": tp,
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1
+    }

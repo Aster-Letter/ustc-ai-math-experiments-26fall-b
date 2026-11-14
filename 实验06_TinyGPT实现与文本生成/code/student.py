@@ -17,7 +17,9 @@ def make_xy(chunk):
     """
     # TODO T1: 生成相差一位的输入和标签。
     # Hint: chunk 有 T+1 个元素；分别去掉最后、最前一个元素。
-    return torch.zeros_like(chunk[:-1]), torch.zeros_like(chunk[:-1])
+    x = chunk[:-1]
+    y = chunk[1:]
+    return x, y
 
 
 def split_heads(x, n_head):
@@ -33,7 +35,8 @@ def split_heads(x, n_head):
     batch, length, width = x.shape
     # TODO T2.1: 拆头并交换轴。
     # Hint: 先得到 [B,T,H,k]，再交换第1、2轴；从0开始编号。
-    return x.new_zeros(batch, n_head, length, width // n_head)
+    x = x.reshape(batch, length, n_head, width // n_head)
+    return x.transpose(1,2)
 
 
 def merge_heads(x):
@@ -48,7 +51,7 @@ def merge_heads(x):
     batch, heads, length, width = x.shape
     # TODO T2.2: 合头，恢复原来的通道次序。
     # Hint: 先交换头轴与位置轴，再 contiguous().reshape(...)。
-    return x.new_zeros(batch, length, heads * width)
+    return x.transpose(1,2).contiguous().reshape(batch, length, heads * width)
 
 
 def causal_attention(q, k, v):
@@ -66,8 +69,15 @@ def causal_attention(q, k, v):
     # Hint: 缩放分母是每头宽度的平方根；torch.tril 保留对角线。
     # 在 Softmax 前用 masked_fill 把未来位置设为负无穷。
     length = q.shape[-2]
-    weights = q.new_zeros(*q.shape[:-1], length)
-    return torch.zeros_like(v), weights
+    head_width = q.shape[-1]
+    scores = (q@ k.transpose(-2, -1)) / math.sqrt(head_width)
+    mask = torch.tril(torch.ones(length, length, device = q.device, dtype = torch.bool))
+    scores = scores.masked_fill(~mask, float("-inf"))
+
+    weights = F.softmax(scores, dim = -1)
+    output = weights @ v
+
+    return output, weights
 
 
 class CausalSelfAttention(nn.Module):
@@ -136,6 +146,8 @@ class Block(nn.Module):
         """
         # TODO T4: 连接两个前置归一化子层和两条残差。
         # Hint: 第一次相加后的 x 才是第二个子层的输入；不是两个并行分支。
+        x = x + self.attn(self.ln1(x))
+        x = x + self.ffn(self.ln2(x))
         return x
 
 
@@ -190,9 +202,14 @@ class TinyGPT(nn.Module):
         """
         # TODO T5.1: 嵌入相加 -> Dropout -> 所有块 -> ln_f -> head。
         # Hint: 位置参数只取当前 T 项；输出保留 B、T 两个轴。
-        return self.token_emb.weight.new_zeros(
-            ids.shape[0], ids.shape[1], self.token_emb.num_embeddings)
-
+        length = ids.shape[1]
+        x = self.token_emb(ids) + self.pos_emb[:, :length, :]
+        x = self.drop(x)
+        for block in self.blocks:
+            x = block(x)
+        x = self.ln_f(x)
+        logits = self.head(x)
+        return logits
 
 def language_loss(logits, targets):
     """计算所有样本、所有位置的平均交叉熵。
@@ -206,7 +223,8 @@ def language_loss(logits, targets):
     """
     # TODO T5.2: 合并 B、T 两个轴，再计算平均交叉熵。
     # Hint: F.cross_entropy 接收原始得分，不要提前 Softmax；标签是整数。
-    return logits.mean()
+    vocab_size = logits.shape[-1]
+    return F.cross_entropy(logits.reshape(-1, vocab_size), targets.reshape(-1))
 
 
 @torch.no_grad()
@@ -228,4 +246,18 @@ def generate(model, ids, steps, temperature=1.0, greedy=False):
     # greedy 时 argmax(..., keepdim=True)，否则 Softmax 后 multinomial。
     # 用 torch.cat(..., dim=1) 追加；空格与换行不能触发提前结束。
     model.eval()
+    for _ in range(steps):
+        context = ids[:, -model.block_size:]
+
+        logits = model(context)
+        next_logits = logits[:, -1, :]
+
+        if greedy:
+            next_id = next_logits.argmax(dim = -1, keepdim = True)
+        else:
+            probs = F.softmax(next_logits /  temperature, dim = -1)
+            next_id = torch.multinomial(probs, num_samples = 1)
+        
+        ids = torch.cat([ids, next_id], dim = 1)
+
     return ids

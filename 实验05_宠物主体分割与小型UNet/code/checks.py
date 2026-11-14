@@ -116,6 +116,53 @@ def check_decoder():
     assert any(p.grad is not None and p.grad.abs().sum() > 0 for p in decoder.parameters())
 
 
+def check_unet():
+    """验证跳跃特征确实参与拼接、融合尺寸和梯度，并记录参数量。"""
+    model = build_model("unet")
+    inputs, outputs, handles = {}, {}, []
+
+    def remember(name):
+        def hook(module, args, result):
+            inputs[name] = args[0]
+            outputs[name] = result
+        return hook
+
+    names = ["encoder.stage1", "encoder.stage2", "encoder.stage3",
+             "block2", "block1", "block0", "output"]
+    for name in names:
+        handles.append(model.get_submodule(name).register_forward_hook(remember(name)))
+    try:
+        logits = model(torch.rand(2, 3, 128, 128))
+    finally:
+        for handle in handles:
+            handle.remove()
+
+    shapes = [(2,16,64,64), (2,32,32,32), (2,64,16,16),
+              (2,32,32,32), (2,16,64,64), (2,16,128,128), (2,1,128,128)]
+    for name, shape in zip(names, shapes):
+        assert tuple(outputs[name].shape) == shape, f"U-Net: {name} shape"
+        count = sum(p.numel() for p in model.get_submodule(name).parameters())
+        print(name, "input", tuple(inputs[name].shape), "output", shape, "parameters", count)
+    for block, deep, skip, channels in [
+        ("block2", "encoder.stage3", "encoder.stage2", 64),
+        ("block1", "block2", "encoder.stage1", 32),
+    ]:
+        fused = inputs[block]
+        expected_up = F.interpolate(outputs[deep], size=outputs[skip].shape[-2:],
+                                    mode="bilinear", align_corners=False)
+        assert torch.equal(fused[:, :channels], expected_up), "U-Net: upsample branch"
+        assert torch.equal(fused[:, channels:], outputs[skip]), "U-Net: skip branch"
+        fused.retain_grad()
+    assert torch.equal(logits, outputs["output"]), "U-Net: return raw logits"
+    masked_loss(logits, torch.zeros_like(logits), torch.ones_like(logits)).backward()
+    for block, channels in [("block2", 64), ("block1", 32)]:
+        grad = inputs[block].grad
+        assert grad is not None and torch.isfinite(grad).all()
+        assert grad[:, :channels].abs().sum() > 0, "U-Net: no deep-branch gradient"
+        assert grad[:, channels:].abs().sum() > 0, "U-Net: no skip-branch gradient"
+    print("U-Net total parameters", sum(p.numel() for p in model.parameters()))
+
+
 def check_model(name):
     """检查全模型能否输出并完成一次参数更新。
 
@@ -144,7 +191,7 @@ def check_model(name):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=["core", "operators", "encoder", "decoder", "basic", "improved", "demo"])
+    parser.add_argument("stage", choices=["core", "operators", "encoder", "decoder", "basic", "improved", "demo", "unet"])
     args = parser.parse_args()
     torch.manual_seed(7)
     torch.set_num_threads(2)
@@ -160,5 +207,7 @@ if __name__ == "__main__":
         if args.stage in ["basic", "improved"]:
             check_encoder(args.stage == "improved")
             check_decoder()
+        if args.stage == "unet":
+            check_unet()
         check_model(args.stage)
     print("PASS:", args.stage)

@@ -19,6 +19,12 @@ def correlate2d(image, kernel):
     # TODO T2.1: 用两层循环遍历输出位置，截取窗口，逐元素乘并求和。
     # Hint: window = image[row:row+kh, col:col+kw]。
     # 讲义例子左上角的结果为 -4。
+    for row in range(result.shape[0]):
+        for col in range(result.shape[1]):
+
+            window = image[row:row + kh, col:col + kw]
+            result[row,col] = (window * kernel).sum()
+
     return result
 
 
@@ -33,7 +39,7 @@ def relu(values):
     """
     # TODO T2.2: 返回逐元素 max(0, x)。
     # Hint: 可以使用 torch.clamp；不要修改原输入。
-    return values
+    return torch.clamp(values, min = 0)
 
 
 def max_pool2d(image):
@@ -49,6 +55,10 @@ def max_pool2d(image):
     result = torch.zeros(height//2, width//2)
     # TODO T2.3: 遍历2×2窗口，把窗口最大值填入输出。
     # Hint: 第(row,col)个窗口从输入的(2*row,2*col)开始。
+    for row in range(height // 2):
+        for col in range(width // 2):
+            window = image[2*row :2*row + 2, 2*col:2*col + 2]
+            result[row, col] = window.max()
     return result
 
 

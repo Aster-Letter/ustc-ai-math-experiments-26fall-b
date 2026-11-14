@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # 沿用实验04/05的候选资源；按107平台当前账号权限调整。
+#SBATCH -A stu
 #SBATCH --job-name=lab06-poetry
 #SBATCH --partition=Students
 #SBATCH --qos=qos_stu_default

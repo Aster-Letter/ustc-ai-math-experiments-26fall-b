@@ -53,7 +53,7 @@ def make_parser():
         ArgumentParser: 学生与教师入口共用的参数解析器。
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", choices=["demo", "basic", "improved"], default="basic")
+    parser.add_argument("--model", choices=["demo", "basic", "improved", "unet"], default="basic")
     parser.add_argument("--data-dir", default="data")
     parser.add_argument("--output", default="outputs/basic-01")
     parser.add_argument("--device", choices=["cpu", "cuda", "mps"], default="cuda")
